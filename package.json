@@ -6,11 +6,16 @@
     "start": "REACT_APP_GIT_HASH=`git rev-parse --short HEAD` craco start",
     "build": "REACT_APP_GIT_HASH=`git rev-parse --short HEAD` craco build",
     "test": "REACT_APP_GIT_HASH=`git rev-parse --short HEAD` craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "contracts:test": "cd contracts && hardhat test",
+    "contracts:compile": "cd contracts && hardhat compile",
+    "contracts:node": "cd contracts && hardhat node",
+    "contracts:deploy": "cd contracts && hardhat run scripts/deploy.ts"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/contracts": "^3.3.0",
     "@typechain/ethers-v5": "^7.1.2",
     "@typechain/hardhat": "^2.3.0",
     "@types/chai": "^4.2.22",
@@ -45,8 +50,17 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "!contracts/**/*"
+        ],
+        "extends": [
+          "react-app/jest"
+        ]
+      }
     ]
   },
   "browserslist": {
