@@ -1,19 +1,16 @@
 import {
-  VestStartedEvent,
-} from '../../contracts/typechain/GeneralTokenVesting';
-
-import {
   useGeneralTokenVestingContract,
 } from './contracts';
 
 import {
+  Vest,
   useAllVests,
 } from './vests';
 
 export interface Data {
   vests: {
     all: {
-      data: VestStartedEvent[],
+      data: Vest[],
       loading: boolean,
     },
   },

@@ -1,17 +1,20 @@
-import { VestStartedEvent } from '../../../contracts/typechain/GeneralTokenVesting';
-import { useData } from '../../data';
-import Loading from '../ui/Loading';
 
-function Vest({
+import { ethers } from 'ethers';
+import { Vest } from '../../data/vests';
+import { useData } from '../../data';
+import Title from '../ui/Title';
+
+function TokenVest({
   vest,
 }: {
-  vest: VestStartedEvent
+  vest: Vest
 }) {
   return (
     <div className="mb-4">
-      <div>{vest.args.token}</div>
-      <div>{vest.args.beneficiary}</div>
-      <div>{vest.args.amount.toString()}</div>
+      <div>creator: {vest.creator}</div>
+      <div>beneficiary: {vest.beneficiary}</div>
+      <div>token: {vest.token.name} ({vest.token.symbol})</div>
+      <div>total amount: {ethers.utils.formatUnits(vest.totalAmount, vest.token.decimals)}</div>
     </div>
   );
 }
@@ -21,13 +24,10 @@ function AllTokenVests() {
 
   return (
     <div>
-      <div className="text-3xl mb-4">
-        All Token Vests
-      </div>
+      <Title title="All Token Vests" isLoading={loading} />
       <div>
-        {loading && <Loading />}
         {data.map((v, i) => (
-          <Vest
+          <TokenVest
             key={i}
             vest={v}
           />

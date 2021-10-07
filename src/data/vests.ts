@@ -1,13 +1,30 @@
 import { useState, useEffect } from 'react';
-import { BigNumber } from 'ethers';
-import { GeneralTokenVesting } from '../../contracts/typechain';
+import { ethers, BigNumber } from 'ethers';
+import {
+  GeneralTokenVesting,
+  IERC20Metadata, IERC20Metadata__factory,
+} from '../../contracts/typechain';
 import { TypedEventFilter } from '../../contracts/typechain/common';
 import { VestStartedEvent } from '../../contracts/typechain/GeneralTokenVesting';
 import { useWeb3 } from '../web3';
 
+type ERC20Token = {
+  instance: IERC20Metadata,
+  name: string,
+  symbol: string,
+  decimals: number,
+}
+
+export type Vest = {
+  token: ERC20Token,
+  creator: string,
+  beneficiary: string,
+  totalAmount: BigNumber,
+}
+
 const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deploymentBlock: number | undefined) => {
-  const { provider } = useWeb3();
-  const [allVests, setAllVests] = useState<VestStartedEvent[]>([]);
+  const { provider, signerOrProvider } = useWeb3();
+  const [allVests, setAllVests] = useState<Vest[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [queryPageSize] = useState(10000);
@@ -49,23 +66,48 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
     }
   }, [endBlock, deploymentBlock]);
 
-  const addVest = (newVest: VestStartedEvent, _: any) => {
-    setAllVests(allVests => {
-      const newAllVests = [newVest, ...(allVests || [])];
-      return newAllVests;
-    });
-  }
+  const createVest = (newVest: VestStartedEvent, signerOrProvider: ethers.providers.Provider | ethers.Signer) => {
+    const erc20Instance = IERC20Metadata__factory.connect(newVest.args.token, signerOrProvider);
 
-  const addVests = (newVests: VestStartedEvent[]) => {
-    setAllVests(allVests => {
-      const newVestsSorted = newVests.sort((a, b) => b.blockNumber - a.blockNumber);
-      const newAllVests = [...(allVests || []), ...newVestsSorted];
-      return newAllVests;
-    });
+    return Promise.all([
+      Promise.all([
+        erc20Instance,
+        erc20Instance.name(),
+        erc20Instance.symbol(),
+        erc20Instance.decimals(),
+      ]),
+      newVest.getTransaction().then(transaction => transaction.from),
+      newVest.args.beneficiary,
+      newVest.args.amount,
+    ])
+      .then(([
+        [
+          erc20Instance,
+          erc20Name,
+          erc20Symbol,
+          erc20Decimals,
+        ],
+        vestCreator,
+        vestBeneficiary,
+        vestTotalAmount,
+      ]) => {
+        const vest: Vest = {
+          token: {
+            instance: erc20Instance,
+            name: erc20Name,
+            symbol: erc20Symbol,
+            decimals: erc20Decimals,
+          },
+          creator: vestCreator,
+          beneficiary: vestBeneficiary,
+          totalAmount: vestTotalAmount,
+        };
+        return vest;
+      });
   }
 
   useEffect(() => {
-    if (!generalTokenVesting || !allVestsFilter || endBlock === undefined || deploymentBlock === undefined) {
+    if (!generalTokenVesting || !allVestsFilter || endBlock === undefined || deploymentBlock === undefined || !signerOrProvider) {
       setAllVests([]);
       return;
     }
@@ -79,10 +121,25 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
       startBlock = deploymentBlock;
     }
 
+    const addVests = (newVests: VestStartedEvent[], signerOrProvider: ethers.providers.Provider | ethers.Signer) => {
+      Promise.all(newVests.map(vest => Promise.all([vest, createVest(vest, signerOrProvider)])))
+        .then(vests => {
+          const newSortedVests = vests
+            .sort(([aEvent], [bEvent]) => bEvent.blockNumber - aEvent.blockNumber)
+            .map(([, vest]) => vest);
+
+          setAllVests(allVests => {
+            const newAllVests = [...(allVests || []), ...newSortedVests];
+            return newAllVests;
+          });
+        })
+        .catch(console.error);
+    }
+
     generalTokenVesting.queryFilter(allVestsFilter, startBlock, endBlock)
       .then(newVests => {
         if (newVests.length > 0) {
-          addVests(newVests);
+          addVests(newVests, signerOrProvider);
         }
       })
       .then(() => {
@@ -100,20 +157,39 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
         });
       })
       .catch(console.error);
-  }, [allVestsFilter, endBlock, generalTokenVesting, deploymentBlock, queryPageSize]);
+  }, [allVestsFilter, endBlock, generalTokenVesting, deploymentBlock, queryPageSize, signerOrProvider]);
 
   useEffect(() => {
-    if (!generalTokenVesting || !allVestsFilter) {
+    if (!generalTokenVesting || !allVestsFilter || !signerOrProvider) {
       setAllVests([]);
       return;
     }
 
-    generalTokenVesting.on(allVestsFilter, addVest);
+    const addVest = (signerOrProvider: ethers.providers.Provider | ethers.Signer) => {
+      return (newVest: VestStartedEvent, _: any) => {
+        createVest(newVest, signerOrProvider)
+          .then(vest => {
+            if (!vest) {
+              return;
+            }
+
+            setAllVests(allVests => {
+              const newAllVests = [vest, ...(allVests || [])];
+              return newAllVests;
+            });
+          })
+          .catch(console.error);
+      }
+    }
+
+    const listener = addVest(signerOrProvider);
+
+    generalTokenVesting.on(allVestsFilter, listener);
 
     return () => {
-      generalTokenVesting.off(allVestsFilter, addVest);
+      generalTokenVesting.off(allVestsFilter, listener);
     }
-  }, [allVestsFilter, generalTokenVesting]);
+  }, [allVestsFilter, generalTokenVesting, signerOrProvider]);
 
   return [allVests, loading] as const;
 }
