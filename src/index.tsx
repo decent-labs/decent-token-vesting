@@ -1,12 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { ToastContainer } from 'react-toastify';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Web3Provider } from './web3';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Web3Provider>
+      <ToastContainer
+        position="bottom-right"
+        closeButton={false}
+        newestOnTop={false}
+      />
+      <App />
+    </Web3Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

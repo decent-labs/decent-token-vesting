@@ -2,7 +2,32 @@
   "name": "general-token-vesting",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "REACT_APP_GIT_HASH=`git rev-parse --short HEAD` craco start",
+    "build": "REACT_APP_GIT_HASH=`git rev-parse --short HEAD` craco build",
+    "test": "REACT_APP_GIT_HASH=`git rev-parse --short HEAD` craco test",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@typechain/ethers-v5": "^7.1.2",
+    "@typechain/hardhat": "^2.3.0",
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^9.0.0",
+    "autoprefixer": "^9.8.8",
+    "chai": "^4.3.4",
+    "dotenv": "^10.0.0",
+    "ethereum-waffle": "^3.4.0",
+    "hardhat": "^2.6.5",
+    "postcss": "^7.0.39",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.16",
+    "ts-node": "^10.2.1",
+    "typechain": "^5.1.2",
+    "typescript": "^4.4.3"
+  },
   "dependencies": {
+    "@craco/craco": "^6.3.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -10,17 +35,13 @@
     "@types/node": "^12.20.27",
     "@types/react": "^17.0.27",
     "@types/react-dom": "^17.0.9",
+    "ethers": "^5.4.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
-    "typescript": "^4.4.3",
-    "web-vitals": "^1.1.2"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "react-toastify": "^8.0.3",
+    "web-vitals": "^1.1.2",
+    "web3modal": "^1.9.4"
   },
   "eslintConfig": {
     "extends": [

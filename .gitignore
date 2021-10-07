@@ -10,8 +10,12 @@
 
 # production
 /build
+/contracts/artifacts
+/contracts/cache
+/contracts/typechain
 
 # misc
+/.vscode
 .DS_Store
 .env.local
 .env.development.local
