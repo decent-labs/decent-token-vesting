@@ -1,7 +1,11 @@
+import AllTokenVests from '../AllTokenVests';
+
 function Body() {
   return (
     <div className="container">
-      General Token Vesting
+      <div>
+        <AllTokenVests />
+      </div>
     </div>
   )
 }
