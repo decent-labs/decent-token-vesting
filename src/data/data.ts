@@ -5,6 +5,7 @@ import {
 import {
   Vest,
   useAllVests,
+  useVestsLoading,
 } from './vests';
 
 export interface Data {
@@ -28,6 +29,8 @@ function useSystemData() {
       },
     },
   };
+
+  useVestsLoading(allVestsLoading);
 
   return data;
 }
