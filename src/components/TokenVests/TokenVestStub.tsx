@@ -1,7 +1,7 @@
-import { ethers } from 'ethers';
 import { Link } from 'react-router-dom';
 import { Vest } from '../../data/vests';
 import useDisplayName from '../../hooks/useDisplayName';
+import useDisplayAmount from '../../hooks/useDisplayAmount';
 
 function TokenVestStub({
   vest,
@@ -12,6 +12,11 @@ function TokenVestStub({
   const creatorDisplayName = useDisplayName(vest.creator);
   const beneficiaryDisplayName = useDisplayName(vest.beneficiary);
 
+  const totalAmountDisplay = useDisplayAmount(vest.totalAmount, vest.token.decimals);
+  const totalVestedAmountDisplay = useDisplayAmount(vest.totalVestedAmount, vest.token.decimals);
+  const releasedAmountDisplay = useDisplayAmount(vest.releasedAmount, vest.token.decimals);
+  const releasableAmountDisplay = useDisplayAmount(vest.releasableAmount, vest.token.decimals);
+
   return (
     <div className="mb-4">
       <Link to={`${vest.token.instance.address}-${vest.beneficiary}`}>
@@ -20,10 +25,10 @@ function TokenVestStub({
         <div>beneficiary: {beneficiaryDisplayName}</div>
         <div>start: {vest.start.toLocaleString()}</div>
         <div>end: {vest.end.toLocaleString()}</div>
-        <div>total amount: {ethers.utils.formatUnits(vest.totalAmount, vest.token.decimals)}</div>
-        <div>total vested amount: {ethers.utils.formatUnits(vest.totalVestedAmount, vest.token.decimals)}</div>
-        <div>released amount: {ethers.utils.formatUnits(vest.releasedAmount, vest.token.decimals)}</div>
-        <div>releasable amount: {ethers.utils.formatUnits(vest.releasableAmount, vest.token.decimals)}</div>
+        <div>total amount: {totalAmountDisplay}</div>
+        <div>total vested amount: {totalVestedAmountDisplay}</div>
+        <div>released amount: {releasedAmountDisplay}</div>
+        <div>releasable amount: {releasableAmountDisplay}</div>
       </Link>
     </div>
   );

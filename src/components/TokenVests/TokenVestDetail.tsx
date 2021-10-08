@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useParams } from 'react-router-dom';
 import { Vest } from '../../data/vests';
 import { useData } from '../../data';
 import useDisplayName from '../../hooks/useDisplayName';
+import useDisplayAmount from '../../hooks/useDisplayAmount';
 
 function TokenVest() {
   const params = useParams<{ id: string }>();
@@ -24,23 +25,43 @@ function TokenVest() {
   const [tokenAddress, setTokenAddress] = useState<string>();
   const [creatorAddress, setCreatorAddress] = useState<string>();
   const [beneficiaryAddress, setBeneficiaryAddress] = useState<string>();
+  const [decimals, setDecimals] = useState<number>();
+  const [totalAmount, setTotalAmount] = useState<BigNumber>();
+  const [totalVestedAmount, setTotalVestedAmount] = useState<BigNumber>();
+  const [releasedAmount, setReleasedAmount] = useState<BigNumber>();
+  const [releasableAmount, setReleasableAmount] = useState<BigNumber>();
 
   useEffect(() => {
     if (!vest) {
       setTokenAddress(undefined);
       setCreatorAddress(undefined);
       setBeneficiaryAddress(undefined);
+      setDecimals(undefined);
+      setTotalAmount(undefined);
+      setTotalVestedAmount(undefined);
+      setReleasedAmount(undefined);
+      setReleasableAmount(undefined);
       return;
     }
 
     setTokenAddress(vest.token.instance.address);
     setCreatorAddress(vest.creator);
     setBeneficiaryAddress(vest.beneficiary);
+    setDecimals(vest.token.decimals);
+    setTotalAmount(vest.totalAmount);
+    setTotalVestedAmount(vest.totalVestedAmount);
+    setReleasedAmount(vest.releasedAmount);
+    setReleasableAmount(vest.releasableAmount);
   }, [vest]);
 
   const tokenDisplayName = useDisplayName(tokenAddress);
   const creatorDisplayName = useDisplayName(creatorAddress);
   const beneficiaryDisplayName = useDisplayName(beneficiaryAddress);
+
+  const totalAmountDisplay = useDisplayAmount(totalAmount, decimals);
+  const totalVestedAmountDisplay = useDisplayAmount(totalVestedAmount, decimals);
+  const releasedAmountDisplay = useDisplayAmount(releasedAmount, decimals);
+  const releasableAmountDisplay = useDisplayAmount(releasableAmount, decimals);
 
   if (!vest) {
     if (loading) {
@@ -61,10 +82,10 @@ function TokenVest() {
       <div>beneficiary: {beneficiaryDisplayName}</div>
       <div>start: {vest.start.toLocaleString()}</div>
       <div>end: {vest.end.toLocaleString()}</div>
-      <div>total amount: {ethers.utils.formatUnits(vest.totalAmount, vest.token.decimals)}</div>
-      <div>total vested amount: {ethers.utils.formatUnits(vest.totalVestedAmount, vest.token.decimals)}</div>
-      <div>released amount: {ethers.utils.formatUnits(vest.releasedAmount, vest.token.decimals)}</div>
-      <div>releasable amount: {ethers.utils.formatUnits(vest.releasableAmount, vest.token.decimals)}</div>
+      <div>total amount: {totalAmountDisplay}</div>
+      <div>total vested amount: {totalVestedAmountDisplay}</div>
+      <div>released amount: {releasedAmountDisplay}</div>
+      <div>releasable amount: {releasableAmountDisplay}</div>
     </div>
   );
 }
