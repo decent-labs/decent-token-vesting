@@ -1,7 +1,7 @@
 import { Switch, Route, Redirect } from "react-router-dom";
 import All from '../TokenVests/All';
+import My from '../TokenVests/My';
 import MyCreated from '../TokenVests/MyCreated';
-import MyClaimable from '../TokenVests/MyClaimable';
 import TokenVestDetail from '../TokenVests/TokenVestDetail';
 
 function Body() {
@@ -11,11 +11,11 @@ function Body() {
         <Route path="/all-vests">
           <All />
         </Route>
+        <Route path="/my-vests">
+          <My />
+        </Route>
         <Route path="/my-created-vests">
           <MyCreated />
-        </Route>
-        <Route path="/my-claimable-vests">
-          <MyClaimable />
         </Route>
         <Route path="/:id">
           <TokenVestDetail />

@@ -2,12 +2,12 @@ import { useData } from '../../data';
 import Title from '../ui/Title';
 import TokenVestStub from './TokenVestStub';
 
-function MyClaimable() {
+function My() {
   const { vests: { myClaimable } } = useData();
 
   return (
     <div>
-      <Title title="My Claimable Vests" />
+      <Title title="My vests" />
       <div>
         {myClaimable.map(v => (
           <TokenVestStub
@@ -20,4 +20,4 @@ function MyClaimable() {
   );
 }
 
-export default MyClaimable;
+export default My;

@@ -7,7 +7,7 @@ function All() {
 
   return (
     <div>
-      <Title title="All Vests" />
+      <Title title="All vests" />
       <div>
         {all.map(v => (
           <TokenVestStub

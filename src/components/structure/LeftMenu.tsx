@@ -27,12 +27,12 @@ function LeftMenu() {
           to="/all-vests"
         />
         <MenuItem
-          title="My created vests"
-          to="/my-created-vests"
+          title="My vests"
+          to="/my-vests"
         />
         <MenuItem
-          title="My claimable vests"
-          to="/my-claimable-vests"
+          title="My created vests"
+          to="/my-created-vests"
         />
       </div>
     </div>

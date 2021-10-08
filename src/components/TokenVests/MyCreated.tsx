@@ -7,7 +7,7 @@ function MyCreated() {
 
   return (
     <div>
-      <Title title="My Created Vests" />
+      <Title title="My created vests" />
       <div>
         {myCreated.map(v => (
           <TokenVestStub
