@@ -1,8 +1,7 @@
-
 import { ethers } from 'ethers';
 import { Vest } from '../../data/vests';
 
-function TokenVest({
+function TokenVestStub({
   vest,
 }: {
   vest: Vest
@@ -22,4 +21,4 @@ function TokenVest({
   );
 }
 
-export default TokenVest;
+export default TokenVestStub;
