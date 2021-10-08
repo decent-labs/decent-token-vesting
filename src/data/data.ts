@@ -11,6 +11,7 @@ import {
 } from './vests';
 
 export interface Data {
+  loading: boolean,
   vests: {
     all: Vest[],
     myCreated: Vest[],
@@ -25,6 +26,7 @@ function useSystemData() {
   const myClaimableVests = useMyClaimableVests(allVests);
 
   const data: Data = {
+    loading: allVestsLoading,
     vests: {
       all: allVests,
       myCreated: myCreatedVests,
