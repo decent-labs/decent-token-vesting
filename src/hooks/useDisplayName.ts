@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useWeb3 } from '../../web3';
+import { useWeb3 } from '../web3';
 
-function DisplayName({
-  account,
-}: {
-  account: string,
-}) {
+const useDisplayName = (account: string | undefined) => {
   const { provider } = useWeb3();
 
   const [accountSubstring, setAccountSubstring] = useState<string>();
@@ -45,9 +41,7 @@ function DisplayName({
     setDisplayName(ensName);
   }, [accountSubstring, ensName]);
 
-  return (
-    <span>{displayName}</span>
-  );
+  return displayName;
 }
 
-export default DisplayName;
+export default useDisplayName;

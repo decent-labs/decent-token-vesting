@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { useParams } from 'react-router-dom';
 import { Vest } from '../../data/vests';
 import { useData } from '../../data';
-import DisplayName from '../ui/DisplayName';
+import useDisplayName from '../../hooks/useDisplayName';
 
 function TokenVest() {
   const params = useParams<{ id: string }>();
@@ -21,6 +21,27 @@ function TokenVest() {
     setVest(vest);
   }, [all, params.id]);
 
+  const [tokenAddress, setTokenAddress] = useState<string>();
+  const [creatorAddress, setCreatorAddress] = useState<string>();
+  const [beneficiaryAddress, setBeneficiaryAddress] = useState<string>();
+
+  useEffect(() => {
+    if (!vest) {
+      setTokenAddress(undefined);
+      setCreatorAddress(undefined);
+      setBeneficiaryAddress(undefined);
+      return;
+    }
+
+    setTokenAddress(vest.token.instance.address);
+    setCreatorAddress(vest.creator);
+    setBeneficiaryAddress(vest.beneficiary);
+  }, [vest]);
+
+  const tokenDisplayName = useDisplayName(tokenAddress);
+  const creatorDisplayName = useDisplayName(creatorAddress);
+  const beneficiaryDisplayName = useDisplayName(beneficiaryAddress);
+
   if (!vest) {
     if (loading) {
       return (
@@ -35,9 +56,9 @@ function TokenVest() {
 
   return (
     <div>
-      <div>token: {vest.token.name} ({vest.token.symbol}) <DisplayName account={vest.token.instance.address} /></div>
-      <div>creator: <DisplayName account={vest.creator} /></div>
-      <div>beneficiary: <DisplayName account={vest.beneficiary} /></div>
+      <div>token: {vest.token.name} ({vest.token.symbol}) {tokenDisplayName}</div>
+      <div>creator: {creatorDisplayName}</div>
+      <div>beneficiary: {beneficiaryDisplayName}</div>
       <div>start: {vest.start.toLocaleString()}</div>
       <div>end: {vest.end.toLocaleString()}</div>
       <div>total amount: {ethers.utils.formatUnits(vest.totalAmount, vest.token.decimals)}</div>

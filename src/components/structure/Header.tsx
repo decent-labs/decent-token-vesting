@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom';
 import { useWeb3 } from '../../web3';
 import { connect } from '../../web3/providers';
 import Button from '../ui/Button';
-import DisplayName from '../ui/DisplayName';
+import useDisplayName from '../../hooks/useDisplayName';
 
 function Header() {
   const { account } = useWeb3();
+  const accountDisplayName = useDisplayName(account);
 
   return (
     <div className="py-4 bg-gray-100 border-b">
@@ -25,7 +26,7 @@ function Header() {
             </Button>
           )}
           {account && (
-            <div>Connected with <DisplayName account={account} /></div>
+            <div>Connected with {accountDisplayName}</div>
           )}
         </div>
       </div>
