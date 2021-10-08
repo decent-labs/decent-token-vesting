@@ -25,6 +25,14 @@ object-assign
     PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
 
+/*! @preserve
+ * numeral.js
+ * version : 2.0.6
+ * author : Adam Draper
+ * license : MIT
+ * http://adamwdraper.github.com/Numeral-js/
+ */
+
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
  *
