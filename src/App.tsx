@@ -5,7 +5,7 @@ import LeftMenu from './components/structure/LeftMenu';
 
 function App() {
   return (
-    <div className="flex flex-col justify-between min-h-screen">
+    <div className="bg-white flex flex-col justify-between min-h-screen">
       <div className="flex-grow flex flex-col">
         <Header />
         <div className="flex-grow flex">
