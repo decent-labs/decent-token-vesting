@@ -1,18 +1,20 @@
 import { Switch, Route, Redirect } from "react-router-dom";
-import AllTokenVests from '../AllTokenVests';
+import All from '../TokenVests/All';
+import MyCreated from '../TokenVests/MyCreated';
+import MyClaimable from '../TokenVests/MyClaimable';
 
 function Body() {
   return (
     <div className="flex-grow pl-4 pt-4">
       <Switch>
         <Route path="/all-vests">
-          <AllTokenVests />
+          <All />
         </Route>
         <Route path="/my-created-vests">
-          <AllTokenVests />
+          <MyCreated />
         </Route>
         <Route path="/my-claimable-vests">
-          <AllTokenVests />
+          <MyClaimable />
         </Route>
         <Route path="/">
           <Redirect to="/all-vests" />

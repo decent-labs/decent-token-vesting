@@ -1,8 +1,6 @@
 
 import { ethers } from 'ethers';
 import { Vest } from '../../data/vests';
-import { useData } from '../../data';
-import Title from '../ui/Title';
 
 function TokenVest({
   vest,
@@ -24,22 +22,4 @@ function TokenVest({
   );
 }
 
-function AllTokenVests() {
-  const { vests: { all } } = useData();
-
-  return (
-    <div>
-      <Title title="All Token Vests" />
-      <div>
-        {all.map(v => (
-          <TokenVest
-            key={`${v.token}-${v.beneficiary}`}
-            vest={v}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export default AllTokenVests;
+export default TokenVest;
