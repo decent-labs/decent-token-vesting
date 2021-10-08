@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { Link } from 'react-router-dom';
 import { Vest } from '../../data/vests';
+import DisplayName from '../ui/DisplayName';
 
 function TokenVestStub({
   vest,
@@ -10,9 +11,9 @@ function TokenVestStub({
   return (
     <div className="mb-4">
       <Link to={`${vest.token.instance.address}-${vest.beneficiary}`}>
-        <div>token: {vest.token.name} ({vest.token.symbol}) {vest.token.instance.address}</div>
-        <div>creator: {vest.creator}</div>
-        <div>beneficiary: {vest.beneficiary}</div>
+        <div>token: {vest.token.name} ({vest.token.symbol}) <DisplayName account={vest.token.instance.address} /></div>
+        <div>creator: <DisplayName account={vest.creator} /></div>
+        <div>beneficiary: <DisplayName account={vest.beneficiary} /></div>
         <div>start: {vest.start.toLocaleString()}</div>
         <div>end: {vest.end.toLocaleString()}</div>
         <div>total amount: {ethers.utils.formatUnits(vest.totalAmount, vest.token.decimals)}</div>

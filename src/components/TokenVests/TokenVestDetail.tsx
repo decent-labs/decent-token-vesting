@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { useParams } from 'react-router-dom';
 import { Vest } from '../../data/vests';
 import { useData } from '../../data';
+import DisplayName from '../ui/DisplayName';
 
 function TokenVest() {
   const params = useParams<{ id: string }>();
@@ -34,9 +35,9 @@ function TokenVest() {
 
   return (
     <div>
-      <div>token: {vest.token.name} ({vest.token.symbol}) {vest.token.instance.address}</div>
-      <div>creator: {vest.creator}</div>
-      <div>beneficiary: {vest.beneficiary}</div>
+      <div>token: {vest.token.name} ({vest.token.symbol}) <DisplayName account={vest.token.instance.address} /></div>
+      <div>creator: <DisplayName account={vest.creator} /></div>
+      <div>beneficiary: <DisplayName account={vest.beneficiary} /></div>
       <div>start: {vest.start.toLocaleString()}</div>
       <div>end: {vest.end.toLocaleString()}</div>
       <div>total amount: {ethers.utils.formatUnits(vest.totalAmount, vest.token.decimals)}</div>

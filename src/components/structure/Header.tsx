@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useWeb3 } from '../../web3';
 import { connect } from '../../web3/providers';
 import Button from '../ui/Button';
+import DisplayName from '../ui/DisplayName';
 
 function Header() {
   const { account } = useWeb3();
@@ -24,7 +25,7 @@ function Header() {
             </Button>
           )}
           {account && (
-            <div>Connected with {account.substring(0, 6)}...{account.slice(-4)}</div>
+            <div>Connected with <DisplayName account={account} /></div>
           )}
         </div>
       </div>
