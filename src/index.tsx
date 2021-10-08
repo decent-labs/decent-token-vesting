@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HashRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './index.css';
 import App from './App';
@@ -9,16 +10,18 @@ import { DataProvider } from './data';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Web3Provider>
-      <DataProvider>
-        <ToastContainer
-          position="bottom-right"
-          closeButton={false}
-          newestOnTop={false}
-        />
-        <App />
-      </DataProvider>
-    </Web3Provider>
+    <HashRouter>
+      <Web3Provider>
+        <DataProvider>
+          <ToastContainer
+            position="bottom-right"
+            closeButton={false}
+            newestOnTop={false}
+          />
+          <App />
+        </DataProvider>
+      </Web3Provider>
+    </HashRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
