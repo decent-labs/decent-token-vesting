@@ -1,0 +1,43 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+
+      - name: Read .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+
+      - name: Use Node.js (.nvmrc)
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ steps.nvm.outputs.NVMRC }}
+
+      - name: Edit package.json
+        run: npx json -I -f package.json -e 'this.homepage="${{ secrets.HOMEPAGE_URL }}"'
+
+      - name: Install and Build
+        run: |
+          npm install
+          npm run contracts:compile
+          npm run build
+        env:
+          REACT_APP_FALLBACK_CHAIN_ID: ${{ secrets.FALLBACK_CHAIN_ID }}
+          REACT_APP_SUPPORTED_CHAIN_IDS: ${{ secrets.SUPPORTED_CHAIN_IDS }}
+          REACT_APP_GENERAL_TOKEN_VESTING_ADDRESSES: ${{ secrets.GENERAL_TOKEN_VESTING_ADDRESSES }}
+          REACT_APP_INFURA_API_KEY: ${{ secrets.INFURA_API_KEY }}
+          REACT_APP_ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+          REACT_APP_ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
+          folder: build
+          clean: true
