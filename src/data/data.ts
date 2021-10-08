@@ -10,10 +10,7 @@ import {
 
 export interface Data {
   vests: {
-    all: {
-      data: Vest[],
-      loading: boolean,
-    },
+    all: Vest[],
   },
 };
 
@@ -23,10 +20,7 @@ function useSystemData() {
 
   const data: Data = {
     vests: {
-      all: {
-        data: allVests,
-        loading: allVestsLoading,
-      },
+      all: allVests,
     },
   };
 

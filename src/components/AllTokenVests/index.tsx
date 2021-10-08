@@ -25,13 +25,13 @@ function TokenVest({
 }
 
 function AllTokenVests() {
-  const { vests: { all: { data, loading } } } = useData();
+  const { vests: { all } } = useData();
 
   return (
     <div>
-      <Title title="All Token Vests" isLoading={loading} />
+      <Title title="All Token Vests" />
       <div>
-        {data.map(v => (
+        {all.map(v => (
           <TokenVest
             key={`${v.token}-${v.beneficiary}`}
             vest={v}
