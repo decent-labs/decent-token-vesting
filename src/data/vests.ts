@@ -19,7 +19,12 @@ export type Vest = {
   token: ERC20Token,
   creator: string,
   beneficiary: string,
+  start: Date,
+  end: Date,
   totalAmount: BigNumber,
+  totalVestedAmount: BigNumber,
+  releasedAmount: BigNumber,
+  releasableAmount: BigNumber,
 }
 
 const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deploymentBlock: number | undefined) => {
@@ -66,7 +71,7 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
     }
   }, [endBlock, deploymentBlock]);
 
-  const createVest = (newVest: VestStartedEvent, signerOrProvider: ethers.providers.Provider | ethers.Signer) => {
+  const createVest = (newVest: VestStartedEvent, generalTokenVesting: GeneralTokenVesting, signerOrProvider: ethers.providers.Provider | ethers.Signer) => {
     const erc20Instance = IERC20Metadata__factory.connect(newVest.args.token, signerOrProvider);
 
     return Promise.all([
@@ -78,7 +83,12 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
       ]),
       newVest.getTransaction().then(transaction => transaction.from),
       newVest.args.beneficiary,
+      generalTokenVesting.getStart(newVest.args.token, newVest.args.beneficiary),
+      generalTokenVesting.getDuration(newVest.args.token, newVest.args.beneficiary),
       newVest.args.amount,
+      generalTokenVesting.totalVestedAmount(newVest.args.token, newVest.args.beneficiary),
+      generalTokenVesting.getReleasedTokens(newVest.args.token, newVest.args.beneficiary),
+      generalTokenVesting.getReleasableAmount(newVest.args.token, newVest.args.beneficiary),
     ])
       .then(([
         [
@@ -89,7 +99,12 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
         ],
         vestCreator,
         vestBeneficiary,
+        vestStartTime,
+        vestDurationTime,
         vestTotalAmount,
+        vestTotalVestedAmount,
+        vestReleasedAmount,
+        vestReleasableAmount,
       ]) => {
         const vest: Vest = {
           token: {
@@ -100,7 +115,12 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
           },
           creator: vestCreator,
           beneficiary: vestBeneficiary,
+          start: new Date(vestStartTime.mul(1000).toNumber()),
+          end: new Date(vestStartTime.add(vestDurationTime).mul(1000).toNumber()),
           totalAmount: vestTotalAmount,
+          totalVestedAmount: vestTotalVestedAmount,
+          releasedAmount: vestReleasedAmount,
+          releasableAmount: vestReleasableAmount,
         };
         return vest;
       });
@@ -122,7 +142,7 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
     }
 
     const addVests = (newVests: VestStartedEvent[], signerOrProvider: ethers.providers.Provider | ethers.Signer) => {
-      Promise.all(newVests.map(vest => Promise.all([vest, createVest(vest, signerOrProvider)])))
+      Promise.all(newVests.map(vest => Promise.all([vest, createVest(vest, generalTokenVesting, signerOrProvider)])))
         .then(vests => {
           const newSortedVests = vests
             .sort(([aEvent], [bEvent]) => bEvent.blockNumber - aEvent.blockNumber)
@@ -167,7 +187,7 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
 
     const addVest = (signerOrProvider: ethers.providers.Provider | ethers.Signer) => {
       return (newVest: VestStartedEvent, _: any) => {
-        createVest(newVest, signerOrProvider)
+        createVest(newVest, generalTokenVesting, signerOrProvider)
           .then(vest => {
             if (!vest) {
               return;
