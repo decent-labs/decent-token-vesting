@@ -1,0 +1,34 @@
+import { useState, useEffect } from 'react';
+import { useWeb3 } from '../../web3';
+
+function EtherscanLink({ address, children }: {
+  address: string | undefined,
+  children: React.ReactNode,
+}) {
+  let { networkName } = useWeb3();
+  const [classes] = useState("break-all");
+  const [subdomain, setSubdomain] = useState("");
+
+  useEffect(() => {
+    if (!networkName || ["localhost", "homestead"].includes(networkName)) {
+      setSubdomain("");
+      return;
+    }
+
+    setSubdomain(`${networkName}.`);
+  }, [networkName]);
+
+  if (!networkName || !address) {
+    return (
+      <div className={classes}>{children}</div>
+    );
+  }
+
+  return (
+    <a className={classes} href={`https://${subdomain}etherscan.io/address/${address}`} target="_blank" rel="noreferrer">
+      {children}
+    </a>
+  );
+}
+
+export default EtherscanLink;

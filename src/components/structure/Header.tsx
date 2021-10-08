@@ -3,6 +3,7 @@ import { useWeb3 } from '../../web3';
 import { connect } from '../../web3/providers';
 import Button from '../ui/Button';
 import useDisplayName from '../../hooks/useDisplayName';
+import EtherscanLink from '../ui/EtherscanLink';
 
 function Header() {
   const { account } = useWeb3();
@@ -26,7 +27,7 @@ function Header() {
             </Button>
           )}
           {account && (
-            <div>Connected with {accountDisplayName}</div>
+            <div>Connected with <EtherscanLink address={account}>{accountDisplayName}</EtherscanLink></div>
           )}
         </div>
       </div>

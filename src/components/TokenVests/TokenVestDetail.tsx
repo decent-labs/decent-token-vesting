@@ -5,6 +5,7 @@ import { Vest } from '../../data/vests';
 import { useData } from '../../data';
 import useDisplayName from '../../hooks/useDisplayName';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
+import EtherscanLink from '../ui/EtherscanLink';
 
 function TokenVest() {
   const params = useParams<{ id: string }>();
@@ -77,9 +78,9 @@ function TokenVest() {
 
   return (
     <div>
-      <div>token: {vest.token.name} ({vest.token.symbol}) {tokenDisplayName}</div>
-      <div>creator: {creatorDisplayName}</div>
-      <div>beneficiary: {beneficiaryDisplayName}</div>
+      <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.instance.address}>{tokenDisplayName}</EtherscanLink></div>
+      <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
+      <div>beneficiary: <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
       <div>start: {vest.start.toLocaleString()}</div>
       <div>end: {vest.end.toLocaleString()}</div>
       <div>total amount: {totalAmountDisplay}</div>
