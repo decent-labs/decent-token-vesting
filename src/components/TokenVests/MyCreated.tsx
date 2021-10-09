@@ -11,7 +11,7 @@ function MyCreated() {
       <div>
         {myCreated.map(v => (
           <TokenVestStub
-            key={`${v.token}-${v.beneficiary}`}
+            key={v.id}
             vest={v}
           />
         ))}

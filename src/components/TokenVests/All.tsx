@@ -11,7 +11,7 @@ function All() {
       <div>
         {all.map(v => (
           <TokenVestStub
-            key={`${v.token}-${v.beneficiary}`}
+            key={v.id}
             vest={v}
           />
         ))}

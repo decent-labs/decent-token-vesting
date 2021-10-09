@@ -11,7 +11,7 @@ function My() {
       <div>
         {myClaimable.map(v => (
           <TokenVestStub
-            key={`${v.token}-${v.beneficiary}`}
+            key={v.id}
             vest={v}
           />
         ))}

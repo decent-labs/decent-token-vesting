@@ -17,6 +17,7 @@ type ERC20Token = {
 }
 
 export type Vest = {
+  id: string,
   token: ERC20Token,
   creator: string,
   beneficiary: string,
@@ -108,6 +109,7 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
         vestReleasableAmount,
       ]) => {
         const vest: Vest = {
+          id: `${erc20Instance.address}-${vestBeneficiary}`,
           token: {
             instance: erc20Instance,
             name: erc20Name,

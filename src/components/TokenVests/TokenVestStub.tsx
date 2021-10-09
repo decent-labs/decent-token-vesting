@@ -20,6 +20,7 @@ function TokenVestStub({
 
   return (
     <div className="mb-4">
+      <div>id: {vest.id}</div>
       <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.instance.address}>{tokenDisplayName}</EtherscanLink></div>
       <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
       <div>beneficiary: <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
@@ -29,7 +30,7 @@ function TokenVestStub({
       <div>total vested amount: {totalVestedAmountDisplay}</div>
       <div>released amount: {releasedAmountDisplay}</div>
       <div>releasable amount: {releasableAmountDisplay}</div>
-      <Link to={`${vest.token.instance.address}-${vest.beneficiary}`}>
+      <Link to={vest.id}>
         View vest details
       </Link>
     </div>

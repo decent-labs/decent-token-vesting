@@ -18,8 +18,7 @@ function TokenVest() {
       return;
     }
 
-    const [token, beneficiary] = params.id.split("-");
-    const vest = all.find(vest => vest.token.instance.address === token && vest.beneficiary === beneficiary);
+    const vest = all.find(vest => vest.id === params.id);
     setVest(vest);
   }, [all, params.id]);
 
@@ -78,6 +77,7 @@ function TokenVest() {
 
   return (
     <div>
+      <div>id: {vest.id}</div>
       <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.instance.address}>{tokenDisplayName}</EtherscanLink></div>
       <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
       <div>beneficiary: <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
