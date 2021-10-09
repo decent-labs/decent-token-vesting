@@ -23,8 +23,8 @@ function TokenVestStub({
       <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.instance.address}>{tokenDisplayName}</EtherscanLink></div>
       <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
       <div>beneficiary: <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
-      <div>start: {vest.start.toLocaleString()}</div>
-      <div>end: {vest.end.toLocaleString()}</div>
+      <div>start: {new Date(vest.start * 1000).toLocaleString()}</div>
+      <div>end: {new Date(vest.end * 1000).toLocaleString()}</div>
       <div>total amount: {totalAmountDisplay}</div>
       <div>total vested amount: {totalVestedAmountDisplay}</div>
       <div>released amount: {releasedAmountDisplay}</div>
