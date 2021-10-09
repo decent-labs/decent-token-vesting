@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { ethers, BigNumber } from 'ethers';
+import { BigNumber, constants } from 'ethers';
 import {
   GeneralTokenVesting,
   IERC20Metadata, IERC20Metadata__factory,
@@ -9,18 +9,61 @@ import { TypedEventFilter } from '../../contracts/typechain/common';
 import { VestStartedEvent } from '../../contracts/typechain/GeneralTokenVesting';
 import { useWeb3 } from '../web3';
 
+type VestId = {
+  id: string,
+  token: string,
+  beneficiary: string,
+  creator: string,
+}
+
 type ERC20Token = {
-  instance: IERC20Metadata,
+  address: string,
+  instance?: IERC20Metadata,
   name: string,
   symbol: string,
   decimals: number,
 }
 
+type Period = {
+  start: number,
+  end: number,
+}
+
+type VestPeriod = {
+  vestId: VestId,
+  period: Period,
+}
+
+type VestTotalAmount = {
+  vestId: VestId,
+  totalAmount: BigNumber,
+}
+
+type VestPerSecond = {
+  vestId: VestId,
+  perSecond: BigNumber,
+}
+
+type VestTotalVestedAmount = {
+  vestId: VestId,
+  totalVestedAmount: BigNumber,
+}
+
+type VestReleasedAmount = {
+  vestId: VestId,
+  releasedAmount: BigNumber,
+}
+
+type VestReleasableAmount = {
+  vestId: VestId,
+  releasableAmount: BigNumber,
+}
+
 export type Vest = {
   id: string,
+  beneficiary: string,
   token: ERC20Token,
   creator: string,
-  beneficiary: string,
   start: number,
   end: number,
   totalAmount: BigNumber,
@@ -29,9 +72,9 @@ export type Vest = {
   releasableAmount: BigNumber,
 }
 
-const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deploymentBlock: number | undefined) => {
-  const { provider, signerOrProvider } = useWeb3();
-  const [allVests, setAllVests] = useState<Vest[]>([]);
+const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploymentBlock: number | undefined) => {
+  const { provider } = useWeb3();
+  const [vestIds, setVestIds] = useState<VestId[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [queryPageSize] = useState(10000);
@@ -73,65 +116,9 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
     }
   }, [endBlock, deploymentBlock]);
 
-  const createVest = (newVest: VestStartedEvent, generalTokenVesting: GeneralTokenVesting, signerOrProvider: ethers.providers.Provider | ethers.Signer) => {
-    const erc20Instance = IERC20Metadata__factory.connect(newVest.args.token, signerOrProvider);
-
-    return Promise.all([
-      Promise.all([
-        erc20Instance,
-        erc20Instance.name(),
-        erc20Instance.symbol(),
-        erc20Instance.decimals(),
-      ]),
-      newVest.getTransaction().then(transaction => transaction.from),
-      newVest.args.beneficiary,
-      generalTokenVesting.getStart(newVest.args.token, newVest.args.beneficiary),
-      generalTokenVesting.getDuration(newVest.args.token, newVest.args.beneficiary),
-      newVest.args.amount,
-      generalTokenVesting.totalVestedAmount(newVest.args.token, newVest.args.beneficiary),
-      generalTokenVesting.getReleasedTokens(newVest.args.token, newVest.args.beneficiary),
-      generalTokenVesting.getReleasableAmount(newVest.args.token, newVest.args.beneficiary),
-    ])
-      .then(([
-        [
-          erc20Instance,
-          erc20Name,
-          erc20Symbol,
-          erc20Decimals,
-        ],
-        vestCreator,
-        vestBeneficiary,
-        vestStartTime,
-        vestDurationTime,
-        vestTotalAmount,
-        vestTotalVestedAmount,
-        vestReleasedAmount,
-        vestReleasableAmount,
-      ]) => {
-        const vest: Vest = {
-          id: `${erc20Instance.address}-${vestBeneficiary}`,
-          token: {
-            instance: erc20Instance,
-            name: erc20Name,
-            symbol: erc20Symbol,
-            decimals: erc20Decimals,
-          },
-          creator: vestCreator,
-          beneficiary: vestBeneficiary,
-          start: vestStartTime.toNumber(),
-          end: vestStartTime.add(vestDurationTime).toNumber(),
-          totalAmount: vestTotalAmount,
-          totalVestedAmount: vestTotalVestedAmount,
-          releasedAmount: vestReleasedAmount,
-          releasableAmount: vestReleasableAmount,
-        };
-        return vest;
-      });
-  }
-
   useEffect(() => {
-    if (!generalTokenVesting || !allVestsFilter || endBlock === undefined || deploymentBlock === undefined || !signerOrProvider) {
-      setAllVests([]);
+    if (!generalTokenVesting || !allVestsFilter || endBlock === undefined || deploymentBlock === undefined) {
+      setVestIds([]);
       return;
     }
 
@@ -144,15 +131,20 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
       startBlock = deploymentBlock;
     }
 
-    const addVests = (newVests: VestStartedEvent[], signerOrProvider: ethers.providers.Provider | ethers.Signer) => {
-      Promise.all(newVests.map(vest => Promise.all([vest, createVest(vest, generalTokenVesting, signerOrProvider)])))
+    const addVests = (vestEvents: VestStartedEvent[]) => {
+      Promise.all(vestEvents.map(vestEvent => Promise.all([vestEvent, vestEvent.getTransaction()])))
         .then(vests => {
-          const newSortedVests = vests
+          const sortedVests = vests
             .sort(([aEvent], [bEvent]) => bEvent.blockNumber - aEvent.blockNumber)
-            .map(([, vest]) => vest);
+            .map(([vestEvent, transaction]) => ({
+              id: `${vestEvent.args.token}-${vestEvent.args.beneficiary}`,
+              token: vestEvent.args.token,
+              beneficiary: vestEvent.args.beneficiary,
+              creator: transaction.from,
+            }));
 
-          setAllVests(allVests => {
-            const newAllVests = [...(allVests || []), ...newSortedVests];
+          setVestIds(allVests => {
+            const newAllVests = [...(allVests || []), ...sortedVests];
             return newAllVests;
           });
         })
@@ -162,7 +154,7 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
     generalTokenVesting.queryFilter(allVestsFilter, startBlock, endBlock)
       .then(newVests => {
         if (newVests.length > 0) {
-          addVests(newVests, signerOrProvider);
+          addVests(newVests);
         }
       })
       .then(() => {
@@ -180,41 +172,345 @@ const useAllVests = (generalTokenVesting: GeneralTokenVesting | undefined, deplo
         });
       })
       .catch(console.error);
-  }, [allVestsFilter, endBlock, generalTokenVesting, deploymentBlock, queryPageSize, signerOrProvider]);
+  }, [allVestsFilter, deploymentBlock, endBlock, generalTokenVesting, queryPageSize]);
 
   useEffect(() => {
-    if (!generalTokenVesting || !allVestsFilter || !signerOrProvider) {
-      setAllVests([]);
+    if (!generalTokenVesting || !allVestsFilter) {
+      setVestIds([]);
       return;
     }
 
-    const addVest = (signerOrProvider: ethers.providers.Provider | ethers.Signer) => {
-      return (newVest: VestStartedEvent, _: any) => {
-        createVest(newVest, generalTokenVesting, signerOrProvider)
-          .then(vest => {
-            if (!vest) {
-              return;
-            }
+    const addVest = (vestEvent: VestStartedEvent, _: any) => {
+      vestEvent.getTransaction()
+        .then(transaction => {
+          const newVestId = {
+            id: `${vestEvent.args.token}-${vestEvent.args.beneficiary}`,
+            token: vestEvent.args.token,
+            beneficiary: vestEvent.args.beneficiary,
+            creator: transaction.from,
+          };
 
-            setAllVests(allVests => {
-              const newAllVests = [vest, ...(allVests || [])];
-              return newAllVests;
-            });
-          })
-          .catch(console.error);
-      }
+          setVestIds(vestIds => {
+            const newVestIds = [newVestId, ...(vestIds || [])];
+            return newVestIds;
+          });
+        })
+        .catch(console.error);
     }
 
-    const listener = addVest(signerOrProvider);
-
-    generalTokenVesting.on(allVestsFilter, listener);
+    generalTokenVesting.on(allVestsFilter, addVest);
 
     return () => {
-      generalTokenVesting.off(allVestsFilter, listener);
+      generalTokenVesting.off(allVestsFilter, addVest);
     }
-  }, [allVestsFilter, generalTokenVesting, signerOrProvider]);
+  }, [allVestsFilter, generalTokenVesting]);
 
-  return [allVests, loading] as const;
+  return [vestIds, loading] as const;
+}
+
+const useVestTokens = (vestIds: VestId[]) => {
+  const { signerOrProvider } = useWeb3();
+  const [tokens, setTokens] = useState<ERC20Token[]>([]);
+
+  useEffect(() => {
+    const uniqueVestTokenAddresses = [...new Set(vestIds.map(vestId => vestId.token))];
+
+    if (uniqueVestTokenAddresses.length === tokens.length) {
+      return;
+    }
+
+    if (!signerOrProvider || vestIds.length === 0) {
+      setTokens([]);
+      return;
+    }
+
+    Promise.all(uniqueVestTokenAddresses.map(tokenAddress => {
+      const erc20Instance = IERC20Metadata__factory.connect(tokenAddress, signerOrProvider);
+      return Promise.all([tokenAddress, erc20Instance, erc20Instance.name(), erc20Instance.symbol(), erc20Instance.decimals()]);
+    }))
+      .then(tokenData => {
+        const tokens: ERC20Token[] = tokenData.map(([address, instance, name, symbol, decimals]) => ({
+          address,
+          instance,
+          name,
+          symbol,
+          decimals,
+        }));
+
+        setTokens(tokens);
+      })
+      .catch(console.error);
+  }, [signerOrProvider, vestIds, tokens]);
+
+  return tokens;
+}
+
+const useVestPeriods = (generalTokenVesting: GeneralTokenVesting | undefined, vestIds: VestId[]) => {
+  const [vestPeriods, setVestPeriods] = useState<VestPeriod[]>([]);
+
+  useEffect(() => {
+    if (vestIds.length === vestPeriods.length) {
+      return;
+    }
+
+    if (!generalTokenVesting) {
+      setVestPeriods([]);
+      return;
+    }
+
+    Promise.all(vestIds.map(vestId => {
+      const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
+      if (vestPeriod) {
+        return Promise.all([vestId, BigNumber.from(vestPeriod.period.start), BigNumber.from(vestPeriod.period.end - vestPeriod.period.start)]);
+      }
+      return Promise.all([vestId, generalTokenVesting.getStart(vestId.token, vestId.beneficiary), generalTokenVesting.getDuration(vestId.token, vestId.beneficiary)]);
+    }))
+      .then(periodData => {
+        const periods: VestPeriod[] = periodData.map(([vestId, start, duration]) => ({
+          vestId: vestId,
+          period: {
+            start: start.toNumber(),
+            end: start.add(duration).toNumber(),
+          }
+        }));
+
+        setVestPeriods(periods);
+      })
+      .catch(console.error);
+  }, [generalTokenVesting, vestIds, vestPeriods]);
+
+  return vestPeriods;
+}
+
+const useVestTotalAmounts = (generalTokenVesting: GeneralTokenVesting | undefined, vestIds: VestId[]) => {
+  const [vestTotalAmounts, setVestTotalAmounts] = useState<VestTotalAmount[]>([]);
+
+  useEffect(() => {
+    if (vestIds.length === vestTotalAmounts.length) {
+      return;
+    }
+
+    if (!generalTokenVesting) {
+      setVestTotalAmounts([]);
+      return;
+    }
+
+    Promise.all(vestIds.map(vestId => {
+      const vestTotalAmount = vestTotalAmounts.find(p => p.vestId.id === vestId.id);
+      if (vestTotalAmount) {
+        return Promise.all([vestId, vestTotalAmount.totalAmount]);
+      }
+      return Promise.all([vestId, generalTokenVesting.getTotalTokens(vestId.token, vestId.beneficiary)]);
+    }))
+      .then(totalAmountsData => {
+        const totalAmounts: VestTotalAmount[] = totalAmountsData.map(([vestId, totalAmount]) => ({
+          vestId: vestId,
+          totalAmount: totalAmount,
+        }));
+
+        setVestTotalAmounts(totalAmounts);
+      })
+      .catch(console.error);
+  }, [generalTokenVesting, vestIds, vestTotalAmounts]);
+
+  return vestTotalAmounts;
+}
+
+const useVestPerSeconds = (vestPeriods: VestPeriod[], vestTotalAmounts: VestTotalAmount[]) => {
+  const [vestsPerSecond, setVestsPerSecond] = useState<VestPerSecond[]>([]);
+
+  useEffect(() => {
+    const perSecond = vestPeriods.map(vestPeriod => {
+      const duration = vestPeriod.period.end - vestPeriod.period.start;
+
+      let totalAmount = BigNumber.from(0);
+      const vestTotalAmount = vestTotalAmounts.find(t => t.vestId.id === vestPeriod.vestId.id);
+      if (vestTotalAmount) {
+        totalAmount = vestTotalAmount.totalAmount;
+      }
+
+      const vestPerSecond: VestPerSecond = {
+        vestId: vestPeriod.vestId,
+        perSecond: totalAmount.div(duration),
+      }
+
+      return vestPerSecond;
+    });
+
+    setVestsPerSecond(perSecond);
+  }, [vestPeriods, vestTotalAmounts]);
+
+  return vestsPerSecond;
+}
+
+const useVestTotalVestedAmounts = (vestIds: VestId[], vestTotalAmounts: VestTotalAmount[], vestPeriods: VestPeriod[], vestPerSeconds: VestPerSecond[], currentTime: BigNumber) => {
+  const [vestTotalVestedAmounts, setVestTotalVestedAmounts] = useState<VestTotalVestedAmount[]>([]);
+
+  useEffect(() => {
+    const totalVestedAmounts: VestTotalVestedAmount[] = vestIds.map(vestId => {
+      const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
+      const vestPerSecond = vestPerSeconds.find(v => v.vestId.id === vestId.id);
+      const vestTotalAmount = vestTotalAmounts.find(t => t.vestId.id === vestId.id);
+
+      const totalVestedAmount: VestTotalVestedAmount = {
+        vestId: vestId,
+        totalVestedAmount: BigNumber.from(0),
+      }
+
+      if (!vestPeriod || !vestPerSecond || !vestTotalAmount) {
+        return totalVestedAmount;
+      }
+
+      if (currentTime.gte(vestPeriod.period.end)) {
+        totalVestedAmount.totalVestedAmount = vestTotalAmount.totalAmount;
+      } else {
+        const elapsed = currentTime.sub(vestPeriod.period.start);
+        totalVestedAmount.totalVestedAmount = elapsed.mul(vestPerSecond.perSecond);
+      }
+
+      return totalVestedAmount;
+    });
+
+    setVestTotalVestedAmounts(totalVestedAmounts)
+  }, [currentTime, vestIds, vestTotalAmounts, vestPerSeconds, vestPeriods]);
+
+  return vestTotalVestedAmounts;
+}
+
+const useVestReleasedAmounts = (generalTokenVesting: GeneralTokenVesting | undefined, vestIds: VestId[]) => {
+  const [vestReleasedAmounts, setVestReleasedAmounts] = useState<VestReleasedAmount[]>([]);
+
+  useEffect(() => {
+    if (vestIds.length === vestReleasedAmounts.length) {
+      return;
+    }
+
+    if (!generalTokenVesting) {
+      setVestReleasedAmounts([]);
+      return;
+    }
+
+    Promise.all(vestIds.map(vestId => {
+      const vestReleasedAmount = vestReleasedAmounts.find(p => p.vestId.id === vestId.id);
+      if (vestReleasedAmount) {
+        return Promise.all([vestId, vestReleasedAmount.releasedAmount]);
+      }
+      return Promise.all([vestId, generalTokenVesting.getReleasedTokens(vestId.token, vestId.beneficiary)]);
+    }))
+      .then(releasedAmountsData => {
+        const releasedAmounts: VestReleasedAmount[] = releasedAmountsData.map(([vestId, releasedAmount]) => ({
+          vestId: vestId,
+          releasedAmount: releasedAmount,
+        }));
+
+        setVestReleasedAmounts(releasedAmounts);
+      })
+      .catch(console.error);
+  }, [generalTokenVesting, vestIds, vestReleasedAmounts]);
+
+  return vestReleasedAmounts;
+}
+
+const useVestReleasableAmounts = (vestTotalVestedAmounts: VestTotalVestedAmount[], vestReleasedAmounts: VestReleasedAmount[]) => {
+  const [vestReleasableAmounts, setVestReleasableAmounts] = useState<VestReleasableAmount[]>([]);
+
+  useEffect(() => {
+    const releasableAmounts: VestReleasableAmount[] = vestTotalVestedAmounts.map(vestTotalVestedAmount => {
+      const vestReleasedAmount = vestReleasedAmounts.find(r => r.vestId.id === vestTotalVestedAmount.vestId.id);
+
+      let releasableAmount = BigNumber.from(0);
+
+      if (vestReleasedAmount) {
+        releasableAmount = vestTotalVestedAmount.totalVestedAmount.sub(vestReleasedAmount.releasedAmount);
+      }
+
+      const vestReleasableAmount: VestReleasableAmount = {
+        vestId: vestTotalVestedAmount.vestId,
+        releasableAmount: releasableAmount,
+      }
+
+      return vestReleasableAmount;
+    });
+
+    setVestReleasableAmounts(releasableAmounts);
+  }, [vestReleasedAmounts, vestTotalVestedAmounts]);
+
+  return vestReleasableAmounts;
+}
+
+const useAllVests = (
+  vestIds: VestId[],
+  vestTokens: ERC20Token[],
+  vestPeriods: VestPeriod[],
+  vestTotalAmounts: VestTotalAmount[],
+  vestTotalVestedAmounts: VestTotalVestedAmount[],
+  vestReleasedAmounts: VestReleasedAmount[],
+  vestReleasableAmounts: VestReleasableAmount[],
+) => {
+  const [allVests, setAllVests] = useState<Vest[]>([]);
+
+  useEffect(() => {
+    setAllVests(vestIds.map(vestId => {
+      let token: ERC20Token = {
+        address: constants.AddressZero,
+        name: "...",
+        symbol: "...",
+        decimals: 0,
+      };
+      const vestToken = vestTokens.find(t => t.address === vestId.token);
+      if (vestToken) {
+        token = vestToken;
+      }
+
+      let period: Period = {
+        start: 0,
+        end: 0
+      };
+      const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
+      if (vestPeriod) {
+        period = vestPeriod.period;
+      }
+
+      let totalAmount = BigNumber.from(0);
+      const vestTotalAmount = vestTotalAmounts.find(t => t.vestId.id === vestId.id);
+      if (vestTotalAmount) {
+        totalAmount = vestTotalAmount.totalAmount;
+      }
+
+      let totalVestedAmount = BigNumber.from(0);
+      const vestTotalVestedAmount = vestTotalVestedAmounts.find(a => a.vestId.id === vestId.id);
+      if (vestTotalVestedAmount) {
+        totalVestedAmount = vestTotalVestedAmount.totalVestedAmount;
+      }
+
+      let releasedAmount = BigNumber.from(0);
+      const vestReleasedAmount = vestReleasedAmounts.find(r => r.vestId.id === vestId.id);
+      if (vestReleasedAmount) {
+        releasedAmount = vestReleasedAmount.releasedAmount;
+      }
+
+      let releasableAmount = BigNumber.from(0);
+      const vestReleasableAmount = vestReleasableAmounts.find(r => r.vestId.id === vestId.id);
+      if (vestReleasableAmount) {
+        releasableAmount = vestReleasableAmount.releasableAmount;
+      }
+
+      return {
+        id: vestId.id,
+        beneficiary: vestId.beneficiary,
+        token: token,
+        creator: vestId.creator,
+        start: period.start,
+        end: period.end,
+        totalAmount: totalAmount,
+        totalVestedAmount: totalVestedAmount,
+        releasedAmount: releasedAmount,
+        releasableAmount: releasableAmount,
+      }
+    }));
+  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestTotalVestedAmounts, vestReleasedAmounts, vestReleasableAmounts]);
+
+  return allVests;
 }
 
 const useVestsLoading = (allVestsLoading: boolean) => {
@@ -273,8 +569,16 @@ const useMyClaimableVests = (allVests: Vest[]) => {
 }
 
 export {
-  useAllVests,
+  useVestIds,
   useVestsLoading,
+  useVestTokens,
+  useVestPeriods,
+  useVestTotalAmounts,
+  useVestPerSeconds,
+  useVestTotalVestedAmounts,
+  useVestReleasedAmounts,
+  useVestReleasableAmounts,
+  useAllVests,
   useMyCreatedVests,
   useMyClaimableVests,
 }

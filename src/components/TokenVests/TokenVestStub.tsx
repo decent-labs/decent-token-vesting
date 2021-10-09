@@ -9,7 +9,7 @@ function TokenVestStub({
 }: {
   vest: Vest
 }) {
-  const tokenDisplayName = useDisplayName(vest.token.instance.address);
+  const tokenDisplayName = useDisplayName(vest.token.address);
   const beneficiaryDisplayName = useDisplayName(vest.beneficiary);
   const creatorDisplayName = useDisplayName(vest.creator);
 
@@ -21,7 +21,7 @@ function TokenVestStub({
   return (
     <div className="mb-4">
       <div>id: {vest.id}</div>
-      <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.instance.address}>{tokenDisplayName}</EtherscanLink></div>
+      <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.address}>{tokenDisplayName}</EtherscanLink></div>
       <div>beneficiary: <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
       <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
       <div>start: {new Date(vest.start * 1000).toLocaleString()}</div>

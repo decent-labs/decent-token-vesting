@@ -3,9 +3,22 @@ import {
 } from './contracts';
 
 import {
+  useCurrentBlock,
+  useCurrentTime,
+} from './time';
+
+import {
   Vest,
-  useAllVests,
+  useVestIds,
   useVestsLoading,
+  useVestTokens,
+  useVestPeriods,
+  useVestTotalAmounts,
+  useVestPerSeconds,
+  useVestTotalVestedAmounts,
+  useVestReleasedAmounts,
+  useVestReleasableAmounts,
+  useAllVests,
   useMyCreatedVests,
   useMyClaimableVests,
 } from './vests';
@@ -20,13 +33,25 @@ export interface Data {
 };
 
 function useSystemData() {
+  const currentBlock = useCurrentBlock();
+  const currentTime = useCurrentTime(currentBlock);
+
   const [generalTokenVestingContract, generalTokenVestingDeploymentBlock] = useGeneralTokenVestingContract();
-  const [allVests, allVestsLoading] = useAllVests(generalTokenVestingContract, generalTokenVestingDeploymentBlock);
+  
+  const [vestIds, vestsLoading] = useVestIds(generalTokenVestingContract, generalTokenVestingDeploymentBlock);
+  const vestTokens = useVestTokens(vestIds);
+  const vestPeriods = useVestPeriods(generalTokenVestingContract, vestIds);
+  const vestTotalAmounts = useVestTotalAmounts(generalTokenVestingContract, vestIds);
+  const vestPerSeconds = useVestPerSeconds(vestPeriods, vestTotalAmounts);
+  const vestTotalVestedAmounts = useVestTotalVestedAmounts(vestIds, vestTotalAmounts, vestPeriods, vestPerSeconds, currentTime);
+  const vestReleasedAmounts = useVestReleasedAmounts(generalTokenVestingContract, vestIds);
+  const vestReleasableAmounts = useVestReleasableAmounts(vestTotalVestedAmounts, vestReleasedAmounts);
+  const allVests = useAllVests(vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestTotalVestedAmounts, vestReleasedAmounts, vestReleasableAmounts);
   const myCreatedVests = useMyCreatedVests(allVests);
   const myClaimableVests = useMyClaimableVests(allVests);
 
   const data: Data = {
-    loading: allVestsLoading,
+    loading: vestsLoading,
     vests: {
       all: allVests,
       myCreated: myCreatedVests,
@@ -34,7 +59,7 @@ function useSystemData() {
     },
   };
 
-  useVestsLoading(allVestsLoading);
+  useVestsLoading(vestsLoading);
 
   return data;
 }

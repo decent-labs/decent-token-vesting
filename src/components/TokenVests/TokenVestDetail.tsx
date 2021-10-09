@@ -44,7 +44,7 @@ function TokenVest() {
       return;
     }
 
-    setTokenAddress(vest.token.instance.address);
+    setTokenAddress(vest.token.address);
     setBeneficiaryAddress(vest.beneficiary);
     setCreatorAddress(vest.creator);
     setDecimals(vest.token.decimals);
@@ -78,7 +78,7 @@ function TokenVest() {
   return (
     <div>
       <div>id: {vest.id}</div>
-      <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.instance.address}>{tokenDisplayName}</EtherscanLink></div>
+      <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.address}>{tokenDisplayName}</EtherscanLink></div>
       <div>beneficiary: <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
       <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
       <div>start: {new Date(vest.start * 1000).toLocaleString()}</div>
