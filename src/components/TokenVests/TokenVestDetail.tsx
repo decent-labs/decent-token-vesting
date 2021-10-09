@@ -23,8 +23,8 @@ function TokenVest() {
   }, [all, params.id]);
 
   const [tokenAddress, setTokenAddress] = useState<string>();
-  const [creatorAddress, setCreatorAddress] = useState<string>();
   const [beneficiaryAddress, setBeneficiaryAddress] = useState<string>();
+  const [creatorAddress, setCreatorAddress] = useState<string>();
   const [decimals, setDecimals] = useState<number>();
   const [totalAmount, setTotalAmount] = useState<BigNumber>();
   const [totalVestedAmount, setTotalVestedAmount] = useState<BigNumber>();
@@ -34,8 +34,8 @@ function TokenVest() {
   useEffect(() => {
     if (!vest) {
       setTokenAddress(undefined);
-      setCreatorAddress(undefined);
       setBeneficiaryAddress(undefined);
+      setCreatorAddress(undefined);
       setDecimals(undefined);
       setTotalAmount(undefined);
       setTotalVestedAmount(undefined);
@@ -45,8 +45,8 @@ function TokenVest() {
     }
 
     setTokenAddress(vest.token.instance.address);
-    setCreatorAddress(vest.creator);
     setBeneficiaryAddress(vest.beneficiary);
+    setCreatorAddress(vest.creator);
     setDecimals(vest.token.decimals);
     setTotalAmount(vest.totalAmount);
     setTotalVestedAmount(vest.totalVestedAmount);
@@ -55,8 +55,8 @@ function TokenVest() {
   }, [vest]);
 
   const tokenDisplayName = useDisplayName(tokenAddress);
-  const creatorDisplayName = useDisplayName(creatorAddress);
   const beneficiaryDisplayName = useDisplayName(beneficiaryAddress);
+  const creatorDisplayName = useDisplayName(creatorAddress);
 
   const totalAmountDisplay = useDisplayAmount(totalAmount, decimals);
   const totalVestedAmountDisplay = useDisplayAmount(totalVestedAmount, decimals);
@@ -79,8 +79,8 @@ function TokenVest() {
     <div>
       <div>id: {vest.id}</div>
       <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.instance.address}>{tokenDisplayName}</EtherscanLink></div>
-      <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
       <div>beneficiary: <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
+      <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
       <div>start: {new Date(vest.start * 1000).toLocaleString()}</div>
       <div>end: {new Date(vest.end * 1000).toLocaleString()}</div>
       <div>total amount: {totalAmountDisplay}</div>
