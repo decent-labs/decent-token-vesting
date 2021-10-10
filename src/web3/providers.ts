@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ethers, getDefaultProvider } from 'ethers';
 import Web3Modal from 'web3modal';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 import { supportedChains } from './chains';
 import { useListeners } from './listeners';
 
@@ -25,6 +26,14 @@ interface ProviderApiKeys {
 
 const web3Modal = new Web3Modal({
   cacheProvider: true,
+  providerOptions: {
+    walletconnect: {
+      package: WalletConnectProvider,
+      options: {
+        infuraId: process.env.REACT_APP_INFURA_API_KEY,
+      },
+    },
+  },
 });
 
 export const defaultWeb3: Web3Custom = {
