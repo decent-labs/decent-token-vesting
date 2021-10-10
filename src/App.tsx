@@ -1,7 +1,7 @@
 import Header from './components/structure/Header';
 import Body from './components/structure/Body';
 import Footer from './components/structure/Footer';
-import LeftMenu from './components/structure/LeftMenu';
+import Menu from './components/structure/Menu';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
         <Header />
         <div className="flex-grow flex">
           <div className="container flex">
-            <LeftMenu />
+            <Menu />
             <Body />
           </div>
         </div>

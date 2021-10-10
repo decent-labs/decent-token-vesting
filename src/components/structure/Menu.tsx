@@ -18,7 +18,7 @@ function MenuItem({
   );
 }
 
-function LeftMenu() {
+function Menu() {
   return (
     <div className="border-r pt-4 pr-4 w-44">
       <div className="-my-2">
@@ -39,4 +39,4 @@ function LeftMenu() {
   );
 }
 
-export default LeftMenu;
+export default Menu;
