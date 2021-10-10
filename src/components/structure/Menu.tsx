@@ -1,4 +1,5 @@
 import { Link, useRouteMatch } from 'react-router-dom';
+import { useWeb3 } from '../../web3';
 
 function MenuItem({
   title,
@@ -25,13 +26,19 @@ function Separator() {
 }
 
 function Menu() {
+  const { account } = useWeb3();
+
   return (
     <div className="-mx-2 sm:mx-0 sm:-my-2 flex sm:block">
-      <MenuItem
-        title="Create new vest"
-        to="/vests/new"
-      />
-      <Separator />
+      {account && (
+        <div className="flex sm:block">
+          <MenuItem
+            title="Create new vest"
+            to="/vests/new"
+          />
+          <Separator />
+        </div>
+      )}
       <MenuItem
         title="All vests"
         to="/vests/all"
