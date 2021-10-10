@@ -8,20 +8,20 @@ function Body() {
   return (
     <div className="flex-grow pl-4 pt-4">
       <Switch>
-        <Route path="/all-vests">
+        <Route path="/vests/all">
           <All />
         </Route>
-        <Route path="/my-vests">
+        <Route path="/vests/my">
           <My />
         </Route>
-        <Route path="/my-created-vests">
+        <Route path="/vests/my-created">
           <MyCreated />
         </Route>
-        <Route path="/:id">
+        <Route path="/vests/:id">
           <TokenVestDetail />
         </Route>
         <Route path="/">
-          <Redirect to="/all-vests" />
+          <Redirect to="/vests/all" />
         </Route>
       </Switch>
     </div>

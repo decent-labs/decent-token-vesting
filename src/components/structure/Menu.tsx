@@ -24,15 +24,15 @@ function Menu() {
       <div className="-my-2">
         <MenuItem
           title="All vests"
-          to="/all-vests"
+          to="/vests/all"
         />
         <MenuItem
           title="My vests"
-          to="/my-vests"
+          to="/vests/my"
         />
         <MenuItem
           title="My created vests"
-          to="/my-created-vests"
+          to="/vests/my-created"
         />
       </div>
     </div>
