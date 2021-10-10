@@ -2,7 +2,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import All from '../TokenVests/All';
 import My from '../TokenVests/My';
 import MyCreated from '../TokenVests/MyCreated';
-import TokenVestDetail from '../TokenVests/TokenVestDetail';
+import Detail from '../TokenVests/Detail';
 
 function Body() {
   return (
@@ -18,7 +18,7 @@ function Body() {
           <MyCreated />
         </Route>
         <Route path="/vests/:id">
-          <TokenVestDetail />
+          <Detail />
         </Route>
         <Route path="/">
           <Redirect to="/vests/all" />

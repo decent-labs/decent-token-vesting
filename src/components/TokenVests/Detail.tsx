@@ -7,7 +7,7 @@ import useDisplayName from '../../hooks/useDisplayName';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
 import EtherscanLink from '../ui/EtherscanLink';
 
-function TokenVest() {
+function Detail() {
   const params = useParams<{ id: string }>();
   const { loading, vests: { all } } = useData();
 
@@ -91,4 +91,4 @@ function TokenVest() {
   );
 }
 
-export default TokenVest;
+export default Detail;

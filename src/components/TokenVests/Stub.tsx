@@ -4,7 +4,7 @@ import useDisplayName from '../../hooks/useDisplayName';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
 import EtherscanLink from '../ui/EtherscanLink';
 
-function TokenVestStub({
+function Stub({
   vest,
 }: {
   vest: Vest
@@ -36,4 +36,4 @@ function TokenVestStub({
   );
 }
 
-export default TokenVestStub;
+export default Stub;

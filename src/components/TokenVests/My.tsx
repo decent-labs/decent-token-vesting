@@ -1,6 +1,6 @@
 import { useData } from '../../data';
 import Title from '../ui/Title';
-import TokenVestStub from './TokenVestStub';
+import Stub from './Stub';
 
 function My() {
   const { vests: { myClaimable } } = useData();
@@ -10,7 +10,7 @@ function My() {
       <Title title="My vests" />
       <div>
         {myClaimable.map(v => (
-          <TokenVestStub
+          <Stub
             key={v.id}
             vest={v}
           />
