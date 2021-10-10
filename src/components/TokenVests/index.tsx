@@ -1,5 +1,6 @@
 import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
 import { useData } from '../../data';
+import New from './New';
 import List from './List';
 import Detail from './Detail';
 
@@ -9,6 +10,9 @@ function TokenVests() {
 
   return (
     <Switch>
+      <Route path={`${match.path}/new`}>
+        <New />
+      </Route>
       <Route path={`${match.path}/all`}>
         <List
           title="All vests"

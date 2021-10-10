@@ -9,7 +9,7 @@ function App() {
       <div className="flex-grow flex flex-col">
         <Header />
         <div className="sm:hidden">
-          <div className="border-b py-2">
+          <div className="border-b">
             <div className="container">
               <Menu />
             </div>
@@ -19,7 +19,7 @@ function App() {
           </div>
         </div>
         <div className="hidden sm:flex flex-grow container">
-          <div className="border-r pt-4 pr-4 flex-none w-40">
+          <div className="border-r pt-4 flex-none w-40">
             <Menu />
           </div>
           <div className="flex-grow pl-4">
