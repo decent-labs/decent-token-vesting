@@ -9,11 +9,11 @@ export interface Web3Custom {
   connected: boolean,
   provided: boolean,
   providerName: string,
-  networkName?: string,
-  account?: string,
-  chainId?: number,
-  provider?: ethers.providers.Provider,
-  signerOrProvider?: ethers.providers.Provider | ethers.Signer,
+  networkName: string | undefined,
+  account: string | undefined,
+  chainId: number | undefined,
+  provider: ethers.providers.Provider | undefined,
+  signerOrProvider: ethers.providers.Provider | ethers.Signer | undefined,
 };
 
 let listenerProvider: ethers.providers.Provider;
@@ -40,6 +40,11 @@ export const defaultWeb3: Web3Custom = {
   connected: false,
   provided: false,
   providerName: 'not connected',
+  networkName: undefined,
+  account: undefined,
+  chainId: undefined,
+  provider: undefined,
+  signerOrProvider: undefined,
 };
 
 const makeInjectedProvider = async (web3Provider: ethers.providers.Web3Provider) => {
@@ -81,7 +86,7 @@ const getLocalProvider = () => {
         provided: true,
         providerName: 'local provider',
         networkName: 'localhost',
-        account: '',
+        account: undefined,
         chainId: network.chainId,
         provider: localProvider,
         signerOrProvider: localProvider,
@@ -104,7 +109,7 @@ const getFallbackProvider = () => {
     provided: false,
     providerName: 'readonly provider',
     networkName: defaultProvider.network.name,
-    account: '',
+    account: undefined,
     chainId: defaultProvider.network.chainId,
     provider: defaultProvider,
     signerOrProvider: defaultProvider,
