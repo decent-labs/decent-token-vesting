@@ -4,7 +4,7 @@ function Title({
   title: string,
 }) {
   return (
-    <div className="text-3xl mb-4 mr-4">
+    <div className="text-xl sm:text-2xl mb-4 mr-4">
       {title}
     </div>
   );
