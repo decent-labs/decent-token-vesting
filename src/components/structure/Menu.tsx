@@ -20,7 +20,7 @@ function MenuItem({
 
 function Menu() {
   return (
-    <div className="border-r pt-4 pr-4 w-44">
+    <div className="border-r pt-4 pr-4 flex-none w-40">
       <div className="-my-2">
         <MenuItem
           title="All vests"
