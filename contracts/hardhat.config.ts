@@ -15,6 +15,19 @@ const config: HardhatUserConfig = {
       },
     },
   },
+  networks: {
+    hardhat: {
+      chainId: 1,
+      forking: {
+        url: process.env.MAINNET_PROVIDER || "https://eth-mainnet.alchemyapi.io/v2/xxx",
+        blockNumber: 13388870,
+      },
+      mining: {
+        auto: true,
+        interval: [5000, 10000],
+      },
+    },
+  },
 };
 
 export default config;
