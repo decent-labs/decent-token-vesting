@@ -6,7 +6,6 @@ function EtherscanLink({ address, children }: {
   children: React.ReactNode,
 }) {
   let { networkName } = useWeb3();
-  const [classes] = useState("break-all");
   const [subdomain, setSubdomain] = useState("");
 
   useEffect(() => {
@@ -20,12 +19,12 @@ function EtherscanLink({ address, children }: {
 
   if (!networkName || !address) {
     return (
-      <div className={classes}>{children}</div>
+      <div>{children}</div>
     );
   }
 
   return (
-    <a className={classes} href={`https://${subdomain}etherscan.io/address/${address}`} target="_blank" rel="noreferrer">
+    <a href={`https://${subdomain}etherscan.io/address/${address}`} target="_blank" rel="noreferrer">
       {children}
     </a>
   );
