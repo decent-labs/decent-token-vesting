@@ -16,8 +16,8 @@ import {
   useVestTotalAmounts,
   useVestPerSeconds,
   useVestTotalVestedAmounts,
-  useVestReleasedAmounts,
-  useVestReleasableAmounts,
+  useVestClaimedAmounts,
+  useVestClaimableAmounts,
   useAllVests,
   useMyCreatedVests,
   useMyClaimableVests,
@@ -44,9 +44,9 @@ function useSystemData() {
   const vestTotalAmounts = useVestTotalAmounts(generalTokenVestingContract, vestIds);
   const vestPerSeconds = useVestPerSeconds(vestPeriods, vestTotalAmounts);
   const vestTotalVestedAmounts = useVestTotalVestedAmounts(vestIds, vestTotalAmounts, vestPeriods, vestPerSeconds, currentTime);
-  const vestReleasedAmounts = useVestReleasedAmounts(generalTokenVestingContract, vestIds);
-  const vestReleasableAmounts = useVestReleasableAmounts(vestTotalVestedAmounts, vestReleasedAmounts);
-  const allVests = useAllVests(vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestTotalVestedAmounts, vestReleasedAmounts, vestReleasableAmounts);
+  const vestClaimedAmounts = useVestClaimedAmounts(generalTokenVestingContract, vestIds);
+  const vestClaimableAmounts = useVestClaimableAmounts(vestTotalVestedAmounts, vestClaimedAmounts);
+  const allVests = useAllVests(vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestTotalVestedAmounts, vestClaimedAmounts, vestClaimableAmounts);
   const myCreatedVests = useMyCreatedVests(allVests);
   const myClaimableVests = useMyClaimableVests(allVests);
 

@@ -15,8 +15,8 @@ function TokenVestStub({
 
   const totalAmountDisplay = useDisplayAmount(vest.totalAmount, vest.token.decimals);
   const totalVestedAmountDisplay = useDisplayAmount(vest.totalVestedAmount, vest.token.decimals);
-  const releasedAmountDisplay = useDisplayAmount(vest.releasedAmount, vest.token.decimals);
-  const releasableAmountDisplay = useDisplayAmount(vest.releasableAmount, vest.token.decimals);
+  const claimedAmountDisplay = useDisplayAmount(vest.claimedAmount, vest.token.decimals);
+  const claimableAmountDisplay = useDisplayAmount(vest.claimableAmount, vest.token.decimals);
 
   return (
     <div className="mb-4">
@@ -30,8 +30,8 @@ function TokenVestStub({
       <div>end: {new Date(vest.end * 1000).toLocaleString()}</div>
       <div>total amount: {totalAmountDisplay}</div>
       <div>total vested amount: {totalVestedAmountDisplay}</div>
-      <div>released amount: {releasedAmountDisplay}</div>
-      <div>releasable amount: {releasableAmountDisplay}</div>
+      <div>claimed amount: {claimedAmountDisplay}</div>
+      <div>claimable amount: {claimableAmountDisplay}</div>
     </div>
   );
 }

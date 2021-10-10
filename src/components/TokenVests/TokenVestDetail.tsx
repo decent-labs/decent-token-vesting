@@ -28,8 +28,8 @@ function TokenVest() {
   const [decimals, setDecimals] = useState<number>();
   const [totalAmount, setTotalAmount] = useState<BigNumber>();
   const [totalVestedAmount, setTotalVestedAmount] = useState<BigNumber>();
-  const [releasedAmount, setReleasedAmount] = useState<BigNumber>();
-  const [releasableAmount, setReleasableAmount] = useState<BigNumber>();
+  const [claimedAmount, setClaimedAmount] = useState<BigNumber>();
+  const [claimableAmount, setClaimableAmount] = useState<BigNumber>();
 
   useEffect(() => {
     if (!vest) {
@@ -39,8 +39,8 @@ function TokenVest() {
       setDecimals(undefined);
       setTotalAmount(undefined);
       setTotalVestedAmount(undefined);
-      setReleasedAmount(undefined);
-      setReleasableAmount(undefined);
+      setClaimedAmount(undefined);
+      setClaimableAmount(undefined);
       return;
     }
 
@@ -50,8 +50,8 @@ function TokenVest() {
     setDecimals(vest.token.decimals);
     setTotalAmount(vest.totalAmount);
     setTotalVestedAmount(vest.totalVestedAmount);
-    setReleasedAmount(vest.releasedAmount);
-    setReleasableAmount(vest.releasableAmount);
+    setClaimedAmount(vest.claimedAmount);
+    setClaimableAmount(vest.claimableAmount);
   }, [vest]);
 
   const tokenDisplayName = useDisplayName(tokenAddress);
@@ -60,8 +60,8 @@ function TokenVest() {
 
   const totalAmountDisplay = useDisplayAmount(totalAmount, decimals);
   const totalVestedAmountDisplay = useDisplayAmount(totalVestedAmount, decimals);
-  const releasedAmountDisplay = useDisplayAmount(releasedAmount, decimals);
-  const releasableAmountDisplay = useDisplayAmount(releasableAmount, decimals);
+  const claimedAmountDisplay = useDisplayAmount(claimedAmount, decimals);
+  const claimableAmountDisplay = useDisplayAmount(claimableAmount, decimals);
 
   if (!vest) {
     if (loading) {
@@ -85,8 +85,8 @@ function TokenVest() {
       <div>end: {new Date(vest.end * 1000).toLocaleString()}</div>
       <div>total amount: {totalAmountDisplay}</div>
       <div>total vested amount: {totalVestedAmountDisplay}</div>
-      <div>released amount: {releasedAmountDisplay}</div>
-      <div>releasable amount: {releasableAmountDisplay}</div>
+      <div>claimed amount: {claimedAmountDisplay}</div>
+      <div>claimable amount: {claimableAmountDisplay}</div>
     </div>
   );
 }

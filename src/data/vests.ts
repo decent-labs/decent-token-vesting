@@ -49,14 +49,14 @@ type VestTotalVestedAmount = {
   totalVestedAmount: BigNumber,
 }
 
-type VestReleasedAmount = {
+type VestClaimedAmount = {
   vestId: VestId,
-  releasedAmount: BigNumber,
+  claimedAmount: BigNumber,
 }
 
-type VestReleasableAmount = {
+type VestClaimableAmount = {
   vestId: VestId,
-  releasableAmount: BigNumber,
+  claimableAmount: BigNumber,
 }
 
 export type Vest = {
@@ -68,8 +68,8 @@ export type Vest = {
   end: number,
   totalAmount: BigNumber,
   totalVestedAmount: BigNumber,
-  releasedAmount: BigNumber,
-  releasableAmount: BigNumber,
+  claimedAmount: BigNumber,
+  claimableAmount: BigNumber,
 }
 
 const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploymentBlock: number | undefined) => {
@@ -377,65 +377,65 @@ const useVestTotalVestedAmounts = (vestIds: VestId[], vestTotalAmounts: VestTota
   return vestTotalVestedAmounts;
 }
 
-const useVestReleasedAmounts = (generalTokenVesting: GeneralTokenVesting | undefined, vestIds: VestId[]) => {
-  const [vestReleasedAmounts, setVestReleasedAmounts] = useState<VestReleasedAmount[]>([]);
+const useVestClaimedAmounts = (generalTokenVesting: GeneralTokenVesting | undefined, vestIds: VestId[]) => {
+  const [vestClaimedAmounts, setVestClaimedAmounts] = useState<VestClaimedAmount[]>([]);
 
   useEffect(() => {
-    if (vestIds.length === vestReleasedAmounts.length) {
+    if (vestIds.length === vestClaimedAmounts.length) {
       return;
     }
 
     if (!generalTokenVesting) {
-      setVestReleasedAmounts([]);
+      setVestClaimedAmounts([]);
       return;
     }
 
     Promise.all(vestIds.map(vestId => {
-      const vestReleasedAmount = vestReleasedAmounts.find(p => p.vestId.id === vestId.id);
-      if (vestReleasedAmount) {
-        return Promise.all([vestId, vestReleasedAmount.releasedAmount]);
+      const vestClaimedAmount = vestClaimedAmounts.find(p => p.vestId.id === vestId.id);
+      if (vestClaimedAmount) {
+        return Promise.all([vestId, vestClaimedAmount.claimedAmount]);
       }
       return Promise.all([vestId, generalTokenVesting.getReleasedTokens(vestId.token, vestId.beneficiary)]);
     }))
-      .then(releasedAmountsData => {
-        const releasedAmounts: VestReleasedAmount[] = releasedAmountsData.map(([vestId, releasedAmount]) => ({
+      .then(claimedAmountsData => {
+        const claimedAmounts: VestClaimedAmount[] = claimedAmountsData.map(([vestId, claimedAmount]) => ({
           vestId: vestId,
-          releasedAmount: releasedAmount,
+          claimedAmount: claimedAmount,
         }));
 
-        setVestReleasedAmounts(releasedAmounts);
+        setVestClaimedAmounts(claimedAmounts);
       })
       .catch(console.error);
-  }, [generalTokenVesting, vestIds, vestReleasedAmounts]);
+  }, [generalTokenVesting, vestIds, vestClaimedAmounts]);
 
-  return vestReleasedAmounts;
+  return vestClaimedAmounts;
 }
 
-const useVestReleasableAmounts = (vestTotalVestedAmounts: VestTotalVestedAmount[], vestReleasedAmounts: VestReleasedAmount[]) => {
-  const [vestReleasableAmounts, setVestReleasableAmounts] = useState<VestReleasableAmount[]>([]);
+const useVestClaimableAmounts = (vestTotalVestedAmounts: VestTotalVestedAmount[], vestClaimedAmounts: VestClaimedAmount[]) => {
+  const [vestClaimableAmounts, setVestClaimableAmounts] = useState<VestClaimableAmount[]>([]);
 
   useEffect(() => {
-    const releasableAmounts: VestReleasableAmount[] = vestTotalVestedAmounts.map(vestTotalVestedAmount => {
-      const vestReleasedAmount = vestReleasedAmounts.find(r => r.vestId.id === vestTotalVestedAmount.vestId.id);
+    const claimableAmounts: VestClaimableAmount[] = vestTotalVestedAmounts.map(vestTotalVestedAmount => {
+      const vestClaimedAmount = vestClaimedAmounts.find(r => r.vestId.id === vestTotalVestedAmount.vestId.id);
 
-      let releasableAmount = BigNumber.from(0);
+      let claimableAmount = BigNumber.from(0);
 
-      if (vestReleasedAmount) {
-        releasableAmount = vestTotalVestedAmount.totalVestedAmount.sub(vestReleasedAmount.releasedAmount);
+      if (vestClaimedAmount) {
+        claimableAmount = vestTotalVestedAmount.totalVestedAmount.sub(vestClaimedAmount.claimedAmount);
       }
 
-      const vestReleasableAmount: VestReleasableAmount = {
+      const vestClaimableAmount: VestClaimableAmount = {
         vestId: vestTotalVestedAmount.vestId,
-        releasableAmount: releasableAmount,
+        claimableAmount: claimableAmount,
       }
 
-      return vestReleasableAmount;
+      return vestClaimableAmount;
     });
 
-    setVestReleasableAmounts(releasableAmounts);
-  }, [vestReleasedAmounts, vestTotalVestedAmounts]);
+    setVestClaimableAmounts(claimableAmounts);
+  }, [vestClaimedAmounts, vestTotalVestedAmounts]);
 
-  return vestReleasableAmounts;
+  return vestClaimableAmounts;
 }
 
 const useAllVests = (
@@ -444,8 +444,8 @@ const useAllVests = (
   vestPeriods: VestPeriod[],
   vestTotalAmounts: VestTotalAmount[],
   vestTotalVestedAmounts: VestTotalVestedAmount[],
-  vestReleasedAmounts: VestReleasedAmount[],
-  vestReleasableAmounts: VestReleasableAmount[],
+  vestClaimedAmounts: VestClaimedAmount[],
+  vestClaimableAmounts: VestClaimableAmount[],
 ) => {
   const [allVests, setAllVests] = useState<Vest[]>([]);
 
@@ -483,19 +483,19 @@ const useAllVests = (
         totalVestedAmount = vestTotalVestedAmount.totalVestedAmount;
       }
 
-      let releasedAmount = BigNumber.from(0);
-      const vestReleasedAmount = vestReleasedAmounts.find(r => r.vestId.id === vestId.id);
-      if (vestReleasedAmount) {
-        releasedAmount = vestReleasedAmount.releasedAmount;
+      let claimedAmount = BigNumber.from(0);
+      const vestClaimedAmount = vestClaimedAmounts.find(r => r.vestId.id === vestId.id);
+      if (vestClaimedAmount) {
+        claimedAmount = vestClaimedAmount.claimedAmount;
       }
 
-      let releasableAmount = BigNumber.from(0);
-      const vestReleasableAmount = vestReleasableAmounts.find(r => r.vestId.id === vestId.id);
-      if (vestReleasableAmount) {
-        releasableAmount = vestReleasableAmount.releasableAmount;
+      let claim = BigNumber.from(0);
+      const vestClaimableAmount = vestClaimableAmounts.find(r => r.vestId.id === vestId.id);
+      if (vestClaimableAmount) {
+        claim = vestClaimableAmount.claimableAmount;
       }
 
-      return {
+      const vest: Vest = {
         id: vestId.id,
         beneficiary: vestId.beneficiary,
         token: token,
@@ -504,11 +504,13 @@ const useAllVests = (
         end: period.end,
         totalAmount: totalAmount,
         totalVestedAmount: totalVestedAmount,
-        releasedAmount: releasedAmount,
-        releasableAmount: releasableAmount,
-      }
+        claimedAmount: claimedAmount,
+        claimableAmount: claim,
+      };
+
+      return vest;
     }));
-  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestTotalVestedAmounts, vestReleasedAmounts, vestReleasableAmounts]);
+  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestTotalVestedAmounts, vestClaimedAmounts, vestClaimableAmounts]);
 
   return allVests;
 }
@@ -576,8 +578,8 @@ export {
   useVestTotalAmounts,
   useVestPerSeconds,
   useVestTotalVestedAmounts,
-  useVestReleasedAmounts,
-  useVestReleasableAmounts,
+  useVestClaimedAmounts,
+  useVestClaimableAmounts,
   useAllVests,
   useMyCreatedVests,
   useMyClaimableVests,
