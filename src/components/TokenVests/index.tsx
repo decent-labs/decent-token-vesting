@@ -1,18 +1,24 @@
 import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
+import { useWeb3 } from '../../web3';
 import { useData } from '../../data';
+import ConditionalRoute from '../routing/ConditionalRoute';
 import New from './New';
 import List from './List';
 import Detail from './Detail';
 
 function TokenVests() {
+  const { account } = useWeb3();
   const { vests: { all, myClaimable, myCreated } } = useData();
   const match = useRouteMatch();
 
   return (
     <Switch>
-      <Route path={`${match.path}/new`}>
+      <ConditionalRoute
+        path={`${match.path}/new`}
+        authorization={!!account}
+      >
         <New />
-      </Route>
+      </ConditionalRoute>
       <Route path={`${match.path}/all`}>
         <List
           title="All vests"
