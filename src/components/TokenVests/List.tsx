@@ -1,15 +1,19 @@
-import { useData } from '../../data';
+import { Vest } from '../../data/vests';
 import Title from '../ui/Title';
 import Stub from './Stub';
 
-function My() {
-  const { vests: { myClaimable } } = useData();
-
+function List({
+  title,
+  vests,
+}: {
+  title: string,
+  vests: Vest[],
+}) {
   return (
     <div>
-      <Title title="My vests" />
+      <Title title={title} />
       <div>
-        {myClaimable.map(v => (
+        {vests.map(v => (
           <Stub
             key={v.id}
             vest={v}
@@ -20,4 +24,4 @@ function My() {
   );
 }
 
-export default My;
+export default List;

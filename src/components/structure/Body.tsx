@@ -1,21 +1,31 @@
-import { Switch, Route, Redirect } from "react-router-dom";
-import All from '../TokenVests/All';
-import My from '../TokenVests/My';
-import MyCreated from '../TokenVests/MyCreated';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { useData } from '../../data';
+import List from '../TokenVests/List';
 import Detail from '../TokenVests/Detail';
 
 function Body() {
+  const { vests: { all, myClaimable, myCreated } } = useData();
+
   return (
     <div className="pt-4">
       <Switch>
         <Route path="/vests/all">
-          <All />
+          <List
+            title="All vests"
+            vests={all}
+          />
         </Route>
         <Route path="/vests/my">
-          <My />
+          <List
+            title="My vests"
+            vests={myClaimable}
+          />
         </Route>
         <Route path="/vests/my-created">
-          <MyCreated />
+          <List
+            title="My created vests"
+            vests={myCreated}
+          />
         </Route>
         <Route path="/vests/:id">
           <Detail />
