@@ -11,7 +11,7 @@ const useListeners = (provider: ethers.providers.Provider | undefined, web3Modal
     // subscribe to connect events
     web3Modal.on('connect', provider => {
       if (!supportedChains().includes(parseInt(provider.chainId))) {
-        toast(`Switch to a supported network: ${supportedChains().join(", ")}`, { toastId: 'switchNetwork' });
+        toast(`Switch to a supported chain: ${supportedChains().join(", ")}`, { toastId: 'switchChain' });
         web3Modal.clearCachedProvider();
         setMyProvider(null);
       } else {
@@ -29,14 +29,14 @@ const useListeners = (provider: ethers.providers.Provider | undefined, web3Modal
   useEffect(() => {
     if (!provider) return;
 
-    // subscribe to Network events
+    // subscribe to chain events
     provider.on('chainChanged', (chainId: string) => {
       if (!supportedChains().includes(parseInt(chainId))) {
-        toast(`Switch to a supported network: ${supportedChains().join(", ")}`, { toastId: 'switchNetwork' });
+        toast(`Switch to a supported chain: ${supportedChains().join(", ")}`, { toastId: 'switchChain' });
         web3Modal.clearCachedProvider();
         setMyProvider(null);
       } else {
-        toast('Network changed', { toastId: 'switchNetwork' });
+        toast('Chain changed', { toastId: 'switchChain' });
         const web3Provider = new ethers.providers.Web3Provider(provider as any);
         setMyProvider(web3Provider);
       };
