@@ -6,7 +6,7 @@ import TokenVestDetail from '../TokenVests/TokenVestDetail';
 
 function Body() {
   return (
-    <div className="flex-grow pl-4 pt-4">
+    <div className="pt-4">
       <Switch>
         <Route path="/vests/all">
           <All />

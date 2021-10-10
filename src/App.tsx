@@ -8,9 +8,21 @@ function App() {
     <div className="bg-white flex flex-col justify-between min-h-screen text-sm sm:text-base">
       <div className="flex-grow flex flex-col">
         <Header />
-        <div className="flex-grow flex">
-          <div className="container flex">
+        <div className="sm:hidden">
+          <div className="border-b py-2">
+            <div className="container">
+              <Menu />
+            </div>
+          </div>
+          <div className="container">
+            <Body />
+          </div>
+        </div>
+        <div className="hidden sm:flex flex-grow container">
+          <div className="border-r pt-4 pr-4 flex-none w-40">
             <Menu />
+          </div>
+          <div className="flex-grow pl-4">
             <Body />
           </div>
         </div>
