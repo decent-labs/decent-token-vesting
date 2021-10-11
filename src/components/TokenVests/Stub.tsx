@@ -20,7 +20,7 @@ function Stub({
 
   return (
     <div className="mb-4">
-      <Link to={vest.id}>
+      <Link to={`/vests/${vest.id}`}>
         {vest.id}
       </Link>
       <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.address}>{tokenDisplayName}</EtherscanLink></div>
