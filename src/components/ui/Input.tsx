@@ -26,7 +26,7 @@ function Input({
       <input
         type={type}
         min={min}
-        className={`w-full border border-gray-200 rounded py-1 px-2 ${disabled ? "cursor-default bg-gray-100" : ""}`}
+        className={`w-full border rounded py-1 px-2 ${disabled ? "disabled" : ""}`}
         value={value}
         onChange={onChange}
         disabled={disabled}

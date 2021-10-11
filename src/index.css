@@ -6,12 +6,41 @@
 @tailwind utilities;
 
 @layer base {
+  body {
+    @apply bg-purple-100 text-purple-600;
+  }
+
+  .bread {
+    @apply bg-purple-100;
+  }
+
+  .sandwich {
+    @apply bg-purple-50;
+  }
+
   a {
-    @apply text-purple-700;
+    @apply font-semibold;
   }
 
   a:hover,
+  button:hover,
   .active-link {
     @apply text-pink-500;
+  }
+
+  .border,
+  .border-r,
+  .border-l,
+  .border-t,
+  .border-b {
+    @apply border-purple-300;
+  }
+
+  button.disabled {
+    @apply text-purple-300 border-purple-200 cursor-default;
+  }
+
+  input.disabled {
+    @apply bg-purple-50 border-purple-200 cursor-default;
   }
 }

@@ -8,7 +8,7 @@ function Footer() {
   const { contracts: { generalTokenVesting } } = useData();
 
   return (
-    <div className="py-2 border-t bg-gray-100 text-xs sm:text-sm">
+    <div className="bread py-2 border-t text-xs sm:text-sm">
       <div className="container flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center items-end">
         <div className="flex items-baseline">
           <div className="font-mono text-xs">v{packageJson.version}{process.env.REACT_APP_GIT_HASH && `+${process.env.REACT_APP_GIT_HASH}`}</div>

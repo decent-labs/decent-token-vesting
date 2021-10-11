@@ -5,7 +5,7 @@ import Menu from './components/structure/Menu';
 
 function App() {
   return (
-    <div className="bg-white flex flex-col justify-between min-h-screen text-sm sm:text-base">
+    <div className="sandwich flex flex-col justify-between min-h-screen text-sm sm:text-base">
       <div className="flex-grow flex flex-col">
         <Header />
         <div className="flex flex-grow container">

@@ -9,7 +9,7 @@ function Button({
 }) {
   return (
     <button
-      className={`px-4 py-2 border rounded ${disabled ? "text-gray-400 cursor-default" : ""}`}
+      className={`px-4 py-2 border rounded ${disabled ? "disabled" : ""}`}
       disabled={disabled}
       onClick={onClick}
     >
