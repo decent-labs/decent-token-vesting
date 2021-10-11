@@ -3,7 +3,7 @@ import TokenVests from '../TokenVests';
 
 function Body() {
   return (
-    <div className="pt-4">
+    <div className="py-4">
       <Switch>
         <Route path="/vests">
           <TokenVests />
