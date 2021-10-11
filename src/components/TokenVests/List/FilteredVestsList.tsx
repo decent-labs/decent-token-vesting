@@ -6,19 +6,21 @@ import ListMenu from './ListMenu';
 
 function VestsList({
   vests,
+  description,
 }: {
   vests: Vest[],
+  description: string,
 }) {
   const { loading } = useData();
 
   if (vests.length === 0) {
     if (loading) {
       return (
-        <div>loading token vests</div>
+        <div>loading {description} vests</div>
       );
     } else {
       return (
-        <div>no token vests</div>
+        <div>no {description} vests</div>
       );
     }
   }
@@ -48,7 +50,10 @@ function FilteredVestsList({
     <div>
       <Title title={`${title} vests`} />
       <ListMenu path={path} />
-      <VestsList vests={vests} />
+      <VestsList
+        vests={vests}
+        description={title}
+      />
     </div>
   );
 }

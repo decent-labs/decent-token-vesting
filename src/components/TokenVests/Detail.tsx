@@ -188,11 +188,11 @@ function Detail() {
   if (!vest) {
     if (loading) {
       return (
-        <div>loading token vest</div>
+        <div>loading vest</div>
       );
     } else {
       return (
-        <div>token vest not found</div>
+        <div>vest not found</div>
       );
     }
   }
