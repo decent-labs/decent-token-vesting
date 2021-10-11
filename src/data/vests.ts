@@ -408,6 +408,34 @@ const useVestClaimedAmounts = (generalTokenVesting: GeneralTokenVesting | undefi
       .catch(console.error);
   }, [generalTokenVesting, vestIds, vestClaimedAmounts]);
 
+  useEffect(() => {
+    if (!generalTokenVesting) {
+      return;
+    }
+
+    const tokensReleased = (token: string, beneficiary: string, _: string, amount: BigNumber, __: any) => {
+      setVestClaimedAmounts(vestClaimedAmounts => {
+        const newVestClaimedAmounts = vestClaimedAmounts.map(vestClaimedAmount => {
+          const newVestClaimedAmount = Object.assign({}, vestClaimedAmount);
+          if (newVestClaimedAmount.vestId.token === token && newVestClaimedAmount.vestId.beneficiary === beneficiary) {
+            newVestClaimedAmount.claimedAmount = newVestClaimedAmount.claimedAmount.add(amount);
+          }
+
+          return newVestClaimedAmount;
+        });
+
+        return newVestClaimedAmounts;
+      });
+    }
+
+    const filter = generalTokenVesting.filters.TokensReleased();
+    generalTokenVesting.on(filter, tokensReleased);
+
+    return () => {
+      generalTokenVesting.off(filter, tokensReleased);
+    }
+  }, [generalTokenVesting]);
+
   return vestClaimedAmounts;
 }
 
