@@ -2,18 +2,21 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import { useWeb3 } from '../../web3';
 
 function MenuItem({
+  emoji,
   title,
   to,
 }: {
+  emoji: string,
   title: string,
   to: string,
 }) {
   const match = useRouteMatch(to);
 
   return (
-    <Link to={to}>
-      <div className={`px-2 sm:px-0 py-2 sm:pr-4 ${match ? "font-bold" : ""}`}>
-        {title}
+    <Link to={to} className="hover:no-underline">
+      <div className={`py-2 sm:pr-4 text-right flex flex-col items-center sm:block ${match ? "font-bold" : ""}`}>
+        <div className="text-xl sm:text-2xl">{emoji}</div>
+        <div className="hidden sm:block">{title}</div>
       </div>
     </Link>
   );
@@ -21,7 +24,7 @@ function MenuItem({
 
 function Separator() {
   return (
-    <div className="border-r sm:border-r-0 sm:border-b sm:pt-2 sm:mb-2" />
+    <div className="border-b pt-2 mb-2" />
   );
 }
 
@@ -29,10 +32,11 @@ function Menu() {
   const { account } = useWeb3();
 
   return (
-    <div className="-mx-2 sm:mx-0 sm:-my-2 flex sm:block">
+    <div className="-my-2">
       {account && (
-        <div className="flex sm:block">
+        <div>
           <MenuItem
+            emoji="⏲"
             title="Create new vest"
             to="/vests/new"
           />
@@ -40,14 +44,17 @@ function Menu() {
         </div>
       )}
       <MenuItem
+        emoji="👨‍👩‍👧‍👦"
         title="All vests"
         to="/vests/all"
       />
       <MenuItem
+        emoji="🤑"
         title="My vests"
         to="/vests/my"
       />
       <MenuItem
+        emoji="🎨"
         title="My created vests"
         to="/vests/my-created"
       />
