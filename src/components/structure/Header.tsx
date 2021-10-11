@@ -13,7 +13,7 @@ function Header() {
     <div className="py-4 bg-gray-100 border-b">
       <div className="container flex flex-col sm:flex-row sm:justify-between sm:items-center">
         <div className="text-2xl sm:text-3xl mr-2 mb-4 sm:mb-0">
-          <Link to="/" className="hover:no-underline">
+          <Link to="/">
             🕰 general token vesting
           </Link>
         </div>

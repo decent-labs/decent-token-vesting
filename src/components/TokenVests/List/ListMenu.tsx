@@ -12,7 +12,7 @@ function ListMenuItem({
   const match = useRouteMatch(to);
 
   return (
-    <Link to={to} className="hover:no-underline">
+    <Link to={to}>
       <div className={`flex items-center px-2 py-1 ${match ? "font-bold" : ""}`}>
         <div className="text-xl sm:text-2xl mr-2">{emoji}</div>
         <div>{title}</div>

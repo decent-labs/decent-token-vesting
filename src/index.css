@@ -7,6 +7,6 @@
 
 @layer base {
   a:hover {
-    @apply underline;
+    @apply text-purple-600;
   }
 }
