@@ -36,7 +36,7 @@ function TokenVests({
         </Route>
         <Route path={`${match.path}/over-and-claimable`}>
           <FilteredVestsList
-            title={`${title} over & claimable`}
+            title={`${title} over and claimable`}
             vests={overAndClaimable}
             path={match.path}
           />

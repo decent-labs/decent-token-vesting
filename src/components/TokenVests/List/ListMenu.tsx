@@ -35,7 +35,7 @@ function ListMenu({
       />
       <ListMenuItem
         emoji={`🤏`}
-        title="over & claimable"
+        title="over and claimable"
         to={`${path}/over-and-claimable`}
       />
       <ListMenuItem
