@@ -28,10 +28,10 @@ function Stub({
       <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
       <div>start: {new Date(vest.start * 1000).toLocaleString()}</div>
       <div>end: {new Date(vest.end * 1000).toLocaleString()}</div>
-      <div>total amount: {totalAmountDisplay}</div>
-      <div>total vested amount: {totalVestedAmountDisplay}</div>
-      <div>claimed amount: {claimedAmountDisplay}</div>
-      <div>claimable amount: {claimableAmountDisplay}</div>
+      <div>total amount: {totalAmountDisplay} {vest.token.symbol}</div>
+      <div>total vested amount: {totalVestedAmountDisplay} {vest.token.symbol}</div>
+      <div>claimed amount: {claimedAmountDisplay} {vest.token.symbol}</div>
+      <div>claimable amount: {claimableAmountDisplay} {vest.token.symbol}</div>
     </div>
   );
 }
