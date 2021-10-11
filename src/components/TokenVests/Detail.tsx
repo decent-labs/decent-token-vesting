@@ -6,8 +6,11 @@ import { useData } from '../../data';
 import useDisplayName from '../../hooks/useDisplayName';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
 import EtherscanLink from '../ui/EtherscanLink';
+import { InputAddress } from '../ui/Input';
 import Button from '../ui/Button';
 import { useTransaction } from '../../web3/transactions';
+import { useWeb3 } from '../../web3';
+import useAddress from '../../hooks/useAddress';
 
 function ReleaseTokens({
   vest,
@@ -53,9 +56,82 @@ function ReleaseTokens({
   );
 }
 
+function ReleaseTokensTo({
+  vest,
+}: {
+  vest: Vest
+}) {
+  const { contracts: { generalTokenVesting } } = useData();
+  const [releaseToCall, releaseToPending] = useTransaction();
+
+  const [beneficiaryAddressInput, setBeneficiaryAddressInput] = useState("");
+  const [beneficiaryAddress, validBeneficiaryAddress] = useAddress(beneficiaryAddressInput);
+  const [beneficiaryStatus, setBeneficiaryStatus] = useState("");
+
+  useEffect(() => {
+    if (validBeneficiaryAddress === false) {
+      setBeneficiaryStatus("🙅‍♀️ invalid address");
+      return;
+    }
+
+    if (validBeneficiaryAddress === true) {
+      setBeneficiaryStatus("👍 looks good");
+      return;
+    }
+
+    setBeneficiaryStatus("");
+  }, [validBeneficiaryAddress]);
+
+  const [releaseTokensToDisabled, setReleaseTokensToDisabled] = useState(true);
+  useEffect(() => {
+    if (!vest.claimableAmount || !beneficiaryAddress) {
+      setReleaseTokensToDisabled(true);
+      return;
+    }
+
+    setReleaseTokensToDisabled(
+      releaseToPending ||
+      vest.claimableAmount.eq(0)
+    );
+  }, [beneficiaryAddress, releaseToPending, vest]);
+
+  const releaseTo = () => {
+    if (!generalTokenVesting || !beneficiaryAddress) {
+      return;
+    }
+
+    releaseToCall(
+      () => generalTokenVesting.releaseTo(vest.token.address, beneficiaryAddress),
+      "releasing tokens to", "releasing tokens to failed", "releasing tokens to succeeded",
+      undefined, () => {
+        setBeneficiaryAddressInput("");
+      }
+    )
+  }
+
+  return (
+    <div className="mt-4">
+      <InputAddress
+        title="beneficiary address"
+        status={beneficiaryStatus}
+        value={beneficiaryAddressInput}
+        disabled={releaseToPending || vest.claimableAmount.eq(0)}
+        onChange={setBeneficiaryAddressInput}
+      />
+      <Button
+        disabled={releaseTokensToDisabled}
+        onClick={releaseTo}
+      >
+        release tokens to
+      </Button>
+    </div>
+  );
+}
+
 function Detail() {
   const params = useParams<{ id: string }>();
   const { loading, vests: { all } } = useData();
+  const { account } = useWeb3();
 
   const [vest, setVest] = useState<Vest>();
   useEffect(() => {
@@ -134,6 +210,7 @@ function Detail() {
       <div>claimed amount: {claimedAmountDisplay} {vest.token.symbol}</div>
       <div>claimable amount: {claimableAmountDisplay} {vest.token.symbol}</div>
       <ReleaseTokens vest={vest} />
+      {account && account === beneficiaryAddress && <ReleaseTokensTo vest={vest} />}
     </div>
   );
 }
