@@ -6,6 +6,52 @@ import { useData } from '../../data';
 import useDisplayName from '../../hooks/useDisplayName';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
 import EtherscanLink from '../ui/EtherscanLink';
+import Button from '../ui/Button';
+import { useTransaction } from '../../web3/transactions';
+
+function ReleaseTokens({
+  vest,
+}: {
+  vest: Vest
+}) {
+  const { contracts: { generalTokenVesting } } = useData();
+  const [releaseCall, releasePending] = useTransaction();
+
+  const [releaseTokensDisabled, setReleaseTokensDisabled] = useState(true);
+  useEffect(() => {
+    if (!vest.claimableAmount) {
+      setReleaseTokensDisabled(true);
+      return;
+    }
+
+    setReleaseTokensDisabled(
+      releasePending ||
+      vest.claimableAmount.eq(0)
+    );
+  }, [releasePending, vest]);
+
+  const release = () => {
+    if (!generalTokenVesting) {
+      return;
+    }
+
+    releaseCall(
+      () => generalTokenVesting.release(vest.token.address, vest.beneficiary),
+      "releasing tokens", "releasing tokens failed", "releasing tokens succeeded"
+    )
+  }
+
+  return (
+    <div className="mt-4">
+      <Button
+        disabled={releaseTokensDisabled}
+        onClick={release}
+      >
+        release tokens
+      </Button>
+    </div>
+  );
+}
 
 function Detail() {
   const params = useParams<{ id: string }>();
@@ -87,6 +133,7 @@ function Detail() {
       <div>total vested amount: {totalVestedAmountDisplay} {vest.token.symbol}</div>
       <div>claimed amount: {claimedAmountDisplay} {vest.token.symbol}</div>
       <div>claimable amount: {claimableAmountDisplay} {vest.token.symbol}</div>
+      <ReleaseTokens vest={vest} />
     </div>
   );
 }
