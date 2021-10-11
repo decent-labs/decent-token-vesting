@@ -48,16 +48,20 @@ function Menu() {
         title="All vests"
         to="/vests/all"
       />
-      <MenuItem
-        emoji="🤑"
-        title="My vests"
-        to="/vests/my"
-      />
-      <MenuItem
-        emoji="🎨"
-        title="My created vests"
-        to="/vests/my-created"
-      />
+      {account && (
+        <div>
+          <MenuItem
+            emoji="🤑"
+            title="My vests"
+            to="/vests/my"
+          />
+          <MenuItem
+            emoji="🎨"
+            title="My created vests"
+            to="/vests/my-created"
+          />
+        </div>
+      )}
     </div>
   );
 }
