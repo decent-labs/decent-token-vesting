@@ -14,7 +14,7 @@ function MenuItem({
 
   return (
     <Link to={to}>
-      <div className={`py-2 sm:pr-4 text-right flex flex-col items-center sm:block ${match ? "text-purple-700" : ""}`}>
+      <div className={`py-2 sm:pr-4 text-right flex flex-col items-center sm:block ${match ? "active-link" : ""}`}>
         <div className="text-xl sm:text-2xl">{emoji}</div>
         <div className="hidden sm:block">{title}</div>
       </div>

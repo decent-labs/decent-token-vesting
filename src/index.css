@@ -6,7 +6,8 @@
 @tailwind utilities;
 
 @layer base {
-  a:hover {
+  a:hover,
+  .active-link {
     @apply text-purple-700;
   }
 }
