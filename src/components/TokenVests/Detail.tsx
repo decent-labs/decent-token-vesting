@@ -130,7 +130,7 @@ function ReleaseTokensTo({
 
 function Detail() {
   const params = useParams<{ id: string }>();
-  const { loading, vests: { all } } = useData();
+  const { loading, vests } = useData();
   const { account } = useWeb3();
 
   const [vest, setVest] = useState<Vest>();
@@ -140,9 +140,9 @@ function Detail() {
       return;
     }
 
-    const vest = all.find(vest => vest.id === params.id);
+    const vest = vests.find(vest => vest.id === params.id);
     setVest(vest);
-  }, [all, params.id]);
+  }, [vests, params.id]);
 
   const [tokenAddress, setTokenAddress] = useState<string>();
   const [beneficiaryAddress, setBeneficiaryAddress] = useState<string>();

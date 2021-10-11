@@ -573,38 +573,6 @@ const useVestsLoading = (allVestsLoading: boolean) => {
   }, [allVestsLoading, loadingToastId]);
 }
 
-const useMyCreatedVests = (allVests: Vest[]) => {
-  const { account } = useWeb3();
-  const [myCreatedVests, setMyCreatedVests] = useState<Vest[]>([]);
-
-  useEffect(() => {
-    if (!account) {
-      setMyCreatedVests([]);
-      return;
-    }
-
-    setMyCreatedVests(allVests.filter(vest => vest.creator === account));
-  }, [account, allVests]);
-
-  return myCreatedVests;
-}
-
-const useMyClaimableVests = (allVests: Vest[]) => {
-  const { account } = useWeb3();
-  const [myClaimableVests, setMyClaimableVests] = useState<Vest[]>([]);
-
-  useEffect(() => {
-    if (!account) {
-      setMyClaimableVests([]);
-      return;
-    }
-
-    setMyClaimableVests(allVests.filter(vest => vest.beneficiary === account));
-  }, [account, allVests]);
-
-  return myClaimableVests;
-}
-
 export {
   useVestIds,
   useVestsLoading,
@@ -616,6 +584,4 @@ export {
   useVestClaimedAmounts,
   useVestClaimableAmounts,
   useAllVests,
-  useMyCreatedVests,
-  useMyClaimableVests,
 }

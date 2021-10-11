@@ -21,8 +21,6 @@ import {
   useVestClaimedAmounts,
   useVestClaimableAmounts,
   useAllVests,
-  useMyCreatedVests,
-  useMyClaimableVests,
 } from './vests';
 
 export interface Data {
@@ -31,11 +29,7 @@ export interface Data {
   },
   loading: boolean,
   currentTime: BigNumber,
-  vests: {
-    all: Vest[],
-    myCreated: Vest[],
-    myClaimable: Vest[],
-  },
+  vests: Vest[],
 };
 
 function useSystemData() {
@@ -53,8 +47,6 @@ function useSystemData() {
   const vestClaimedAmounts = useVestClaimedAmounts(generalTokenVestingContract, vestIds);
   const vestClaimableAmounts = useVestClaimableAmounts(vestTotalVestedAmounts, vestClaimedAmounts);
   const allVests = useAllVests(vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestTotalVestedAmounts, vestClaimedAmounts, vestClaimableAmounts);
-  const myCreatedVests = useMyCreatedVests(allVests);
-  const myClaimableVests = useMyClaimableVests(allVests);
 
   const data: Data = {
     contracts: {
@@ -62,11 +54,7 @@ function useSystemData() {
     },
     currentTime: currentTime,
     loading: vestsLoading,
-    vests: {
-      all: allVests,
-      myCreated: myCreatedVests,
-      myClaimable: myClaimableVests,
-    },
+    vests: allVests,
   };
 
   useVestsLoading(vestsLoading);

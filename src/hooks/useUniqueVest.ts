@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useData } from '../data';
 
 const useUniqueVest = (tokenAddress: string | undefined, beneficiaryAddress: string | undefined) => {
-  const { vests: { all } } = useData();
+  const { vests } = useData();
   const [unique, setUnique] = useState<boolean>();
 
   useEffect(() => {
@@ -11,8 +11,8 @@ const useUniqueVest = (tokenAddress: string | undefined, beneficiaryAddress: str
       return;
     }
 
-    setUnique(!all.some(a => a.id === `${tokenAddress}-${beneficiaryAddress}`));
-  }, [all, beneficiaryAddress, tokenAddress]);
+    setUnique(!vests.some(a => a.id === `${tokenAddress}-${beneficiaryAddress}`));
+  }, [vests, beneficiaryAddress, tokenAddress]);
 
   return unique;
 }
