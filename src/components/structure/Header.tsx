@@ -14,7 +14,7 @@ function Header() {
       <div className="container flex flex-col sm:flex-row sm:justify-between sm:items-center">
         <div className="text-2xl sm:text-3xl mr-2 mb-4 sm:mb-0">
           <Link to="/">
-            🕰 general token vesting
+            🕰 decent token vesting
           </Link>
         </div>
         <div className="sm:text-right">
