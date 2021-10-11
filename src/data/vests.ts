@@ -180,7 +180,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
       return;
     }
 
-    const addVest = (vestEvent: VestStartedEvent, _: any) => {
+    const addVest = (_: string, __: string, ___: BigNumber, vestEvent: VestStartedEvent) => {
       vestEvent.getTransaction()
         .then(transaction => {
           const newVestId = {
