@@ -1,7 +1,8 @@
-import { useData } from '../../data';
-import { Vest } from '../../data/vests';
-import Title from '../ui/Title';
-import Stub from './Stub';
+import { useData } from '../../../data';
+import { Vest } from '../../../data/vests';
+import Title from '../../ui/Title';
+import Stub from '../Stub';
+import ListMenu from './ListMenu';
 
 function VestsList({
   vests,
@@ -34,19 +35,22 @@ function VestsList({
   );
 }
 
-function List({
+function FilteredVestsList({
   title,
+  path,
   vests,
 }: {
   title: string,
+  path: string,
   vests: Vest[],
 }) {
   return (
     <div>
-      <Title title={title} />
+      <Title title={`${title} vests`} />
+      <ListMenu path={path} />
       <VestsList vests={vests} />
     </div>
   );
 }
 
-export default List;
+export default FilteredVestsList;
