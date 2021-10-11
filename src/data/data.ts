@@ -1,3 +1,4 @@
+import { GeneralTokenVesting } from '../../contracts/typechain';
 import {
   useGeneralTokenVestingContract,
 } from './contracts';
@@ -24,6 +25,9 @@ import {
 } from './vests';
 
 export interface Data {
+  contracts: {
+    generalTokenVesting: GeneralTokenVesting | undefined,
+  },
   loading: boolean,
   vests: {
     all: Vest[],
@@ -51,6 +55,9 @@ function useSystemData() {
   const myClaimableVests = useMyClaimableVests(allVests);
 
   const data: Data = {
+    contracts: {
+      generalTokenVesting: generalTokenVestingContract,
+    },
     loading: vestsLoading,
     vests: {
       all: allVests,
