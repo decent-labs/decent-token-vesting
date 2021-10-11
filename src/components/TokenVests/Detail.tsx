@@ -209,8 +209,8 @@ function Detail() {
       <div>total vested amount: {totalVestedAmountDisplay} {vest.token.symbol}</div>
       <div>claimed amount: {claimedAmountDisplay} {vest.token.symbol}</div>
       <div>claimable amount: {claimableAmountDisplay} {vest.token.symbol}</div>
-      <ReleaseTokens vest={vest} />
-      {account && account === beneficiaryAddress && <ReleaseTokensTo vest={vest} />}
+      {vest.claimableAmount.gt(0) && <ReleaseTokens vest={vest} />}
+      {vest.claimableAmount.gt(0) && account && account === beneficiaryAddress && <ReleaseTokensTo vest={vest} />}
     </div>
   );
 }
