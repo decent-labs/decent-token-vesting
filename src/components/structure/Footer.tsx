@@ -1,14 +1,21 @@
-import { useWeb3 } from '../../web3'
 import packageJson from '../../../package.json'
+import { useData } from '../../data';
+import { useWeb3 } from '../../web3';
+import EtherscanLink from '../ui/EtherscanLink';
 
 function Footer() {
-  const web3 = useWeb3();
+  const { networkName, providerName } = useWeb3();
+  const { contracts: { generalTokenVesting } } = useData();
 
   return (
-    <div className="py-2 border-t bg-gray-100 text-sm">
-      <div className="container flex flex-col sm:flex-row sm:justify-between sm:items-center items-end">
-        <div className="font-mono text-xs">v{packageJson.version}{process.env.REACT_APP_GIT_HASH && `+${process.env.REACT_APP_GIT_HASH}`}</div>
-        <div>{web3.networkName && `${web3.networkName} via `}{web3.providerName}</div>
+    <div className="py-2 border-t bg-gray-100 text-xs sm:text-sm">
+      <div className="container flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center items-end">
+        <div className="flex items-baseline">
+          <div className="font-mono text-xs">v{packageJson.version}{process.env.REACT_APP_GIT_HASH && `+${process.env.REACT_APP_GIT_HASH}`}</div>
+          <div className="px-2">|</div>
+          <div><EtherscanLink address={generalTokenVesting?.address}>view on Etherscan</EtherscanLink></div>
+        </div>
+        <div>{networkName && `${networkName} via `}{providerName}</div>
       </div>
     </div>
   );
