@@ -21,7 +21,7 @@ function TokenVests() {
       </ConditionalRoute>
       <Route path={`${match.path}/all`}>
         <List
-          title="All vests"
+          title="all vests"
           vests={all}
         />
       </Route>
@@ -30,7 +30,7 @@ function TokenVests() {
         authorization={!!account}
       >
         <List
-          title="My vests"
+          title="my vests"
           vests={myClaimable}
         />
       </ConditionalRoute>
@@ -39,7 +39,7 @@ function TokenVests() {
         authorization={!!account}
       >
         <List
-          title="My created vests"
+          title="my created vests"
           vests={myCreated}
         />
       </ConditionalRoute>

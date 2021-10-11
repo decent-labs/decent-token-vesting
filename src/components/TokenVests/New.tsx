@@ -139,7 +139,7 @@ function New() {
 
     approveTransaction(
       () => token.instance.approve(generalTokenVesting.address, constants.MaxUint256),
-      `Approving ${token.symbol} for spending`, `Approving ${token.symbol} for spending failed`, `Approving ${token.symbol} for spending succeeded`
+      `approving ${token.symbol} for spending`, `approving ${token.symbol} for spending failed`, `approving ${token.symbol} for spending succeeded`
     );
   }
 
@@ -168,7 +168,7 @@ function New() {
 
     createTransaction(
       () => generalTokenVesting.startVest(beneficiaryAddress, tokenAmount, duration, token.address),
-      "Creating vest", "Creating vest failed", "Creating vest succeeded",
+      "creating vest", "creating vest failed", "creating vest succeeded",
       undefined, () => {
         const id = `${token.address}-${beneficiaryAddress}`;
         setTokenAddressInput("");
@@ -182,17 +182,17 @@ function New() {
 
   return (
     <div className="pb-4">
-      <Title title="Create new vest" />
+      <Title title="create new vest" />
       <div>
         <InputAddress
-          title="Token address"
+          title="token address"
           status={tokenStatus}
           value={tokenAddressInput}
           disabled={false}
           onChange={setTokenAddressInput}
         />
         <InputAmount
-          title="Token amount"
+          title="token amount"
           status={tokenBalanceStatus}
           value={tokenAmountInput}
           disabled={false}
@@ -200,14 +200,14 @@ function New() {
           decimals={token?.decimals}
         />
         <InputAddress
-          title="Beneficiary address"
+          title="beneficiary address"
           status={beneficiaryStatus}
           value={beneficiaryAddressInput}
           disabled={false}
           onChange={setBeneficiaryAddressInput}
         />
         <InputNumber
-          title="Duration (in seconds)"
+          title="duration (in seconds)"
           status={durationStatus}
           value={durationInput}
           disabled={false}
@@ -218,7 +218,7 @@ function New() {
             disabled={approveDisabled}
             onClick={approve}
           >
-            Approve
+            approve
           </Button>
         </div>
         <div>
@@ -226,7 +226,7 @@ function New() {
             disabled={createDisabled}
             onClick={create}
           >
-            Create vest
+            create vest
           </Button>
         </div>
       </div>

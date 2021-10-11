@@ -13,7 +13,7 @@ function Footer() {
         <div className="flex items-baseline">
           <div className="font-mono text-xs">v{packageJson.version}{process.env.REACT_APP_GIT_HASH && `+${process.env.REACT_APP_GIT_HASH}`}</div>
           <div className="px-2">|</div>
-          <div><EtherscanLink address={`${generalTokenVesting?.address}#code`}>view on Etherscan</EtherscanLink></div>
+          <div><EtherscanLink address={`${generalTokenVesting?.address}#code`}>view on etherscan</EtherscanLink></div>
         </div>
         <div>{networkName && `${networkName} via `}{providerName}</div>
       </div>

@@ -66,11 +66,11 @@ function Detail() {
   if (!vest) {
     if (loading) {
       return (
-        <div>Loading token vest</div>
+        <div>loading token vest</div>
       );
     } else {
       return (
-        <div>Token vest not found</div>
+        <div>token vest not found</div>
       );
     }
   }

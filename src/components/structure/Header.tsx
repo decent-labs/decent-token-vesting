@@ -14,7 +14,7 @@ function Header() {
       <div className="container flex flex-col sm:flex-row sm:justify-between sm:items-center">
         <div className="text-2xl sm:text-3xl mr-2 mb-4 sm:mb-0">
           <Link to="/" className="hover:no-underline">
-            🕰 General Token Vesting
+            🕰 general token vesting
           </Link>
         </div>
         <div className="sm:text-right">
@@ -23,11 +23,11 @@ function Header() {
               onClick={connect}
               disabled={false}
             >
-              Connect wallet
+              connect wallet
             </Button>
           )}
           {account && (
-            <div>Connected with <EtherscanLink address={account}>{accountDisplayName}</EtherscanLink></div>
+            <div>connected with <EtherscanLink address={account}>{accountDisplayName}</EtherscanLink></div>
           )}
         </div>
       </div>
