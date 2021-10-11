@@ -188,14 +188,14 @@ function New() {
           title="token address"
           status={tokenStatus}
           value={tokenAddressInput}
-          disabled={false}
+          disabled={createPending}
           onChange={setTokenAddressInput}
         />
         <InputAmount
           title="token amount"
           status={tokenBalanceStatus}
           value={tokenAmountInput}
-          disabled={false}
+          disabled={createPending}
           onChange={setTokenAmountInput}
           decimals={token?.decimals}
         />
@@ -203,14 +203,14 @@ function New() {
           title="beneficiary address"
           status={beneficiaryStatus}
           value={beneficiaryAddressInput}
-          disabled={false}
+          disabled={createPending}
           onChange={setBeneficiaryAddressInput}
         />
         <InputNumber
           title="duration (in seconds)"
           status={durationStatus}
           value={durationInput}
-          disabled={false}
+          disabled={createPending}
           onChange={setDurationInput}
         />
         <div className="mb-4">
