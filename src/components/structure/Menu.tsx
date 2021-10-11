@@ -1,5 +1,6 @@
 import { Link, useRouteMatch } from 'react-router-dom';
 import { useWeb3 } from '../../web3';
+import Emoji from '../ui/Emoji';
 
 function MenuItem({
   emoji,
@@ -13,11 +14,9 @@ function MenuItem({
   const match = useRouteMatch(to);
 
   return (
-    <Link to={to}>
-      <div className={`py-2 sm:pr-4 text-right flex flex-col items-center sm:block ${match ? "active-link" : ""}`}>
-        <div className="text-xl sm:text-2xl">{emoji}</div>
-        <div className="hidden sm:block">{title}</div>
-      </div>
+    <Link to={to} className={`py-2 sm:pr-4 text-right flex flex-col items-center sm:block ${match ? "active-link" : ""}`}>
+      <Emoji emoji={emoji} />
+      <div className="hidden sm:block">{title}</div>
     </Link>
   );
 }

@@ -1,4 +1,5 @@
 import { Link, useRouteMatch } from 'react-router-dom';
+import Emoji from '../../ui/Emoji';
 
 function ListMenuItem({
   emoji,
@@ -12,11 +13,9 @@ function ListMenuItem({
   const match = useRouteMatch(to);
 
   return (
-    <Link to={to}>
-      <div className={`flex items-center px-2 py-1 ${match ? "active-link" : ""}`}>
-        <div className="text-xl sm:text-2xl mr-2">{emoji}</div>
-        <div>{title}</div>
-      </div>
+    <Link to={to} className={`flex items-center px-2 py-1 ${match ? "active-link" : ""}`}>
+      <Emoji emoji={emoji} />
+      <div className="ml-2">{title}</div>
     </Link>
   );
 }

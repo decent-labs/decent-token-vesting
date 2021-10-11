@@ -3,6 +3,7 @@ import { Vest } from '../../data/vests';
 import useDisplayName from '../../hooks/useDisplayName';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
 import EtherscanLink from '../ui/EtherscanLink';
+import Emoji from '../ui/Emoji';
 
 function Stub({
   vest,
@@ -20,9 +21,6 @@ function Stub({
 
   return (
     <div className="mb-4">
-      <Link to={`/vests/${vest.id}`}>
-        {vest.id}
-      </Link>
       <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.address}>{tokenDisplayName}</EtherscanLink></div>
       <div>beneficiary: <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
       <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
@@ -32,6 +30,10 @@ function Stub({
       <div>total vested amount: {totalVestedAmountDisplay} {vest.token.symbol}</div>
       <div>claimed amount: {claimedAmountDisplay} {vest.token.symbol}</div>
       <div>claimable amount: {claimableAmountDisplay} {vest.token.symbol}</div>
+      <Link to={`/vests/${vest.id}`} className="flex items-center">
+        <div className="mr-1">view details</div>
+        <Emoji emoji="👉" />
+      </Link>
     </div>
   );
 }
