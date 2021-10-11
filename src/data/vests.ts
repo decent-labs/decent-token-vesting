@@ -16,9 +16,9 @@ type VestId = {
   creator: string,
 }
 
-type ERC20Token = {
+export type ERC20Token = {
   address: string,
-  instance?: IERC20Metadata,
+  instance: IERC20Metadata,
   name: string,
   symbol: string,
   decimals: number,
@@ -448,11 +448,18 @@ const useAllVests = (
   vestClaimableAmounts: VestClaimableAmount[],
 ) => {
   const [allVests, setAllVests] = useState<Vest[]>([]);
+  const { provider } = useWeb3();
 
   useEffect(() => {
+    if (!provider) {
+      setAllVests([]);
+      return;
+    }
+
     setAllVests(vestIds.map(vestId => {
       let token: ERC20Token = {
         address: constants.AddressZero,
+        instance: IERC20Metadata__factory.connect(constants.AddressZero, provider),
         name: "...",
         symbol: "...",
         decimals: 0,
@@ -510,7 +517,7 @@ const useAllVests = (
 
       return vest;
     }));
-  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestTotalVestedAmounts, vestClaimedAmounts, vestClaimableAmounts]);
+  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestTotalVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, provider]);
 
   return allVests;
 }
