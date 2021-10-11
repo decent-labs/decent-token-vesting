@@ -72,7 +72,7 @@ const useTransaction = () => {
         });
     }, []);
 
-  return { contractCall, pending };
+  return [contractCall, pending] as const;
 }
 
 export { useTransaction };
