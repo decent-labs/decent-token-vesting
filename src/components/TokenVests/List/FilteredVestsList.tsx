@@ -1,10 +1,11 @@
 import { useData } from '../../../data';
 import { Vest } from '../../../data/vests';
 import Title from '../../ui/Title';
+import ContainerItem from '../ContainerItem';
 import Stub from '../Stub';
 import ListMenu from './ListMenu';
 
-function VestsList({
+function VestsContainer({
   vests,
   description,
 }: {
@@ -26,12 +27,16 @@ function VestsList({
   }
 
   return (
-    <div>
+    <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3">
       {vests.map(v => (
-        <Stub
+        <ContainerItem
           key={v.id}
           vest={v}
-        />
+        >
+          <Stub
+            vest={v}
+          />
+        </ContainerItem>
       ))}
     </div>
   );
@@ -50,7 +55,7 @@ function FilteredVestsList({
     <div>
       <Title title={`${title} vests`} />
       <ListMenu path={path} />
-      <VestsList
+      <VestsContainer
         vests={vests}
         description={title}
       />
