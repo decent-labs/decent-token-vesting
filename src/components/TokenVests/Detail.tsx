@@ -226,7 +226,7 @@ function Detail() {
         {vest.end > currentTime && <div>in {formattedRemainingTime}</div>}
         {vest.end < currentTime && <div>{formattedTimeSinceEnd} ago</div>}
       </Property>
-      {vest.claimableAmount.gt(0) && (
+      {releasable && (
         <AmountProperty
           title="claimable amount"
           value={claimableAmountDisplay}
