@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { constants } from 'ethers';
+import { BigNumber, constants } from 'ethers';
 import { useHistory } from 'react-router-dom';
 import { useWeb3 } from '../../web3';
 import { useData } from '../../data';
@@ -11,7 +11,7 @@ import useERC20Token from '../../hooks/useERC20Token';
 import useBalance from '../../hooks/useBalance';
 import useAmount from '../../hooks/useAmount';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
-import useDuration from '../../hooks/useDuration';
+import useFormattedDuration from '../../hooks/useFormattedDuration';
 import useAllowance from '../../hooks/useAllowance';
 import useUniqueVest from '../../hooks/useUniqueVest';
 
@@ -100,8 +100,18 @@ function New() {
   }, [validBeneficiaryAddress, uniqueVest]);
 
   const [durationInput, setDurationInput] = useState("");
-  const [duration, formattedDuration] = useDuration(durationInput);
+  const [duration, setDuration] = useState<BigNumber>();
+  const formattedDuration = useFormattedDuration(duration);
   const [durationStatus, setDurationStatus] = useState("");
+
+  useEffect(() => {
+    if (durationInput === "") {
+      setDuration(undefined);
+      return;
+    }
+
+    setDuration(BigNumber.from(durationInput));
+  }, [durationInput]);
 
   useEffect(() => {
     if (!duration) {
