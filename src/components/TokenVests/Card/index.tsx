@@ -18,7 +18,7 @@ function Card({
 }) {
   const beneficiaryDisplayName = useDisplayName(vest.beneficiary);
   const totalAmountDisplay = useDisplayAmount(vest.totalAmount, vest.token.decimals);
-  const totalVestedAmountDisplay = useDisplayAmount(vest.totalVestedAmount, vest.token.decimals, true);
+  const vestedAmountDisplay = useDisplayAmount(vest.vestedAmount, vest.token.decimals, true);
   const claimedAmountDisplay = useDisplayAmount(vest.claimedAmount, vest.token.decimals, true);
   const duration = useFormattedDuration(BigNumber.from(vest.end - vest.start));
 
@@ -36,7 +36,7 @@ function Card({
               <div className="-my-4">
                 <AmountProperty
                   title="vested amount"
-                  value={totalVestedAmountDisplay}
+                  value={vestedAmountDisplay}
                   symbol={vest.token.symbol}
                 />
                 <AmountProperty

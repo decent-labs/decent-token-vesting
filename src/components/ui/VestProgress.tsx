@@ -15,8 +15,8 @@ function Progress({
 
   const [vestedAmount, setVestedAmount] = useState(0);
   useEffect(() => {
-    setVestedAmount(Number(ethers.utils.formatUnits(vest.totalVestedAmount, vest.token.decimals)));
-  }, [vest.token.decimals, vest.totalVestedAmount]);
+    setVestedAmount(Number(ethers.utils.formatUnits(vest.vestedAmount, vest.token.decimals)));
+  }, [vest.token.decimals, vest.vestedAmount]);
 
   const [claimedAmount, setClaimedAmount] = useState(0);
   useEffect(() => {
