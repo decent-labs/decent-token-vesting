@@ -8,6 +8,7 @@ import {
 import { TypedEventFilter } from '../../contracts/typechain/common';
 import { VestStartedEvent } from '../../contracts/typechain/GeneralTokenVesting';
 import { useWeb3 } from '../web3';
+import { createAccountSubstring } from '../hooks/useDisplayName';
 
 type VestId = {
   id: string,
@@ -77,11 +78,19 @@ type VestStatus = {
   statusDescription: string,
 }
 
+type VestDisplayName = {
+  vestId: VestId,
+  beneficiaryDisplay: string,
+  creatorDisplay: string,
+}
+
 export type Vest = {
   id: string,
   beneficiary: string,
+  beneficiaryDisplay: string,
   token: ERC20Token,
   creator: string,
+  creatorDisplay: string,
   start: number,
   end: number,
   totalAmount: BigNumber,
@@ -533,6 +542,47 @@ const useVestStatuses = (vestIds: VestId[], vestPeriods: VestPeriod[], vestClaim
   return vestStatuses;
 }
 
+const useVestDisplayNames = (vestIds: VestId[]) => {
+  const [displayNames, setDisplayNames] = useState<VestDisplayName[]>([]);
+
+  const { provider } = useWeb3();
+
+  useEffect(() => {
+    if (vestIds.length === displayNames.length) {
+      return;
+    }
+
+    if (!provider) {
+      setDisplayNames([]);
+      return;
+    }
+
+    Promise.all(vestIds.map(vestId => Promise.all([
+      vestId,
+      vestId.beneficiary,
+      provider.lookupAddress(vestId.beneficiary),
+      vestId.creator,
+      provider.lookupAddress(vestId.creator),
+    ])))
+      .then(names => {
+        const vestDisplayNames = names.map(([vestId, beneficiary, beneficiaryName, creator, creatorName]) => {
+          const displayName: VestDisplayName = {
+            vestId: vestId,
+            beneficiaryDisplay: beneficiaryName ? beneficiaryName : createAccountSubstring(beneficiary),
+            creatorDisplay: creatorName ? creatorName : createAccountSubstring(creator),
+          }
+
+          return displayName;
+        });
+
+        setDisplayNames(vestDisplayNames);
+      })
+      .catch(console.error);
+  }, [displayNames.length, provider, vestIds]);
+
+  return displayNames;
+}
+
 const useAllVests = (
   vestIds: VestId[],
   vestTokens: ERC20Token[],
@@ -542,6 +592,7 @@ const useAllVests = (
   vestClaimedAmounts: VestClaimedAmount[],
   vestClaimableAmounts: VestClaimableAmount[],
   vestStatuses: VestStatus[],
+  vestDisplayNames: VestDisplayName[],
 ) => {
   const [allVests, setAllVests] = useState<Vest[]>([]);
   const { provider } = useWeb3();
@@ -561,7 +612,6 @@ const useAllVests = (
       const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
       if (!vestPeriod) {
         return undefined;
-
       }
 
       const vestTotalAmount = vestTotalAmounts.find(t => t.vestId.id === vestId.id);
@@ -589,11 +639,18 @@ const useAllVests = (
         return undefined;
       }
 
+      const vestDisplayName = vestDisplayNames.find(d => d.vestId.id === vestId.id);
+      if (!vestDisplayName) {
+        return undefined;
+      }
+
       const vest: Vest = {
         id: vestId.id,
         beneficiary: vestId.beneficiary,
+        beneficiaryDisplay: vestDisplayName.beneficiaryDisplay,
         token: vestToken,
         creator: vestId.creator,
+        creatorDisplay: vestDisplayName.creatorDisplay,
         start: vestPeriod.start,
         end: vestPeriod.end,
         totalAmount: vestTotalAmount.totalAmount,
@@ -609,7 +666,7 @@ const useAllVests = (
     }).filter(v => v !== undefined) as Vest[];
 
     setAllVests(vests);
-  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, provider]);
+  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, vestDisplayNames, provider]);
 
   return allVests;
 }
@@ -648,5 +705,6 @@ export {
   useVestClaimedAmounts,
   useVestClaimableAmounts,
   useVestStatuses,
+  useVestDisplayNames,
   useAllVests,
 }

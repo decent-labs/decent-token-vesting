@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { Vest } from '../../data/vests';
 import { useData } from '../../data';
 import useAddress from '../../hooks/useAddress';
-import useDisplayName from '../../hooks/useDisplayName';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
 import useElapsedRemainingTime from '../../hooks/useElapsedRemainingTime';
 import useFormattedDuration from '../../hooks/useFormattedDuration';
@@ -84,8 +83,6 @@ function ReleaseTokensTo({
     setBeneficiaryStatus("");
   }, [validBeneficiaryAddress]);
 
-  const recipient = useDisplayName(beneficiaryAddress);
-
   const [releaseTokensToDisabled, setReleaseTokensToDisabled] = useState(true);
   useEffect(() => {
     if (!beneficiaryAddress) {
@@ -126,7 +123,7 @@ function ReleaseTokensTo({
         disabled={releaseTokensToDisabled}
         onClick={releaseTo}
       >
-        release tokens{!releaseTokensToDisabled ? ` to ${recipient}` : ""}
+        release tokens{!releaseTokensToDisabled ? ` to ${vest.beneficiaryDisplay}` : ""}
       </Button>
     </div>
   );
@@ -148,8 +145,6 @@ function Detail() {
     setVest(vest);
   }, [vests, params.id]);
 
-  const beneficiaryDisplayName = useDisplayName(vest?.beneficiary);
-  const creatorDisplayName = useDisplayName(vest?.creator);
   const claimableAmountDisplay = useDisplayAmount(vest?.claimableAmount, vest?.token.decimals);
   const [, remainingTime] = useElapsedRemainingTime(vest?.start, vest?.end, currentTime);
   const formattedTimeSinceStart = useFormattedDuration(BigNumber.from(currentTime - (vest?.start || 0)));
@@ -201,7 +196,7 @@ function Detail() {
           {releasable && (
             <ReleaseTokens
               vest={vest}
-              beneficiaryDisplayName={beneficiaryDisplayName}
+              beneficiaryDisplayName={vest.beneficiaryDisplay}
             />
           )}
           {releaseToable && (
@@ -215,7 +210,7 @@ function Detail() {
         <div className="ml-2">{vest.statusDescription}</div>
       </div>
       <Property title="created by">
-        <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink>
+        <EtherscanLink address={vest.creator}>{vest.creatorDisplay}</EtherscanLink>
       </Property>
       <Property title="started at">
         <div>{new Date(vest.start * 1000).toLocaleString()}</div>

@@ -20,6 +20,7 @@ import {
   useVestClaimedAmounts,
   useVestClaimableAmounts,
   useVestStatuses,
+  useVestDisplayNames,
   useAllVests,
 } from './vests';
 
@@ -37,7 +38,7 @@ function useSystemData() {
   const currentTime = useCurrentTime(currentBlock);
 
   const [generalTokenVestingContract, generalTokenVestingDeploymentBlock] = useGeneralTokenVestingContract();
-  
+
   const [vestIds, vestsLoading] = useVestIds(generalTokenVestingContract, generalTokenVestingDeploymentBlock);
   const vestTokens = useVestTokens(vestIds);
   const vestPeriods = useVestPeriods(generalTokenVestingContract, vestIds);
@@ -47,7 +48,8 @@ function useSystemData() {
   const vestClaimedAmounts = useVestClaimedAmounts(generalTokenVestingContract, vestIds);
   const vestClaimableAmounts = useVestClaimableAmounts(vestIds, vestVestedAmounts, vestClaimedAmounts);
   const vestStatuses = useVestStatuses(vestIds, vestPeriods, vestClaimableAmounts, currentTime);
-  const allVests = useAllVests(vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses);
+  const vestDisplayNames = useVestDisplayNames(vestIds);
+  const allVests = useAllVests(vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, vestDisplayNames);
 
   const data: Data = {
     contracts: {

@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useWeb3 } from '../web3';
 
+export const createAccountSubstring = (account: string) => {
+  return `${account.substring(0, 6)}...${account.slice(-4)}`;
+}
+
 const useDisplayName = (account: string | undefined) => {
   const { provider } = useWeb3();
 
@@ -11,7 +15,7 @@ const useDisplayName = (account: string | undefined) => {
       return;
     }
 
-    setAccountSubstring(`${account.substring(0, 6)}...${account.slice(-4)}`)
+    setAccountSubstring(createAccountSubstring(account))
   }, [account]);
 
   const [ensName, setEnsName] = useState<string>();
