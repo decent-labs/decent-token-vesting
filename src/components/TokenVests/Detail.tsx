@@ -186,6 +186,31 @@ function Detail() {
   const formattedElapsedTime = useFormattedDuration(BigNumber.from(elapsedTime));
   const formattedRemainingTime = useFormattedDuration(BigNumber.from(remainingTime));
 
+  const [releasable, setReleasable] = useState(false);
+  useEffect(() => {
+    if (!vest) {
+      setReleasable(false);
+      return;
+    }
+
+    if (vest.end > currentTime) {
+      setReleasable(true);
+      return;
+    }
+
+    setReleasable(vest.claimableAmount.gt(0));
+  }, [currentTime, vest]);
+
+  const [releaseToable, setReleaseToable] = useState(false);
+  useEffect(() => {
+    if (!account || !releasable) {
+      setReleaseToable(false);
+      return;
+    }
+
+    setReleaseToable(account === beneficiaryAddress);
+  }, [account, beneficiaryAddress, releasable]);
+
   if (!vest) {
     if (loading) {
       return (
@@ -222,8 +247,8 @@ function Detail() {
         symbol={vest.token.symbol}
       />
 
-      {vest.end > currentTime && <ReleaseTokens vest={vest} />}
-      {vest.end > currentTime && account && account === beneficiaryAddress && <ReleaseTokensTo vest={vest} />}
+      {releasable && <ReleaseTokens vest={vest} />}
+      {releaseToable && <ReleaseTokensTo vest={vest} />}
     </div>
   );
 }
