@@ -14,7 +14,7 @@ import Button from '../ui/Button';
 import { Property, AmountProperty } from '../ui/Properties';
 import { useTransaction } from '../../web3/transactions';
 import { useWeb3 } from '../../web3';
-import VestProgress from '../ui/VestProgress';
+import Card from './Card';
 
 function ReleaseTokens({
   vest,
@@ -51,7 +51,7 @@ function ReleaseTokens({
   }
 
   return (
-    <div className="mt-4">
+    <div className="mb-4">
       <Button
         disabled={releaseTokensDisabled}
         onClick={release}
@@ -118,7 +118,7 @@ function ReleaseTokensTo({
   }
 
   return (
-    <div className="mt-4">
+    <div>
       <InputAddress
         title="alternate beneficiary address"
         status={beneficiaryStatus}
@@ -152,44 +152,13 @@ function Detail() {
     setVest(vest);
   }, [vests, params.id]);
 
-  const [beneficiaryAddress, setBeneficiaryAddress] = useState<string>();
-  const [creatorAddress, setCreatorAddress] = useState<string>();
-  const [decimals, setDecimals] = useState<number>();
-  const [totalAmount, setTotalAmount] = useState<BigNumber>();
-  const [claimableAmount, setClaimableAmount] = useState<BigNumber>();
-  const [start, setStart] = useState<number>();
-  const [end, setEnd] = useState<number>();
-
-  useEffect(() => {
-    if (!vest) {
-      setBeneficiaryAddress(undefined);
-      setCreatorAddress(undefined);
-      setDecimals(undefined);
-      setTotalAmount(undefined);
-      setClaimableAmount(undefined);
-      setStart(undefined);
-      setEnd(undefined);
-      return;
-    }
-
-    setBeneficiaryAddress(vest.beneficiary);
-    setCreatorAddress(vest.creator);
-    setDecimals(vest.token.decimals);
-    setTotalAmount(vest.totalAmount);
-    setClaimableAmount(vest.claimableAmount);
-    setStart(vest.start);
-    setEnd(vest.end);
-  }, [vest]);
-
-  const beneficiaryDisplayName = useDisplayName(beneficiaryAddress);
-  const creatorDisplayName = useDisplayName(creatorAddress);
-
-  const totalAmountDisplay = useDisplayAmount(totalAmount, decimals);
-  const claimableAmountDisplay = useDisplayAmount(claimableAmount, decimals);
-
-  const [elapsedTime, remainingTime] = useElapsedRemainingTime(start, end, currentTime);
-  const formattedElapsedTime = useFormattedDuration(BigNumber.from(elapsedTime));
+  const beneficiaryDisplayName = useDisplayName(vest?.beneficiary);
+  const creatorDisplayName = useDisplayName(vest?.creator);
+  const claimableAmountDisplay = useDisplayAmount(vest?.claimableAmount, vest?.token.decimals);
+  const [, remainingTime] = useElapsedRemainingTime(vest?.start, vest?.end, currentTime);
+  const formattedTimeSinceStart = useFormattedDuration(BigNumber.from(currentTime - (vest?.start || 0)));
   const formattedRemainingTime = useFormattedDuration(BigNumber.from(remainingTime));
+  const formattedTimeSinceEnd = useFormattedDuration(BigNumber.from(currentTime - (vest?.end || 0)));
 
   const [releasable, setReleasable] = useState(false);
   useEffect(() => {
@@ -213,8 +182,8 @@ function Detail() {
       return;
     }
 
-    setReleaseToable(account === beneficiaryAddress);
-  }, [account, beneficiaryAddress, releasable]);
+    setReleaseToable(account === vest?.beneficiary);
+  }, [account, releasable, vest?.beneficiary]);
 
   if (!vest) {
     if (loading) {
@@ -229,32 +198,42 @@ function Detail() {
   }
 
   return (
-    <div>
-      <div className="text-xl sm:text-2xl mb-2">{totalAmountDisplay} <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
+    <Card
+      vest={vest}
+      footer={
+        <div>
+          {releasable && (
+            <ReleaseTokens
+              vest={vest}
+              beneficiaryDisplayName={beneficiaryDisplayName}
+            />
+          )}
+          {releaseToable && (
+            <ReleaseTokensTo vest={vest} />
+          )}
+        </div>
+      }
+    >
       <Property title="created by">
         <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink>
       </Property>
       <Property title="started on">
         <div>{new Date(vest.start * 1000).toLocaleString()}</div>
-      </Property>
-      <Property title="elapsed time">
-        <div>{formattedElapsedTime}</div>
+        <div>{formattedTimeSinceStart} ago</div>
       </Property>
       <Property title={vest.end > currentTime ? "ending at" : "ended at"}>
         <div>{new Date(vest.end * 1000).toLocaleString()}</div>
+        {vest.end > currentTime && <div>in {formattedRemainingTime}</div>}
+        {vest.end < currentTime && <div>{formattedTimeSinceEnd} ago</div>}
       </Property>
-      <Property title="remaining time">
-        <div>{formattedRemainingTime}</div>
-      </Property>
-      <AmountProperty
-        title="claimable amount"
-        value={claimableAmountDisplay}
-        symbol={vest.token.symbol}
-      />
-      <VestProgress vest={vest} />
-      {releasable && <ReleaseTokens vest={vest} beneficiaryDisplayName={beneficiaryDisplayName} />}
-      {releaseToable && <ReleaseTokensTo vest={vest} />}
-    </div>
+      {vest.claimableAmount.gt(0) && (
+        <AmountProperty
+          title="claimable amount"
+          value={claimableAmountDisplay}
+          symbol={vest.token.symbol}
+        />
+      )}
+    </Card>
   );
 }
 

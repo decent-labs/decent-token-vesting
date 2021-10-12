@@ -1,8 +1,9 @@
 import { useEffect, useState, JSXElementConstructor } from 'react';
-import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, Redirect, useRouteMatch, Link } from 'react-router-dom';
 import { useData } from '../../../data';
 import { Vest } from '../../../data/vests';
 import Title from '../../ui/Title';
+import Emoji from '../../ui/Emoji';
 import ListMenu from './ListMenu';
 import Card from '../Card';
 import Active from '../Card/Active';
@@ -35,7 +36,16 @@ function CardContainer({
   return (
     <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3">
       {vests.map(v => (
-        <Card key={v.id} vest={v} >
+        <Card
+          key={v.id}
+          vest={v}
+          footer={
+            <Link to={`/vests/${v.id}`} className="flex items-center text-lg sm:text-xl justify-end">
+              <div className="mr-1">view details</div>
+              <Emoji emoji="👉" />
+            </Link>
+          }
+        >
           <CardDetails vest={v} />
         </Card>
       ))}

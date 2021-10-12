@@ -1,7 +1,5 @@
 import { BigNumber } from 'ethers';
-import { Link } from 'react-router-dom';
 import { Vest } from '../../../data/vests';
-import Emoji from '../../ui/Emoji';
 import VestProgress from '../../ui/VestProgress';
 import { AmountProperty } from '../../ui/Properties';
 import EtherscanLink from '../../ui/EtherscanLink';
@@ -12,9 +10,11 @@ import useFormattedDuration from '../../../hooks/useFormattedDuration';
 function Card({
   vest,
   children,
+  footer,
 }: {
   vest: Vest;
   children: React.ReactNode,
+  footer: React.ReactNode,
 }) {
   const beneficiaryDisplayName = useDisplayName(vest.beneficiary);
   const totalAmountDisplay = useDisplayAmount(vest.totalAmount, vest.token.decimals);
@@ -24,7 +24,7 @@ function Card({
 
   return (
     <div className="border rounded p-4 flex flex-col justify-between">
-      <div className="mb-2">
+      <div className="">
         <div className="text-xl sm:text-2xl mb-4"><span className="font-semibold">{totalAmountDisplay}</span> <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink> over <span className="font-semibold">{duration}</span></div>
         {children}
       </div>
@@ -48,10 +48,7 @@ function Card({
             }
           />
         </div>
-        <Link to={`/vests/${vest.id}`} className="flex items-center text-lg sm:text-xl justify-end">
-          <div className="mr-1">view details</div>
-          <Emoji emoji="👉" />
-        </Link>
+        {footer}
       </div>
     </div>
   );
