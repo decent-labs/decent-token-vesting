@@ -83,10 +83,10 @@
   .pink-stripes {
     background: repeating-linear-gradient(
       45deg,
-      #ec4899,
-      #ec4899 10px,
+      #f9a8d4,
       #f9a8d4 10px,
-      #f9a8d4 20px
+      #ec4899 10px,
+      #ec4899 20px
     );
   }
 }
