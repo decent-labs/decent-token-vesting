@@ -4,10 +4,10 @@ import { useData } from '../../../data';
 import { Vest } from '../../../data/vests';
 import Title from '../../ui/Title';
 import ListMenu from './ListMenu';
-import Card from './Card';
-import Active from './Card/Active';
-import Completed from './Card/Completed';
-import OverAndClaimable from './Card/OverAndClaimable';
+import Card from '../Card';
+import Active from '../Card/Active';
+import Completed from '../Card/Completed';
+import OverAndClaimable from '../Card/OverAndClaimable';
 
 function CardContainer({
   vests,

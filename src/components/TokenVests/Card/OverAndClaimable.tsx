@@ -1,6 +1,6 @@
-import { Vest } from '../../../../data/vests';
-import useDisplayAmount from '../../../../hooks/useDisplayAmount';
-import { Property, AmountProperty } from '../../../ui/Properties';
+import { Vest } from '../../../data/vests';
+import useDisplayAmount from '../../../hooks/useDisplayAmount';
+import { Property, AmountProperty } from '../../ui/Properties';
 
 function OverAndClaimable({
   vest,

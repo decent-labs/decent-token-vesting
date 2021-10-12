@@ -1,5 +1,5 @@
-import { Vest } from '../../../../data/vests';
-import { Property } from '../../../ui/Properties';
+import { Vest } from '../../../data/vests';
+import { Property } from '../../ui/Properties';
 
 function Completed({
   vest,
