@@ -1,8 +1,8 @@
 import { useData } from '../../../data';
 import { Vest } from '../../../data/vests';
 import Title from '../../ui/Title';
-import ContainerItem from '../ContainerItem';
-import Stub from '../Stub';
+import ContainerItem from './ContainerItem';
+import Stub from './Stub';
 import ListMenu from './ListMenu';
 
 function VestsContainer({

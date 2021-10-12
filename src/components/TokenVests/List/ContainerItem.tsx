@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Vest } from '../../data/vests';
-import Emoji from '../ui/Emoji';
-import VestProgress from '../ui/VestProgress';
-import { AmountProperty } from '../ui/Properties';
-import EtherscanLink from '../ui/EtherscanLink';
-import useDisplayAmount from '../../hooks/useDisplayAmount';
-import useDisplayName from '../../hooks/useDisplayName';
+import { Vest } from '../../../data/vests';
+import Emoji from '../../ui/Emoji';
+import VestProgress from '../../ui/VestProgress';
+import { AmountProperty } from '../../ui/Properties';
+import EtherscanLink from '../../ui/EtherscanLink';
+import useDisplayAmount from '../../../hooks/useDisplayAmount';
+import useDisplayName from '../../../hooks/useDisplayName';
 
 function ContainerItem({
   vest,

@@ -1,10 +1,10 @@
 import { BigNumber } from 'ethers';
-import { Vest } from '../../data/vests';
-import useDisplayAmount from '../../hooks/useDisplayAmount';
-import { Property, AmountProperty } from '../ui/Properties';
-import useElapsedRemainingTime from '../../hooks/useElapsedRemainingTime';
-import { useData } from '../../data';
-import useFormattedDuration from '../../hooks/useFormattedDuration';
+import { Vest } from '../../../data/vests';
+import useDisplayAmount from '../../../hooks/useDisplayAmount';
+import { Property, AmountProperty } from '../../ui/Properties';
+import useElapsedRemainingTime from '../../../hooks/useElapsedRemainingTime';
+import { useData } from '../../../data';
+import useFormattedDuration from '../../../hooks/useFormattedDuration';
 
 function Stub({
   vest,
