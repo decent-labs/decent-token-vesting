@@ -26,10 +26,10 @@ const useDisplayName = (account: string | undefined) => {
       .catch(console.error);
   }, [account, provider]);
 
-  const [displayName, setDisplayName] = useState<string>();
+  const [displayName, setDisplayName] = useState<string>("");
   useEffect(() => {
     if (!accountSubstring) {
-      setDisplayName(undefined);
+      setDisplayName("");
       return;
     }
 
