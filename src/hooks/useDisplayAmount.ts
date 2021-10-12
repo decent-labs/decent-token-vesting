@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import numeral from 'numeral';
 
-const useDisplayAmount = (amount: BigNumber | undefined, decimals: number | undefined) => {
+const useDisplayAmount = (amount: BigNumber | undefined, decimals: number | undefined, fillZeros: boolean = false) => {
   const [displayAmount, setDisplayAmount] = useState<string>();
 
   useEffect(() => {
@@ -12,11 +12,16 @@ const useDisplayAmount = (amount: BigNumber | undefined, decimals: number | unde
     }
 
     const amountString = ethers.utils.formatUnits(amount, decimals);
-    const [before, after] = amountString.split('.');
-    const beforeFormatted = numeral(before).format('0,0');
+    const [before, after] = amountString.split(".");
+    const beforeFormatted = numeral(before).format("0,0");
 
-    setDisplayAmount(`${beforeFormatted}.${after}`);
-  }, [amount, decimals]);
+    let afterFormatted = after;
+    if (fillZeros) {
+      afterFormatted = after.padEnd(decimals, "0");
+    }
+
+    setDisplayAmount(`${beforeFormatted}.${afterFormatted}`);
+  }, [amount, decimals, fillZeros]);
 
   return displayAmount;
 }
