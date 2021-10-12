@@ -38,7 +38,7 @@ function useSystemData() {
 
   const [generalTokenVestingContract, generalTokenVestingDeploymentBlock] = useGeneralTokenVestingContract();
 
-  const [vestIds, vestsLoading] = useVestIds(generalTokenVestingContract, generalTokenVestingDeploymentBlock, currentBlock);
+  const [vestIds, vestIdsLoading] = useVestIds(generalTokenVestingContract, generalTokenVestingDeploymentBlock, currentBlock);
   const vestTokens = useVestTokens(vestIds);
   const vestPeriods = useVestPeriods(generalTokenVestingContract, vestIds);
   const vestTotalAmounts = useVestTotalAmounts(generalTokenVestingContract, vestIds);
@@ -48,7 +48,7 @@ function useSystemData() {
   const vestClaimableAmounts = useVestClaimableAmounts(vestIds, vestVestedAmounts, vestClaimedAmounts);
   const vestStatuses = useVestStatuses(vestIds, vestPeriods, vestClaimableAmounts, currentTime);
   const vestDisplayNames = useVestDisplayNames(vestIds);
-  const allVests = useAllVests(vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, vestDisplayNames);
+  const [allVests, vestsLoading] = useAllVests(vestIdsLoading, vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, vestDisplayNames);
 
   const data: Data = {
     contracts: {

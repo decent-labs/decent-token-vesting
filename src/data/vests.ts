@@ -682,6 +682,7 @@ const useVestDisplayNames = (vestIds: VestId[]) => {
 }
 
 const useAllVests = (
+  idsLoading: boolean,
   vestIds: VestId[],
   vestTokens: ERC20Token[],
   vestPeriods: VestPeriod[],
@@ -693,7 +694,22 @@ const useAllVests = (
   vestDisplayNames: VestDisplayName[],
 ) => {
   const [allVests, setAllVests] = useState<Vest[]>([]);
+  const [loading, setLoading] = useState(true);
   const { provider } = useWeb3();
+
+  useEffect(() => {
+    if (idsLoading) {
+      setLoading(true);
+      return;
+    }
+
+    if (vestIds.length > 0 && allVests.length === 0) {
+      setLoading(true);
+      return;
+    }
+
+    setLoading(false);
+  }, [allVests.length, idsLoading, vestIds.length]);
 
   useEffect(() => {
     if (!provider) {
@@ -768,7 +784,7 @@ const useAllVests = (
     setAllVests(sorted);
   }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, vestDisplayNames, provider]);
 
-  return allVests;
+  return [allVests, loading] as const;
 }
 
 export {
