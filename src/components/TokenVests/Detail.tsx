@@ -18,8 +18,10 @@ import VestProgress from '../ui/VestProgress';
 
 function ReleaseTokens({
   vest,
+  beneficiaryDisplayName,
 }: {
-  vest: Vest
+  vest: Vest,
+  beneficiaryDisplayName: string,
 }) {
   const { contracts: { generalTokenVesting } } = useData();
   const [releaseCall, releasePending] = useTransaction();
@@ -54,7 +56,7 @@ function ReleaseTokens({
         disabled={releaseTokensDisabled}
         onClick={release}
       >
-        release tokens
+        release tokens to {beneficiaryDisplayName}
       </Button>
     </div>
   );
@@ -63,7 +65,7 @@ function ReleaseTokens({
 function ReleaseTokensTo({
   vest,
 }: {
-  vest: Vest
+  vest: Vest,
 }) {
   const { contracts: { generalTokenVesting } } = useData();
   const [releaseToCall, releaseToPending] = useTransaction();
@@ -85,6 +87,8 @@ function ReleaseTokensTo({
 
     setBeneficiaryStatus("");
   }, [validBeneficiaryAddress]);
+
+  const recipient = useDisplayName(beneficiaryAddress);
 
   const [releaseTokensToDisabled, setReleaseTokensToDisabled] = useState(true);
   useEffect(() => {
@@ -116,7 +120,7 @@ function ReleaseTokensTo({
   return (
     <div className="mt-4">
       <InputAddress
-        title="beneficiary address"
+        title="alternate beneficiary address"
         status={beneficiaryStatus}
         value={beneficiaryAddressInput}
         disabled={releaseToPending || vest.claimableAmount.eq(0)}
@@ -126,7 +130,7 @@ function ReleaseTokensTo({
         disabled={releaseTokensToDisabled}
         onClick={releaseTo}
       >
-        release tokens to
+        release tokens{!releaseTokensToDisabled ? ` to ${recipient}` : ""}
       </Button>
     </div>
   );
@@ -248,7 +252,7 @@ function Detail() {
         symbol={vest.token.symbol}
       />
       <VestProgress vest={vest} />
-      {releasable && <ReleaseTokens vest={vest} />}
+      {releasable && <ReleaseTokens vest={vest} beneficiaryDisplayName={beneficiaryDisplayName} />}
       {releaseToable && <ReleaseTokensTo vest={vest} />}
     </div>
   );
