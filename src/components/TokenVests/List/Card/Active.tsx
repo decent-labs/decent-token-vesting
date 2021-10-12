@@ -15,15 +15,11 @@ function Active({
 
   const claimableAmountDisplay = useDisplayAmount(vest.claimableAmount, vest.token.decimals, true);
 
-  const [elapsedTime, remainingTime] = useElapsedRemainingTime(vest.start, vest.end, currentTime);
-  const formattedElapsedTime = useFormattedDuration(BigNumber.from(elapsedTime));
+  const [, remainingTime] = useElapsedRemainingTime(vest.start, vest.end, currentTime);
   const formattedRemainingTime = useFormattedDuration(BigNumber.from(remainingTime));
 
   return (
     <div className="mb-2">
-      <Property title="elapsed time">
-        <div>{formattedElapsedTime}</div>
-      </Property>
       <Property title="remaining time">
         <div>{formattedRemainingTime}</div>
       </Property>

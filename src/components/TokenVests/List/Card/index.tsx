@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { Link } from 'react-router-dom';
 import { Vest } from '../../../../data/vests';
 import Emoji from '../../../ui/Emoji';
@@ -6,6 +7,7 @@ import { AmountProperty } from '../../../ui/Properties';
 import EtherscanLink from '../../../ui/EtherscanLink';
 import useDisplayAmount from '../../../../hooks/useDisplayAmount';
 import useDisplayName from '../../../../hooks/useDisplayName';
+import useFormattedDuration from '../../../../hooks/useFormattedDuration';
 
 function Card({
   vest,
@@ -18,11 +20,12 @@ function Card({
   const totalAmountDisplay = useDisplayAmount(vest.totalAmount, vest.token.decimals);
   const totalVestedAmountDisplay = useDisplayAmount(vest.totalVestedAmount, vest.token.decimals, true);
   const claimedAmountDisplay = useDisplayAmount(vest.claimedAmount, vest.token.decimals, true);
+  const duration = useFormattedDuration(BigNumber.from(vest.end - vest.start));
 
   return (
     <div className="border rounded p-4 flex flex-col justify-between">
       <div className="mb-2">
-        <div className="text-xl sm:text-2xl mb-2">{totalAmountDisplay} <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
+        <div className="text-xl sm:text-2xl mb-2"><span className="font-semibold">{totalAmountDisplay}</span> <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink> over <span className="font-semibold">{duration}</span></div>
         <div>{children}</div>
       </div>
       <div>
