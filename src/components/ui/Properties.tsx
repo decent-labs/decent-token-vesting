@@ -8,7 +8,7 @@ function Property({
   return (
     <div className="my-4">
       <div className="text-lg sm:text-xl">{title}</div>
-      {children}
+      <div className="ml-4">{children}</div>
     </div>
   );
 }
