@@ -23,4 +23,9 @@ const useData = () => {
   return useContext(dataContext);
 };
 
-export { DataProvider, useData };
+const resetApp = () => {
+  localStorage.removeItem("vests");
+  window.location.reload();
+}
+
+export { DataProvider, useData, resetApp };

@@ -1,5 +1,5 @@
 import packageJson from '../../../package.json'
-import { useData } from '../../data';
+import { useData, resetApp } from '../../data';
 import { useWeb3 } from '../../web3';
 import EtherscanLink from '../ui/EtherscanLink';
 
@@ -15,6 +15,7 @@ function Footer() {
           <div><EtherscanLink address={`${generalTokenVesting?.address}#code`}>view on etherscan</EtherscanLink></div>
         </div>
         <div className="text-right">
+          <button onClick={() => resetApp()}>reset app</button>
           {loading && (
             <div>...syncing in background</div>
           )}
