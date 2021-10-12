@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { BigNumber } from 'ethers';
 import {
@@ -103,7 +103,7 @@ export type Vest = {
 }
 
 const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploymentBlock: number | undefined) => {
-  const { provider } = useWeb3();
+  const { provider, chainId } = useWeb3();
   const [vestIds, setVestIds] = useState<VestId[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -146,9 +146,74 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
     }
   }, [endBlock, deploymentBlock]);
 
+  const addToLocalStorage = useCallback((chainId: number, vestIds: VestId[]) => {
+    let existingDataString = localStorage.getItem("vests");
+    if (!existingDataString) {
+      existingDataString = JSON.stringify({ [chainId]: [] });
+    }
+
+    const existingData = JSON.parse(existingDataString) as { [chainId: number]: VestId[] };
+
+    const newIds = vestIds.filter(id => {
+      return !existingData[chainId].some(v => v.id === id.id);
+    });
+
+    if (newIds.length === 0) {
+      return;
+    }
+
+    const allIds = [...existingData[chainId], ...newIds];
+
+    localStorage.setItem("vests", JSON.stringify({
+      [chainId]: allIds,
+    }));
+
+    setVestIds(allIds);
+  }, []);
+
+  const removeFromLocalStorage = useCallback((chainId: number, vestIds: VestId[]) => {
+    let existingDataString = localStorage.getItem("vests");
+    if (!existingDataString) {
+      return;
+    }
+
+    const existingData = JSON.parse(existingDataString) as { [chainId: number]: VestId[] };
+
+    const noBadItems = existingData[chainId].filter(id => {
+      return !vestIds.some(v => v.id === id.id);
+    });
+
+    localStorage.setItem("vests", JSON.stringify({
+      [chainId]: noBadItems,
+    }));
+
+    setVestIds(noBadItems);
+  }, []);
+
   useEffect(() => {
-    if (!generalTokenVesting || !allVestsFilter || endBlock === undefined || deploymentBlock === undefined) {
-      setVestIds([]);
+    let existingDataString = localStorage.getItem("vests");
+    if (!existingDataString || !chainId || !generalTokenVesting) {
+      return;
+    }
+
+    const existingData = JSON.parse(existingDataString) as { [chainId: number]: VestId[] };
+
+    Promise.all(existingData[chainId].map(id => Promise.all([id, generalTokenVesting.getStart(id.token, id.beneficiary)])))
+      .then(startTimes => {
+        const valid = startTimes.filter(([, startTime]) => startTime.gt(0));
+        const invalid = startTimes.filter(([, startTime]) => startTime.eq(0));
+
+        if (invalid.length > 0) {
+          removeFromLocalStorage(chainId, invalid.map(([id]) => id));
+        }
+
+        setVestIds(valid.map(([id]) => id));
+      })
+      .catch(console.error);
+  }, [chainId, generalTokenVesting, removeFromLocalStorage]);
+
+  useEffect(() => {
+    if (!generalTokenVesting || !allVestsFilter || endBlock === undefined || deploymentBlock === undefined || !chainId) {
       return;
     }
 
@@ -161,7 +226,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
       startBlock = deploymentBlock;
     }
 
-    const addVests = (vestEvents: VestStartedEvent[]) => {
+    const addVests = (vestEvents: VestStartedEvent[], chainId: number) => {
       Promise.all(vestEvents.map(vestEvent => Promise.all([vestEvent, vestEvent.getTransaction()])))
         .then(vests => {
           const sortedVests = vests
@@ -173,10 +238,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
               creator: transaction.from,
             }));
 
-          setVestIds(allVests => {
-            const newAllVests = [...(allVests || []), ...sortedVests];
-            return newAllVests;
-          });
+          addToLocalStorage(chainId, sortedVests);
         })
         .catch(console.error);
     }
@@ -184,7 +246,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
     generalTokenVesting.queryFilter(allVestsFilter, startBlock, endBlock)
       .then(newVests => {
         if (newVests.length > 0) {
-          addVests(newVests);
+          addVests(newVests, chainId);
         }
       })
       .then(() => {
@@ -202,38 +264,36 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
         });
       })
       .catch(console.error);
-  }, [allVestsFilter, deploymentBlock, endBlock, generalTokenVesting, queryPageSize]);
+  }, [allVestsFilter, deploymentBlock, endBlock, generalTokenVesting, queryPageSize, chainId, addToLocalStorage]);
 
   useEffect(() => {
-    if (!generalTokenVesting || !allVestsFilter) {
-      setVestIds([]);
+    if (!generalTokenVesting || !allVestsFilter || !chainId) {
       return;
     }
 
-    const addVest = (_: string, __: string, ___: BigNumber, vestEvent: VestStartedEvent) => {
-      vestEvent.getTransaction()
-        .then(transaction => {
-          const newVestId = {
-            id: `${vestEvent.args.token}-${vestEvent.args.beneficiary}`,
-            token: vestEvent.args.token,
-            beneficiary: vestEvent.args.beneficiary,
-            creator: transaction.from,
-          };
-
-          setVestIds(vestIds => {
-            const newVestIds = [newVestId, ...(vestIds || [])];
-            return newVestIds;
-          });
-        })
-        .catch(console.error);
+    const addVest = (chainId: number) => {
+      return (_: string, __: string, ___: BigNumber, vestEvent: VestStartedEvent) => {
+        vestEvent.getTransaction()
+          .then(transaction => {
+            const newVestId = {
+              id: `${vestEvent.args.token}-${vestEvent.args.beneficiary}`,
+              token: vestEvent.args.token,
+              beneficiary: vestEvent.args.beneficiary,
+              creator: transaction.from,
+            };
+            addToLocalStorage(chainId, [newVestId]);
+          })
+          .catch(console.error);
+      }
     }
 
-    generalTokenVesting.on(allVestsFilter, addVest);
+    const addVestCallback = addVest(chainId);
+    generalTokenVesting.on(allVestsFilter, addVestCallback);
 
     return () => {
-      generalTokenVesting.off(allVestsFilter, addVest);
+      generalTokenVesting.off(allVestsFilter, addVestCallback);
     }
-  }, [allVestsFilter, generalTokenVesting]);
+  }, [allVestsFilter, generalTokenVesting, chainId, addToLocalStorage]);
 
   return [vestIds, loading] as const;
 }
@@ -665,7 +725,9 @@ const useAllVests = (
       return vest;
     }).filter(v => v !== undefined) as Vest[];
 
-    setAllVests(vests);
+    const sorted = vests.sort((a, b) => b.start - a.start);
+
+    setAllVests(sorted);
   }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, vestDisplayNames, provider]);
 
   return allVests;
