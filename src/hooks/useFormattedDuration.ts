@@ -18,7 +18,7 @@ const useFormattedDuration = (duration: BigNumber | undefined) => {
     const dDisplay = d.gt(0) ? d.toString() + (d.eq(1) ? " day, " : " days, ") : "";
     const hDisplay = h.gt(0) ? h.toString() + (h.eq(1) ? " hour, " : " hours, ") : "";
     const mDisplay = m.gt(0) ? m.toString() + (m.eq(1) ? " minute, " : " minutes, ") : "";
-    const sDisplay = s.toString() + (s.eq(1) ? " second" : " seconds");
+    const sDisplay = s.gt(0) ? s.toString() + (s.eq(1) ? " second" : " seconds") : "";
 
     const display = (dDisplay + hDisplay + mDisplay + sDisplay).trim().replace(/,\s*$/, "");
 
