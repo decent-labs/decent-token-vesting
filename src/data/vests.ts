@@ -101,29 +101,37 @@ export type Vest = {
   statusDescription: string,
 }
 
-const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploymentBlock: number | undefined) => {
+type LocalStorageVests = {
+  [chainId: number]: {
+    syncedUntilBlock: number,
+    ids: VestId[],
+  },
+}
+
+const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploymentBlock: number | undefined, currentBlock: number | undefined) => {
   const { provider, chainId } = useWeb3();
   const [vestIds, setVestIds] = useState<VestId[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [queryPageSize] = useState(10000);
-  const [endBlock, setEndBlock] = useState<number>();
+  const [syncToBlock, setSyncToBlock] = useState<number>();
+  const [syncedUntilBlock, setSyncedUntilBlock] = useState<number>();
   const [allVestsFilter, setAllVestsFilter] = useState<TypedEventFilter<[string, string, BigNumber], { token: string; beneficiary: string; amount: BigNumber; }>>();
 
   useEffect(() => {
     if (!provider) {
-      setEndBlock(undefined);
+      setSyncToBlock(undefined);
       return;
     }
 
-    if (endBlock !== undefined) {
+    if (syncToBlock !== undefined) {
       return;
     }
 
     provider.getBlockNumber()
-      .then(setEndBlock)
+      .then(setSyncToBlock)
       .catch(console.error);
-  }, [endBlock, provider]);
+  }, [syncToBlock, provider]);
 
   useEffect(() => {
     if (!generalTokenVesting) {
@@ -135,59 +143,95 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
   }, [generalTokenVesting]);
 
   useEffect(() => {
-    if (endBlock === undefined || deploymentBlock === undefined) {
+    if (!syncToBlock || !syncedUntilBlock) {
       setLoading(true);
       return;
     }
 
-    if (endBlock === deploymentBlock) {
+    if (syncToBlock === syncedUntilBlock) {
       setLoading(false);
     }
-  }, [endBlock, deploymentBlock]);
+  }, [syncToBlock, syncedUntilBlock]);
 
-  const addToLocalStorage = useCallback((chainId: number, vestIds: VestId[]) => {
-    let existingDataString = localStorage.getItem("vests");
-    if (!existingDataString) {
-      existingDataString = JSON.stringify({ [chainId]: [] });
+  useEffect(() => {
+    if (!!syncedUntilBlock || !chainId || !deploymentBlock) {
+      return;
     }
 
-    const existingData = JSON.parse(existingDataString) as { [chainId: number]: VestId[] };
+    let dataString = localStorage.getItem("vests");
+    if (!dataString) {
+      setSyncedUntilBlock(deploymentBlock - 1);
+      return;
+    }
+
+    const data = JSON.parse(dataString) as LocalStorageVests;
+
+    setSyncedUntilBlock(data[chainId].syncedUntilBlock);
+  }, [chainId, deploymentBlock, syncedUntilBlock]);
+
+  const addVestIdsToLocalStorage = useCallback((chainId: number, vestIds: VestId[]) => {
+    let dataString = localStorage.getItem("vests");
+    if (!dataString) {
+      dataString = JSON.stringify({ [chainId]: { syncedUntilBlock: deploymentBlock, ids: vestIds } });
+    }
+
+    const data = JSON.parse(dataString) as LocalStorageVests;
 
     const newIds = vestIds.filter(id => {
-      return !existingData[chainId].some(v => v.id === id.id);
+      return !data[chainId].ids.some(v => v.id === id.id);
     });
 
     if (newIds.length === 0) {
       return;
     }
 
-    const allIds = [...existingData[chainId], ...newIds];
+    data[chainId].ids = [...data[chainId].ids, ...newIds];
 
-    localStorage.setItem("vests", JSON.stringify({
-      [chainId]: allIds,
-    }));
+    localStorage.setItem("vests", JSON.stringify(data));
 
-    setVestIds(allIds);
-  }, []);
+    setVestIds(data[chainId].ids);
+  }, [deploymentBlock]);
 
   const removeFromLocalStorage = useCallback((chainId: number, vestIds: VestId[]) => {
-    let existingDataString = localStorage.getItem("vests");
-    if (!existingDataString) {
+    let dataString = localStorage.getItem("vests");
+    if (!dataString) {
       return;
     }
 
-    const existingData = JSON.parse(existingDataString) as { [chainId: number]: VestId[] };
+    const data = JSON.parse(dataString) as LocalStorageVests;
 
-    const noBadItems = existingData[chainId].filter(id => {
+    const noBadItems = data[chainId].ids.filter(id => {
       return !vestIds.some(v => v.id === id.id);
     });
 
-    localStorage.setItem("vests", JSON.stringify({
-      [chainId]: noBadItems,
-    }));
+    data[chainId].ids = noBadItems;
+
+    localStorage.setItem("vests", JSON.stringify(data));
 
     setVestIds(noBadItems);
   }, []);
+
+  const updateSyncedUntilInLocalStorage = useCallback((chainId: number, syncedUntilBlock: number) => {
+    let dataString = localStorage.getItem("vests");
+    if (!dataString) {
+      dataString = JSON.stringify({ [chainId]: { syncedUntilBlock: syncedUntilBlock, ids: [] } });
+    }
+
+    const data = JSON.parse(dataString) as LocalStorageVests;
+    data[chainId].syncedUntilBlock = syncedUntilBlock;
+
+    localStorage.setItem("vests", JSON.stringify(data));
+
+    setSyncedUntilBlock(syncedUntilBlock);
+  }, []);
+
+  useEffect(() => {
+    if (loading || !chainId || !currentBlock) {
+      return;
+    }
+
+    updateSyncedUntilInLocalStorage(chainId, currentBlock);
+  }, [chainId, currentBlock, loading, updateSyncedUntilInLocalStorage]);
 
   useEffect(() => {
     let existingDataString = localStorage.getItem("vests");
@@ -195,9 +239,9 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
       return;
     }
 
-    const existingData = JSON.parse(existingDataString) as { [chainId: number]: VestId[] };
+    const data = JSON.parse(existingDataString) as LocalStorageVests;
 
-    Promise.all(existingData[chainId].map(id => Promise.all([id, generalTokenVesting.getStart(id.token, id.beneficiary)])))
+    Promise.all(data[chainId].ids.map(id => Promise.all([id, generalTokenVesting.getStart(id.token, id.beneficiary)])))
       .then(startTimes => {
         const valid = startTimes.filter(([, startTime]) => startTime.gt(0));
         const invalid = startTimes.filter(([, startTime]) => startTime.eq(0));
@@ -212,24 +256,29 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
   }, [chainId, generalTokenVesting, removeFromLocalStorage]);
 
   useEffect(() => {
-    if (!generalTokenVesting || !allVestsFilter || endBlock === undefined || deploymentBlock === undefined || !chainId) {
+    if (
+      !syncToBlock ||
+      !generalTokenVesting ||
+      !allVestsFilter ||
+      !syncedUntilBlock ||
+      deploymentBlock === undefined ||
+      !chainId ||
+      !loading ||
+      syncToBlock === syncedUntilBlock
+    ) {
       return;
     }
 
-    if (endBlock === deploymentBlock) {
-      return;
-    }
-
-    let startBlock = endBlock - queryPageSize + 1;
-    if (startBlock < deploymentBlock) {
-      startBlock = deploymentBlock;
+    let startBlock = syncedUntilBlock + 1;
+    let endBlock = syncedUntilBlock + queryPageSize;
+    if (endBlock > syncToBlock) {
+      endBlock = syncToBlock;
     }
 
     const addVests = (vestEvents: VestStartedEvent[], chainId: number) => {
       Promise.all(vestEvents.map(vestEvent => Promise.all([vestEvent, vestEvent.getTransaction()])))
         .then(vests => {
-          const sortedVests = vests
-            .sort(([aEvent], [bEvent]) => bEvent.blockNumber - aEvent.blockNumber)
+          const newVests = vests
             .map(([vestEvent, transaction]) => ({
               id: `${vestEvent.args.token}-${vestEvent.args.beneficiary}`,
               token: vestEvent.args.token,
@@ -237,7 +286,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
               creator: transaction.from,
             }));
 
-          addToLocalStorage(chainId, sortedVests);
+          addVestIdsToLocalStorage(chainId, newVests);
         })
         .catch(console.error);
     }
@@ -247,23 +296,10 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
         if (newVests.length > 0) {
           addVests(newVests, chainId);
         }
-      })
-      .then(() => {
-        setEndBlock(endBlock => {
-          if (!endBlock) {
-            return undefined;
-          }
-
-          let newEndBlock = endBlock - queryPageSize;
-          if (newEndBlock < deploymentBlock) {
-            newEndBlock = deploymentBlock;
-          }
-
-          return newEndBlock;
-        });
+        updateSyncedUntilInLocalStorage(chainId, endBlock);
       })
       .catch(console.error);
-  }, [allVestsFilter, deploymentBlock, endBlock, generalTokenVesting, queryPageSize, chainId, addToLocalStorage]);
+  }, [addVestIdsToLocalStorage, allVestsFilter, chainId, syncToBlock, deploymentBlock, generalTokenVesting, loading, queryPageSize, syncedUntilBlock, updateSyncedUntilInLocalStorage]);
 
   useEffect(() => {
     if (!generalTokenVesting || !allVestsFilter || !chainId) {
@@ -280,7 +316,10 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
               beneficiary: vestEvent.args.beneficiary,
               creator: transaction.from,
             };
-            addToLocalStorage(chainId, [newVestId]);
+            addVestIdsToLocalStorage(chainId, [newVestId]);
+            if (transaction.blockNumber && !loading) {
+              updateSyncedUntilInLocalStorage(chainId, transaction.blockNumber);
+            }
           })
           .catch(console.error);
       }
@@ -292,7 +331,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
     return () => {
       generalTokenVesting.off(allVestsFilter, addVestCallback);
     }
-  }, [allVestsFilter, generalTokenVesting, chainId, addToLocalStorage]);
+  }, [allVestsFilter, generalTokenVesting, chainId, addVestIdsToLocalStorage, updateSyncedUntilInLocalStorage, loading]);
 
   return [vestIds, loading] as const;
 }
