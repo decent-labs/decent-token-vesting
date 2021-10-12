@@ -15,6 +15,7 @@ import { Property, AmountProperty } from '../ui/Properties';
 import { useTransaction } from '../../web3/transactions';
 import { useWeb3 } from '../../web3';
 import Card from './Card';
+import Emoji from '../ui/Emoji';
 
 function ReleaseTokens({
   vest,
@@ -160,6 +161,27 @@ function Detail() {
   const formattedRemainingTime = useFormattedDuration(BigNumber.from(remainingTime));
   const formattedTimeSinceEnd = useFormattedDuration(BigNumber.from(currentTime - (vest?.end || 0)));
 
+  const [status, setStatus] = useState("");
+  const [statusEmoji, setStatusEmoji] = useState("");
+  useEffect(() => {
+    if (!vest) {
+      setStatus("");
+      setStatusEmoji("");
+      return;
+    }
+
+    if (currentTime < vest.end) {
+      setStatus("active");
+      setStatusEmoji("💃");
+    } else if (currentTime >= vest.end && vest.claimableAmount.gt(0)) {
+      setStatus("over and claimable");
+      setStatusEmoji("🤏");
+    } else {
+      setStatus("completed");
+      setStatusEmoji("🤝");
+    }
+  }, [currentTime, vest]);
+
   const [releasable, setReleasable] = useState(false);
   useEffect(() => {
     if (!vest) {
@@ -214,6 +236,10 @@ function Detail() {
         </div>
       }
     >
+      <div className="flex items-center text-xl sm:text-2xl">
+        <Emoji emoji={statusEmoji} big />
+        <div className="ml-2">{status}</div>
+      </div>
       <Property title="created by">
         <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink>
       </Property>
