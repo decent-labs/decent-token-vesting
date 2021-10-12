@@ -14,6 +14,7 @@ import Button from '../ui/Button';
 import { Property, AmountProperty } from '../ui/Properties';
 import { useTransaction } from '../../web3/transactions';
 import { useWeb3 } from '../../web3';
+import VestProgress from '../ui/VestProgress';
 
 function ReleaseTokens({
   vest,
@@ -246,7 +247,7 @@ function Detail() {
         value={claimableAmountDisplay}
         symbol={vest.token.symbol}
       />
-
+      <VestProgress vest={vest} />
       {releasable && <ReleaseTokens vest={vest} />}
       {releaseToable && <ReleaseTokensTo vest={vest} />}
     </div>
