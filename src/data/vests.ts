@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { BigNumber, constants } from 'ethers';
+import { BigNumber } from 'ethers';
 import {
   GeneralTokenVesting,
   IERC20Metadata, IERC20Metadata__factory,
@@ -561,79 +561,65 @@ const useAllVests = (
       return;
     }
 
-    setAllVests(vestIds.map(vestId => {
-      let token: ERC20Token = {
-        address: constants.AddressZero,
-        instance: IERC20Metadata__factory.connect(constants.AddressZero, provider),
-        name: "...",
-        symbol: "...",
-        decimals: 0,
-      };
+    const potentialVests = vestIds.map(vestId => {
       const vestToken = vestTokens.find(t => t.address === vestId.token);
-      if (vestToken) {
-        token = vestToken;
+      if (!vestToken) {
+        return undefined;
       }
 
-      let periodStart = 0;
-      let periodEnd = 0;
       const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
-      if (vestPeriod) {
-        periodStart = vestPeriod.start;
-        periodEnd = vestPeriod.end;
+      if (!vestPeriod) {
+        return undefined;
+        
       }
 
-      let totalAmount = BigNumber.from(0);
       const vestTotalAmount = vestTotalAmounts.find(t => t.vestId.id === vestId.id);
-      if (vestTotalAmount) {
-        totalAmount = vestTotalAmount.totalAmount;
+      if (!vestTotalAmount) {
+        return undefined;
       }
 
-      let vestedAmount = BigNumber.from(0);
       const vestVestedAmount = vestVestedAmounts.find(a => a.vestId.id === vestId.id);
-      if (vestVestedAmount) {
-        vestedAmount = vestVestedAmount.vestedAmount;
+      if (!vestVestedAmount) {
+        return undefined;
       }
 
-      let claimedAmount = BigNumber.from(0);
       const vestClaimedAmount = vestClaimedAmounts.find(r => r.vestId.id === vestId.id);
-      if (vestClaimedAmount) {
-        claimedAmount = vestClaimedAmount.claimedAmount;
+      if (!vestClaimedAmount) {
+        return undefined;
       }
 
-      let claimableAmount = BigNumber.from(0);
       const vestClaimableAmount = vestClaimableAmounts.find(r => r.vestId.id === vestId.id);
-      if (vestClaimableAmount) {
-        claimableAmount = vestClaimableAmount.claimableAmount;
+      if (!vestClaimableAmount) {
+        return undefined;
       }
 
-      let statusType = VestStatusType.Unknown;
-      let statusEmoji ="🤷‍♂️";
-      let statusDescription = "unknown";
       const vestStatus = vestStatuses.find(s => s.vestId.id === vestId.id);
-      if (vestStatus) {
-        statusType = vestStatus.statusType;
-        statusEmoji = vestStatus.statusEmoji;
-        statusDescription = vestStatus.statusDescription;
+      if (!vestStatus) {
+        return undefined;
       }
 
       const vest: Vest = {
         id: vestId.id,
         beneficiary: vestId.beneficiary,
-        token: token,
+        token: vestToken,
         creator: vestId.creator,
-        start: periodStart,
-        end: periodEnd,
-        totalAmount: totalAmount,
-        vestedAmount: vestedAmount,
-        claimedAmount: claimedAmount,
-        claimableAmount: claimableAmount,
-        statusType: statusType,
-        statusEmoji: statusEmoji,
-        statusDescription: statusDescription,
+        start: vestPeriod.start,
+        end: vestPeriod.end,
+        totalAmount: vestTotalAmount.totalAmount,
+        vestedAmount: vestVestedAmount.vestedAmount,
+        claimedAmount: vestClaimedAmount.claimedAmount,
+        claimableAmount: vestClaimableAmount.claimableAmount,
+        statusType: vestStatus.statusType,
+        statusEmoji: vestStatus.statusEmoji,
+        statusDescription: vestStatus.statusDescription,
       };
 
       return vest;
-    }));
+    });
+
+    const vests = potentialVests.filter(v => v !== undefined) as Vest[];
+
+    setAllVests(vests);
   }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, provider]);
 
   return allVests;
