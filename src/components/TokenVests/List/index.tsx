@@ -93,8 +93,8 @@ function List({
 
   useEffect(() => {
     setActive(vests.filter(v => currentTime < v.end));
-    setOverAndClaimable(vests.filter(v => currentTime > v.end && v.claimableAmount.gt(0)));
-    setCompleted(vests.filter(v => currentTime > v.end && v.claimableAmount.eq(0)));
+    setOverAndClaimable(vests.filter(v => currentTime >= v.end && v.claimableAmount.gt(0)));
+    setCompleted(vests.filter(v => currentTime >= v.end && v.claimableAmount.eq(0)));
   }, [currentTime, vests]);
 
   return (
