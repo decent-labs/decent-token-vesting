@@ -15,7 +15,7 @@ function Completed({
 
   return (
     <div>
-      <Property title="ended on">
+      <Property title="ended at">
         <div>{new Date(vest.end * 1000).toLocaleString()}</div>
         <div>{formattedTimeSinceEnd} ago</div>
       </Property>

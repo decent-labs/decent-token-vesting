@@ -243,7 +243,7 @@ function Detail() {
       <Property title="created by">
         <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink>
       </Property>
-      <Property title="started on">
+      <Property title="started at">
         <div>{new Date(vest.start * 1000).toLocaleString()}</div>
         <div>{formattedTimeSinceStart} ago</div>
       </Property>
