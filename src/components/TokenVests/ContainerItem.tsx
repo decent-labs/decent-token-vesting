@@ -3,7 +3,9 @@ import { Vest } from '../../data/vests';
 import Emoji from '../ui/Emoji';
 import VestProgress from '../ui/VestProgress';
 import { AmountProperty } from '../ui/Properties';
+import EtherscanLink from '../ui/EtherscanLink';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
+import useDisplayName from '../../hooks/useDisplayName';
 
 function ContainerItem({
   vest,
@@ -12,12 +14,17 @@ function ContainerItem({
   vest: Vest;
   children: React.ReactNode,
 }) {
+  const beneficiaryDisplayName = useDisplayName(vest.beneficiary);
+  const totalAmountDisplay = useDisplayAmount(vest.totalAmount, vest.token.decimals);
   const totalVestedAmountDisplay = useDisplayAmount(vest.totalVestedAmount, vest.token.decimals, true);
   const claimedAmountDisplay = useDisplayAmount(vest.claimedAmount, vest.token.decimals, true);
   
   return (
     <div className="border rounded p-4 flex flex-col justify-between">
-      <div>{children}</div>
+      <div className="mb-2">
+        <div className="text-xl sm:text-2xl mb-2">{totalAmountDisplay} <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
+        <div>{children}</div>
+      </div>
       <div>
         <VestProgress
           vest={vest}
