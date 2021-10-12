@@ -3,15 +3,17 @@ import { BigNumber } from 'ethers';
 import { useParams } from 'react-router-dom';
 import { Vest } from '../../data/vests';
 import { useData } from '../../data';
+import useAddress from '../../hooks/useAddress';
 import useDisplayName from '../../hooks/useDisplayName';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
+import useElapsedRemainingTime from '../../hooks/useElapsedRemainingTime';
+import useFormattedDuration from '../../hooks/useFormattedDuration';
 import EtherscanLink from '../ui/EtherscanLink';
 import { InputAddress } from '../ui/Input';
 import Button from '../ui/Button';
 import { Property, AmountProperty } from '../ui/Properties';
 import { useTransaction } from '../../web3/transactions';
 import { useWeb3 } from '../../web3';
-import useAddress from '../../hooks/useAddress';
 
 function ReleaseTokens({
   vest,
@@ -152,6 +154,8 @@ function Detail() {
   const [totalVestedAmount, setTotalVestedAmount] = useState<BigNumber>();
   const [claimedAmount, setClaimedAmount] = useState<BigNumber>();
   const [claimableAmount, setClaimableAmount] = useState<BigNumber>();
+  const [start, setStart] = useState<number>();
+  const [end, setEnd] = useState<number>();
 
   useEffect(() => {
     if (!vest) {
@@ -162,6 +166,8 @@ function Detail() {
       setTotalVestedAmount(undefined);
       setClaimedAmount(undefined);
       setClaimableAmount(undefined);
+      setStart(undefined);
+      setEnd(undefined);
       return;
     }
 
@@ -172,6 +178,8 @@ function Detail() {
     setTotalVestedAmount(vest.totalVestedAmount);
     setClaimedAmount(vest.claimedAmount);
     setClaimableAmount(vest.claimableAmount);
+    setStart(vest.start);
+    setEnd(vest.end);
   }, [vest]);
 
   const beneficiaryDisplayName = useDisplayName(beneficiaryAddress);
@@ -181,6 +189,10 @@ function Detail() {
   const totalVestedAmountDisplay = useDisplayAmount(totalVestedAmount, decimals);
   const claimedAmountDisplay = useDisplayAmount(claimedAmount, decimals);
   const claimableAmountDisplay = useDisplayAmount(claimableAmount, decimals);
+
+  const [elapsedTime, remainingTime] = useElapsedRemainingTime(start, end, currentTime);
+  const formattedElapsedTime = useFormattedDuration(BigNumber.from(elapsedTime));
+  const formattedRemainingTime = useFormattedDuration(BigNumber.from(remainingTime));
 
   if (!vest) {
     if (loading) {
@@ -203,8 +215,14 @@ function Detail() {
       <Property title="started on">
         <div>{new Date(vest.start * 1000).toLocaleString()}</div>
       </Property>
+      <Property title="elapsed time">
+        <div>{formattedElapsedTime}</div>
+      </Property>
       <Property title={vest.end > currentTime ? "ending at" : "ended at"}>
         <div>{new Date(vest.end * 1000).toLocaleString()}</div>
+      </Property>
+      <Property title="remaining time">
+        <div>{formattedRemainingTime}</div>
       </Property>
       <AmountProperty
         title="total vested amount"
