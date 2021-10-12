@@ -343,7 +343,7 @@ const useVestPerSeconds = (vestPeriods: VestPeriod[], vestTotalAmounts: VestTota
   return vestsPerSecond;
 }
 
-const useVestTotalVestedAmounts = (vestIds: VestId[], vestTotalAmounts: VestTotalAmount[], vestPeriods: VestPeriod[], vestPerSeconds: VestPerSecond[], currentTime: BigNumber) => {
+const useVestTotalVestedAmounts = (vestIds: VestId[], vestTotalAmounts: VestTotalAmount[], vestPeriods: VestPeriod[], vestPerSeconds: VestPerSecond[], currentTime: number) => {
   const [vestTotalVestedAmounts, setVestTotalVestedAmounts] = useState<VestTotalVestedAmount[]>([]);
 
   useEffect(() => {
@@ -361,11 +361,11 @@ const useVestTotalVestedAmounts = (vestIds: VestId[], vestTotalAmounts: VestTota
         return totalVestedAmount;
       }
 
-      if (currentTime.gte(vestPeriod.period.end)) {
+      if (currentTime >= vestPeriod.period.end) {
         totalVestedAmount.totalVestedAmount = vestTotalAmount.totalAmount;
       } else {
-        const elapsed = currentTime.sub(vestPeriod.period.start);
-        totalVestedAmount.totalVestedAmount = elapsed.mul(vestPerSecond.perSecond);
+        const elapsed = currentTime - vestPeriod.period.start;
+        totalVestedAmount.totalVestedAmount = vestPerSecond.perSecond.mul(elapsed);
       }
 
       return totalVestedAmount;

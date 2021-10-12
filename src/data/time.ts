@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { BigNumber } from 'ethers';
 import { useWeb3 } from '../web3';
 
 const useCurrentBlock = () => {
@@ -32,22 +31,22 @@ const useCurrentBlock = () => {
 
 const useCurrentTime = (blockNumber: number | undefined) => {
   const { provider } = useWeb3();
-  const [currentTime, setCurrentTime] = useState(BigNumber.from(Math.floor(Date.now() / 1000)));
+  const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
 
   useEffect(() => {
     if (!provider || !blockNumber) {
-      setCurrentTime(BigNumber.from(Math.floor(Date.now() / 1000)));
+      setCurrentTime(Math.floor(Date.now() / 1000));
       return;
     }
 
     provider.getBlock(blockNumber)
       .then(block => {
-        setCurrentTime(BigNumber.from(block.timestamp));
+        setCurrentTime(block.timestamp);
       })
       .catch(console.error);
 
     const interval = setInterval(() => {
-      setCurrentTime(currentTime => currentTime.add(1));
+      setCurrentTime(currentTime => currentTime + 1);
     }, 1000);
 
     return () => {

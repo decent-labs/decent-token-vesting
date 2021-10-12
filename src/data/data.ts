@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { GeneralTokenVesting } from '../../contracts/typechain';
 import {
   useGeneralTokenVestingContract,
@@ -28,7 +27,7 @@ export interface Data {
     generalTokenVesting: GeneralTokenVesting | undefined,
   },
   loading: boolean,
-  currentTime: BigNumber,
+  currentTime: number,
   vests: Vest[],
 };
 

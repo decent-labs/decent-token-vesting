@@ -19,9 +19,9 @@ function TokenVests({
   const [completed, setCompleted] = useState<Vest[]>([]);
 
   useEffect(() => {
-    setActive(vests.filter(v => currentTime.lt(v.end)));
-    setOverAndClaimable(vests.filter(v => currentTime.gt(v.end) && v.claimableAmount.gt(0)));
-    setCompleted(vests.filter(v => currentTime.gt(v.end) && v.claimableAmount.eq(0)));
+    setActive(vests.filter(v => currentTime < v.end));
+    setOverAndClaimable(vests.filter(v => currentTime > v.end && v.claimableAmount.gt(0)));
+    setCompleted(vests.filter(v => currentTime > v.end && v.claimableAmount.eq(0)));
   }, [currentTime, vests]);
 
   return (
