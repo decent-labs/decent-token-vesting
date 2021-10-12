@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import Tooltip from '../ui/Tooltip';
 import { useData } from '../../data';
 import { Vest } from '../../data/vests';
 import useElapsedRemainingTime from '../../hooks/useElapsedRemainingTime';
 
 function VestProgress({
   vest,
+  tooltip,
 }: {
   vest: Vest,
+  tooltip: React.ReactNode,
 }) {
   const { currentTime } = useData();
   const [elapsedTime, remainingTime] = useElapsedRemainingTime(vest.start, vest.end, currentTime);
@@ -33,11 +36,13 @@ function VestProgress({
   }, [claimedAmount, vestedAmount]);
 
   return (
-    <div className="w-full rounded-full border h-8 overflow-hidden">
-      <div className="purple-stripes h-full" style={{ width: `${percentageVested}%` }}>
-        <div className="pink-stripes h-full" style={{ width: `${percentageClaimed}%` }} />
+    <Tooltip tooltip={tooltip}>
+      <div className="w-full rounded-full border h-8 overflow-hidden">
+        <div className="purple-stripes h-full" style={{ width: `${percentageVested}%` }}>
+          <div className="pink-stripes h-full" style={{ width: `${percentageClaimed}%` }} />
+        </div>
       </div>
-    </div>
+    </Tooltip>
   );
 }
 
