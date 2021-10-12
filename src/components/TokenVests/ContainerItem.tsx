@@ -18,7 +18,7 @@ function ContainerItem({
   const totalAmountDisplay = useDisplayAmount(vest.totalAmount, vest.token.decimals);
   const totalVestedAmountDisplay = useDisplayAmount(vest.totalVestedAmount, vest.token.decimals, true);
   const claimedAmountDisplay = useDisplayAmount(vest.claimedAmount, vest.token.decimals, true);
-  
+
   return (
     <div className="border rounded p-4 flex flex-col justify-between">
       <div className="mb-2">
@@ -26,23 +26,25 @@ function ContainerItem({
         <div>{children}</div>
       </div>
       <div>
-        <VestProgress
-          vest={vest}
-          tooltip={
-            <div>
-              <AmountProperty
-                title="vested amount"
-                value={totalVestedAmountDisplay}
-                symbol={vest.token.symbol}
-              />
-              <AmountProperty
-                title="claimed amount"
-                value={claimedAmountDisplay}
-                symbol={vest.token.symbol}
-              />
-            </div>
-          }
-        />
+        <div className="mb-2">
+          <VestProgress
+            vest={vest}
+            tooltip={
+              <div>
+                <AmountProperty
+                  title="vested amount"
+                  value={totalVestedAmountDisplay}
+                  symbol={vest.token.symbol}
+                />
+                <AmountProperty
+                  title="claimed amount"
+                  value={claimedAmountDisplay}
+                  symbol={vest.token.symbol}
+                />
+              </div>
+            }
+          />
+        </div>
         <Link to={`/vests/${vest.id}`} className="flex items-center text-lg sm:text-xl">
           <div className="mr-1">view details</div>
           <Emoji emoji="👉" />
