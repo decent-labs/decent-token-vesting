@@ -42,10 +42,10 @@ function useSystemData() {
   const vestTokens = useVestTokens(vestIds);
   const vestPeriods = useVestPeriods(generalTokenVestingContract, vestIds);
   const vestTotalAmounts = useVestTotalAmounts(generalTokenVestingContract, vestIds);
-  const vestPerSeconds = useVestPerSeconds(vestPeriods, vestTotalAmounts);
+  const vestPerSeconds = useVestPerSeconds(vestIds, vestPeriods, vestTotalAmounts);
   const vestVestedAmounts = useVestVestedAmounts(vestIds, vestTotalAmounts, vestPeriods, vestPerSeconds, currentTime);
   const vestClaimedAmounts = useVestClaimedAmounts(generalTokenVestingContract, vestIds);
-  const vestClaimableAmounts = useVestClaimableAmounts(vestVestedAmounts, vestClaimedAmounts);
+  const vestClaimableAmounts = useVestClaimableAmounts(vestIds, vestVestedAmounts, vestClaimedAmounts);
   const vestStatuses = useVestStatuses(vestIds, vestPeriods, vestClaimableAmounts, currentTime);
   const allVests = useAllVests(vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses);
 

@@ -56,14 +56,10 @@ type VestClaimableAmount = {
 }
 
 export enum VestStatusType {
-  Unknown,
   Active,
   OverAndClaimable,
   Completed,
 }
-
-export const VEST_STATUS_UNKNOWN_EMOJI = "🤷‍♂️"
-export const VEST_STATUS_UNKNOWN_DESCRIPTION = "unknown"
 
 export const VEST_STATUS_ACTIVE_EMOJI = "💃"
 export const VEST_STATUS_ACTIVE_DESCRIPTION = "active"
@@ -339,12 +335,15 @@ const useVestTotalAmounts = (generalTokenVesting: GeneralTokenVesting | undefine
   return vestTotalAmounts;
 }
 
-const useVestPerSeconds = (vestPeriods: VestPeriod[], vestTotalAmounts: VestTotalAmount[]) => {
+const useVestPerSeconds = (vestIds: VestId[], vestPeriods: VestPeriod[], vestTotalAmounts: VestTotalAmount[]) => {
   const [vestsPerSecond, setVestsPerSecond] = useState<VestPerSecond[]>([]);
 
   useEffect(() => {
-    const perSecond = vestPeriods.map(vestPeriod => {
-      const duration = vestPeriod.end - vestPeriod.start;
+    const perSecond = vestIds.map(vestId => {
+      const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
+      if (!vestPeriod) {
+        return undefined;
+      }
 
       let totalAmount = BigNumber.from(0);
       const vestTotalAmount = vestTotalAmounts.find(t => t.vestId.id === vestPeriod.vestId.id);
@@ -354,14 +353,14 @@ const useVestPerSeconds = (vestPeriods: VestPeriod[], vestTotalAmounts: VestTota
 
       const vestPerSecond: VestPerSecond = {
         vestId: vestPeriod.vestId,
-        perSecond: totalAmount.div(duration),
+        perSecond: totalAmount.div(vestPeriod.end - vestPeriod.start),
       }
 
       return vestPerSecond;
-    });
+    }).filter(v => v !== undefined) as VestPerSecond[];
 
     setVestsPerSecond(perSecond);
-  }, [vestPeriods, vestTotalAmounts]);
+  }, [vestIds, vestPeriods, vestTotalAmounts]);
 
   return vestsPerSecond;
 }
@@ -370,18 +369,18 @@ const useVestVestedAmounts = (vestIds: VestId[], vestTotalAmounts: VestTotalAmou
   const [vestVestedAmounts, setVestVestedAmounts] = useState<VestVestedAmount[]>([]);
 
   useEffect(() => {
-    const vestedAmounts: VestVestedAmount[] = vestIds.map(vestId => {
+    const vestedAmounts = vestIds.map(vestId => {
       const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
       const vestPerSecond = vestPerSeconds.find(v => v.vestId.id === vestId.id);
       const vestTotalAmount = vestTotalAmounts.find(t => t.vestId.id === vestId.id);
 
+      if (!vestPeriod || !vestPerSecond || !vestTotalAmount) {
+        return undefined;
+      }
+
       const vestedAmount: VestVestedAmount = {
         vestId: vestId,
         vestedAmount: BigNumber.from(0),
-      }
-
-      if (!vestPeriod || !vestPerSecond || !vestTotalAmount) {
-        return vestedAmount;
       }
 
       if (currentTime >= vestPeriod.end) {
@@ -392,7 +391,7 @@ const useVestVestedAmounts = (vestIds: VestId[], vestTotalAmounts: VestTotalAmou
       }
 
       return vestedAmount;
-    });
+    }).filter(v => v !== undefined) as VestVestedAmount[];
 
     setVestVestedAmounts(vestedAmounts)
   }, [currentTime, vestIds, vestTotalAmounts, vestPerSeconds, vestPeriods]);
@@ -462,29 +461,28 @@ const useVestClaimedAmounts = (generalTokenVesting: GeneralTokenVesting | undefi
   return vestClaimedAmounts;
 }
 
-const useVestClaimableAmounts = (vestVestedAmounts: VestVestedAmount[], vestClaimedAmounts: VestClaimedAmount[]) => {
+const useVestClaimableAmounts = (vestIds: VestId[], vestVestedAmounts: VestVestedAmount[], vestClaimedAmounts: VestClaimedAmount[]) => {
   const [vestClaimableAmounts, setVestClaimableAmounts] = useState<VestClaimableAmount[]>([]);
 
   useEffect(() => {
-    const claimableAmounts: VestClaimableAmount[] = vestVestedAmounts.map(vestVestedAmount => {
-      const vestClaimedAmount = vestClaimedAmounts.find(r => r.vestId.id === vestVestedAmount.vestId.id);
+    const claimableAmounts = vestIds.map(vestId => {
+      const vestVestedAmount = vestVestedAmounts.find(v => v.vestId.id === vestId.id)
+      const vestClaimedAmount = vestClaimedAmounts.find(r => r.vestId.id === vestId.id);
 
-      let claimableAmount = BigNumber.from(0);
-
-      if (vestClaimedAmount) {
-        claimableAmount = vestVestedAmount.vestedAmount.sub(vestClaimedAmount.claimedAmount);
+      if (!vestVestedAmount || !vestClaimedAmount) {
+        return undefined;
       }
 
       const vestClaimableAmount: VestClaimableAmount = {
         vestId: vestVestedAmount.vestId,
-        claimableAmount: claimableAmount,
+        claimableAmount: vestVestedAmount.vestedAmount.sub(vestClaimedAmount.claimedAmount),
       }
 
       return vestClaimableAmount;
-    });
+    }).filter(v => v !== undefined) as VestClaimableAmount[];
 
     setVestClaimableAmounts(claimableAmounts);
-  }, [vestClaimedAmounts, vestVestedAmounts]);
+  }, [vestIds, vestClaimedAmounts, vestVestedAmounts]);
 
   return vestClaimableAmounts;
 }
@@ -493,23 +491,16 @@ const useVestStatuses = (vestIds: VestId[], vestPeriods: VestPeriod[], vestClaim
   const [vestStatuses, setVestStatuses] = useState<VestStatus[]>([]);
 
   useEffect(() => {
-    const statuses: VestStatus[] = vestIds.map(vestId => {
+    const statuses = vestIds.map(vestId => {
       const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
       const vestClaimableAmount = vestClaimableAmounts.find(c => c.vestId.id === vestId.id);
 
-      let vestStatus: VestStatus = {
-        vestId: vestId,
-        statusType: VestStatusType.Unknown,
-        statusEmoji: VEST_STATUS_UNKNOWN_EMOJI,
-        statusDescription: VEST_STATUS_UNKNOWN_DESCRIPTION,
-      };
-
       if (!vestPeriod || !vestClaimableAmount) {
-        return vestStatus;
+        return undefined;
       }
 
       if (currentTime < vestPeriod.end) {
-        vestStatus = {
+        return {
           vestId: vestId,
           statusType: VestStatusType.Active,
           statusEmoji: VEST_STATUS_ACTIVE_EMOJI,
@@ -517,14 +508,14 @@ const useVestStatuses = (vestIds: VestId[], vestPeriods: VestPeriod[], vestClaim
         }
       } else {
         if (vestClaimableAmount.claimableAmount.gt(0)) {
-          vestStatus = {
+          return {
             vestId: vestId,
             statusType: VestStatusType.OverAndClaimable,
             statusEmoji: VEST_STATUS_OVER_AND_CLAIMABLE_EMOJI,
             statusDescription: VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION,
           }
         } else if (vestClaimableAmount.claimableAmount.eq(0)) {
-          vestStatus = {
+          return {
             vestId: vestId,
             statusType: VestStatusType.Completed,
             statusEmoji: VEST_STATUS_COMPLETED_EMOJI,
@@ -533,8 +524,8 @@ const useVestStatuses = (vestIds: VestId[], vestPeriods: VestPeriod[], vestClaim
         }
       }
 
-      return vestStatus;
-    });
+      return undefined;
+    }).filter(v => v !== undefined) as VestStatus[];
 
     setVestStatuses(statuses);
   }, [currentTime, vestClaimableAmounts, vestIds, vestPeriods]);
@@ -561,7 +552,7 @@ const useAllVests = (
       return;
     }
 
-    const potentialVests = vestIds.map(vestId => {
+    const vests = vestIds.map(vestId => {
       const vestToken = vestTokens.find(t => t.address === vestId.token);
       if (!vestToken) {
         return undefined;
@@ -570,7 +561,7 @@ const useAllVests = (
       const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
       if (!vestPeriod) {
         return undefined;
-        
+
       }
 
       const vestTotalAmount = vestTotalAmounts.find(t => t.vestId.id === vestId.id);
@@ -615,9 +606,7 @@ const useAllVests = (
       };
 
       return vest;
-    });
-
-    const vests = potentialVests.filter(v => v !== undefined) as Vest[];
+    }).filter(v => v !== undefined) as Vest[];
 
     setAllVests(vests);
   }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, provider]);
