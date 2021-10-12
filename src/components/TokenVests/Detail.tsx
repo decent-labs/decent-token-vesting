@@ -8,6 +8,7 @@ import useDisplayAmount from '../../hooks/useDisplayAmount';
 import EtherscanLink from '../ui/EtherscanLink';
 import { InputAddress } from '../ui/Input';
 import Button from '../ui/Button';
+import { Property, AmountProperty } from '../ui/Properties';
 import { useTransaction } from '../../web3/transactions';
 import { useWeb3 } from '../../web3';
 import useAddress from '../../hooks/useAddress';
@@ -130,7 +131,7 @@ function ReleaseTokensTo({
 
 function Detail() {
   const params = useParams<{ id: string }>();
-  const { loading, vests } = useData();
+  const { loading, vests, currentTime } = useData();
   const { account } = useWeb3();
 
   const [vest, setVest] = useState<Vest>();
@@ -144,7 +145,6 @@ function Detail() {
     setVest(vest);
   }, [vests, params.id]);
 
-  const [tokenAddress, setTokenAddress] = useState<string>();
   const [beneficiaryAddress, setBeneficiaryAddress] = useState<string>();
   const [creatorAddress, setCreatorAddress] = useState<string>();
   const [decimals, setDecimals] = useState<number>();
@@ -155,7 +155,6 @@ function Detail() {
 
   useEffect(() => {
     if (!vest) {
-      setTokenAddress(undefined);
       setBeneficiaryAddress(undefined);
       setCreatorAddress(undefined);
       setDecimals(undefined);
@@ -166,7 +165,6 @@ function Detail() {
       return;
     }
 
-    setTokenAddress(vest.token.address);
     setBeneficiaryAddress(vest.beneficiary);
     setCreatorAddress(vest.creator);
     setDecimals(vest.token.decimals);
@@ -176,7 +174,6 @@ function Detail() {
     setClaimableAmount(vest.claimableAmount);
   }, [vest]);
 
-  const tokenDisplayName = useDisplayName(tokenAddress);
   const beneficiaryDisplayName = useDisplayName(beneficiaryAddress);
   const creatorDisplayName = useDisplayName(creatorAddress);
 
@@ -199,16 +196,32 @@ function Detail() {
 
   return (
     <div>
-      <div>id: {vest.id}</div>
-      <div>token: {vest.token.name} ({vest.token.symbol}) <EtherscanLink address={vest.token.address}>{tokenDisplayName}</EtherscanLink></div>
-      <div>beneficiary: <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
-      <div>creator: <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink></div>
-      <div>start: {new Date(vest.start * 1000).toLocaleString()}</div>
-      <div>end: {new Date(vest.end * 1000).toLocaleString()}</div>
-      <div>total amount: {totalAmountDisplay} {vest.token.symbol}</div>
-      <div>total vested amount: {totalVestedAmountDisplay} {vest.token.symbol}</div>
-      <div>claimed amount: {claimedAmountDisplay} {vest.token.symbol}</div>
-      <div>claimable amount: {claimableAmountDisplay} {vest.token.symbol}</div>
+      <div className="text-xl sm:text-2xl mb-2">{totalAmountDisplay} <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
+      <Property title="created by">
+        <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink>
+      </Property>
+      <Property title="started on">
+        <div>{new Date(vest.start * 1000).toLocaleString()}</div>
+      </Property>
+      <Property title={vest.end > currentTime ? "ending at" : "ended at"}>
+        <div>{new Date(vest.end * 1000).toLocaleString()}</div>
+      </Property>
+      <AmountProperty
+        title="total vested amount"
+        value={totalVestedAmountDisplay}
+        symbol={vest.token.symbol}
+      />
+      <AmountProperty
+        title="claimed amount"
+        value={claimedAmountDisplay}
+        symbol={vest.token.symbol}
+      />
+      <AmountProperty
+        title="claimable amount"
+        value={claimableAmountDisplay}
+        symbol={vest.token.symbol}
+      />
+    
       {vest.claimableAmount.gt(0) && <ReleaseTokens vest={vest} />}
       {vest.claimableAmount.gt(0) && account && account === beneficiaryAddress && <ReleaseTokensTo vest={vest} />}
     </div>

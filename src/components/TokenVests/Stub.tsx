@@ -2,25 +2,7 @@ import { Vest } from '../../data/vests';
 import useDisplayName from '../../hooks/useDisplayName';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
 import EtherscanLink from '../ui/EtherscanLink';
-
-function ValueProperty({
-  title,
-  value,
-  symbol,
-}: {
-  title: string,
-  value: string | undefined,
-  symbol: string,
-}) {
-  return (
-    <div className="mb-2">
-      <div className="text-base sm:text-lg">{title}</div>
-      <div>
-        <span className="font-mono text-xs sm:text-sm">{value}</span> <span>{symbol}</span>
-      </div>
-    </div>
-  );
-}
+import { AmountProperty } from '../ui/Properties';
 
 function Stub({
   vest,
@@ -37,17 +19,17 @@ function Stub({
   return (
     <div className="mb-2">
       <div className="text-xl sm:text-2xl mb-2">{totalAmountDisplay} <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink></div>
-      <ValueProperty
+      <AmountProperty
         title="total vested amount"
         value={totalVestedAmountDisplay}
         symbol={vest.token.symbol}
       />
-      <ValueProperty
+      <AmountProperty
         title="claimed amount"
         value={claimedAmountDisplay}
         symbol={vest.token.symbol}
       />
-      <ValueProperty
+      <AmountProperty
         title="claimable amount"
         value={claimableAmountDisplay}
         symbol={vest.token.symbol}
