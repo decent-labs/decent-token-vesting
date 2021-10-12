@@ -11,7 +11,6 @@ import {
 import {
   Vest,
   useVestIds,
-  useVestsLoading,
   useVestTokens,
   useVestPeriods,
   useVestTotalAmounts,
@@ -59,8 +58,6 @@ function useSystemData() {
     loading: vestsLoading,
     vests: allVests,
   };
-
-  useVestsLoading(vestsLoading);
 
   return data;
 }

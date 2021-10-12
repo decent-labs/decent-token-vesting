@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { toast } from 'react-toastify';
 import { BigNumber } from 'ethers';
 import {
   GeneralTokenVesting,
@@ -733,32 +732,8 @@ const useAllVests = (
   return allVests;
 }
 
-const useVestsLoading = (allVestsLoading: boolean) => {
-  const [loadingToastId, setLoadingToastId] = useState<React.ReactText>();
-  useEffect(() => {
-    if (loadingToastId && allVestsLoading) {
-      return;
-    }
-
-    if (loadingToastId && !allVestsLoading) {
-      toast.dismiss(loadingToastId);
-      return;
-    }
-
-    const toastId = toast.info("Loading", {
-      autoClose: false,
-      closeOnClick: false,
-      draggable: false,
-      closeButton: false,
-    });
-
-    setLoadingToastId(toastId);
-  }, [allVestsLoading, loadingToastId]);
-}
-
 export {
   useVestIds,
-  useVestsLoading,
   useVestTokens,
   useVestPeriods,
   useVestTotalAmounts,
