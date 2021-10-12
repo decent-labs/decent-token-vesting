@@ -222,8 +222,8 @@ function Detail() {
         symbol={vest.token.symbol}
       />
 
-      {vest.claimableAmount.gt(0) && <ReleaseTokens vest={vest} />}
-      {vest.claimableAmount.gt(0) && account && account === beneficiaryAddress && <ReleaseTokensTo vest={vest} />}
+      {vest.end > currentTime && <ReleaseTokens vest={vest} />}
+      {vest.end > currentTime && account && account === beneficiaryAddress && <ReleaseTokensTo vest={vest} />}
     </div>
   );
 }
