@@ -12,7 +12,7 @@ function ContainerItem({
   return (
     <div className="border rounded p-4 flex flex-col justify-between">
       <div>{children}</div>
-      <Link to={`/vests/${vest.id}`} className="flex items-center">
+      <Link to={`/vests/${vest.id}`} className="flex items-center text-lg sm:text-xl">
         <div className="mr-1">view details</div>
         <Emoji emoji="👉" />
       </Link>
