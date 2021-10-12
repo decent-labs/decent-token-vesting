@@ -12,7 +12,6 @@ import EtherscanLink from '../ui/EtherscanLink';
 import { InputAddress } from '../ui/Input';
 import Button from '../ui/Button';
 import { Property, AmountProperty } from '../ui/Properties';
-import VestProgress from '../ui/VestProgress';
 import { useTransaction } from '../../web3/transactions';
 import { useWeb3 } from '../../web3';
 
@@ -152,8 +151,6 @@ function Detail() {
   const [creatorAddress, setCreatorAddress] = useState<string>();
   const [decimals, setDecimals] = useState<number>();
   const [totalAmount, setTotalAmount] = useState<BigNumber>();
-  const [totalVestedAmount, setTotalVestedAmount] = useState<BigNumber>();
-  const [claimedAmount, setClaimedAmount] = useState<BigNumber>();
   const [claimableAmount, setClaimableAmount] = useState<BigNumber>();
   const [start, setStart] = useState<number>();
   const [end, setEnd] = useState<number>();
@@ -164,8 +161,6 @@ function Detail() {
       setCreatorAddress(undefined);
       setDecimals(undefined);
       setTotalAmount(undefined);
-      setTotalVestedAmount(undefined);
-      setClaimedAmount(undefined);
       setClaimableAmount(undefined);
       setStart(undefined);
       setEnd(undefined);
@@ -176,8 +171,6 @@ function Detail() {
     setCreatorAddress(vest.creator);
     setDecimals(vest.token.decimals);
     setTotalAmount(vest.totalAmount);
-    setTotalVestedAmount(vest.totalVestedAmount);
-    setClaimedAmount(vest.claimedAmount);
     setClaimableAmount(vest.claimableAmount);
     setStart(vest.start);
     setEnd(vest.end);
@@ -187,8 +180,6 @@ function Detail() {
   const creatorDisplayName = useDisplayName(creatorAddress);
 
   const totalAmountDisplay = useDisplayAmount(totalAmount, decimals);
-  const totalVestedAmountDisplay = useDisplayAmount(totalVestedAmount, decimals);
-  const claimedAmountDisplay = useDisplayAmount(claimedAmount, decimals);
   const claimableAmountDisplay = useDisplayAmount(claimableAmount, decimals);
 
   const [elapsedTime, remainingTime] = useElapsedRemainingTime(start, end, currentTime);
@@ -226,24 +217,11 @@ function Detail() {
         <div>{formattedRemainingTime}</div>
       </Property>
       <AmountProperty
-        title="total vested amount"
-        value={totalVestedAmountDisplay}
-        symbol={vest.token.symbol}
-      />
-      <AmountProperty
-        title="claimed amount"
-        value={claimedAmountDisplay}
-        symbol={vest.token.symbol}
-      />
-      <AmountProperty
         title="claimable amount"
         value={claimableAmountDisplay}
         symbol={vest.token.symbol}
       />
 
-      <Property title="progress">
-        <VestProgress vest={vest} />
-      </Property>
       {vest.claimableAmount.gt(0) && <ReleaseTokens vest={vest} />}
       {vest.claimableAmount.gt(0) && account && account === beneficiaryAddress && <ReleaseTokensTo vest={vest} />}
     </div>
