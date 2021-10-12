@@ -191,9 +191,9 @@ function New() {
   }
 
   return (
-    <div className="pb-4">
+    <div>
       <Title title="create new vest" />
-      <div>
+      <div className="bg-purple-100 p-4 border rounded">
         <InputAddress
           title="token address"
           status={tokenStatus}

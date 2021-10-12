@@ -12,7 +12,7 @@ function Tooltip(
   return (
     <Tippy
       content={
-        <div className="bg-purple-100 p-2 border rounded">
+        <div className="bg-purple-50 p-2 border rounded">
           {tooltip}
         </div>
       }

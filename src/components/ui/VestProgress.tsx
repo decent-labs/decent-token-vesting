@@ -34,7 +34,7 @@ function Progress({
   }, [claimedAmount, vestedAmount]);
 
   return (
-    <div className="w-full bg-purple-100 rounded-full border h-8 overflow-hidden">
+    <div className="w-full bg-purple-50 rounded-full border h-8 overflow-hidden">
       <div className="purple-stripes h-full" style={{ width: `${percentageVested}%` }}>
         <div className="pink-stripes h-full" style={{ width: `${percentageClaimed}%` }} />
       </div>

@@ -23,7 +23,7 @@ function Card({
   const duration = useFormattedDuration(BigNumber.from(vest.end - vest.start));
 
   return (
-    <div className="border rounded p-4 flex flex-col justify-between">
+    <div className="border rounded p-4 flex flex-col justify-between bg-purple-100">
       <div className="">
         <div className="text-xl sm:text-2xl mb-4"><span className="font-semibold">{totalAmountDisplay}</span> <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink> over <span className="font-semibold">{duration}</span></div>
         {children}
