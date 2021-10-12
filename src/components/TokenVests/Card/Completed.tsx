@@ -7,7 +7,7 @@ function Completed({
   vest: Vest,
 }) {
   return (
-    <div className="mb-2">
+    <div>
       <Property title="ended on">
         <div>{new Date(vest.end * 1000).toLocaleString()}</div>
       </Property>

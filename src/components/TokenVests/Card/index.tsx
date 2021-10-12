@@ -25,15 +25,15 @@ function Card({
   return (
     <div className="border rounded p-4 flex flex-col justify-between">
       <div className="mb-2">
-        <div className="text-xl sm:text-2xl mb-2"><span className="font-semibold">{totalAmountDisplay}</span> <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink> over <span className="font-semibold">{duration}</span></div>
-        <div>{children}</div>
+        <div className="text-xl sm:text-2xl mb-4"><span className="font-semibold">{totalAmountDisplay}</span> <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{beneficiaryDisplayName}</EtherscanLink> over <span className="font-semibold">{duration}</span></div>
+        {children}
       </div>
       <div>
-        <div className="mb-2">
+        <div className="mb-4">
           <VestProgress
             vest={vest}
             tooltip={
-              <div>
+              <div className="-my-4">
                 <AmountProperty
                   title="vested amount"
                   value={totalVestedAmountDisplay}
@@ -48,7 +48,7 @@ function Card({
             }
           />
         </div>
-        <Link to={`/vests/${vest.id}`} className="flex items-center text-lg sm:text-xl">
+        <Link to={`/vests/${vest.id}`} className="flex items-center text-lg sm:text-xl justify-end">
           <div className="mr-1">view details</div>
           <Emoji emoji="👉" />
         </Link>

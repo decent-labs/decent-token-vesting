@@ -19,7 +19,7 @@ function Active({
   const formattedRemainingTime = useFormattedDuration(BigNumber.from(remainingTime));
 
   return (
-    <div className="mb-2">
+    <div>
       <Property title="remaining time">
         <div>{formattedRemainingTime}</div>
       </Property>

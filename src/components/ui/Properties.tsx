@@ -6,9 +6,9 @@ function Property({
   children: React.ReactNode,
 }) {
   return (
-    <div className="mb-2">
-      <div className="text-base sm:text-lg">{title}</div>
-      <div>{children}</div>
+    <div className="my-4">
+      <div className="text-lg sm:text-xl">{title}</div>
+      {children}
     </div>
   );
 }
