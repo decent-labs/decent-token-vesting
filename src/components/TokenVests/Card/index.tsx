@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers';
 import { Vest } from '../../../data/vests';
 import VestProgress from '../../ui/VestProgress';
-import { AmountProperty } from '../../ui/Properties';
 import EtherscanLink from '../../ui/EtherscanLink';
 import useDisplayAmount from '../../../hooks/useDisplayAmount';
 import useDisplayName from '../../../hooks/useDisplayName';
@@ -18,8 +17,6 @@ function Card({
 }) {
   const beneficiaryDisplayName = useDisplayName(vest.beneficiary);
   const totalAmountDisplay = useDisplayAmount(vest.totalAmount, vest.token.decimals);
-  const vestedAmountDisplay = useDisplayAmount(vest.vestedAmount, vest.token.decimals, true);
-  const claimedAmountDisplay = useDisplayAmount(vest.claimedAmount, vest.token.decimals, true);
   const duration = useFormattedDuration(BigNumber.from(vest.end - vest.start));
 
   return (
@@ -30,23 +27,7 @@ function Card({
       </div>
       <div>
         <div className="mb-4">
-          <VestProgress
-            vest={vest}
-            tooltip={
-              <div className="-my-4">
-                <AmountProperty
-                  title="vested amount"
-                  value={vestedAmountDisplay}
-                  symbol={vest.token.symbol}
-                />
-                <AmountProperty
-                  title="claimed amount"
-                  value={claimedAmountDisplay}
-                  symbol={vest.token.symbol}
-                />
-              </div>
-            }
-          />
+          <VestProgress vest={vest} />
         </div>
         {footer}
       </div>
