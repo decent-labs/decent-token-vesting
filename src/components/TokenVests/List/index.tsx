@@ -1,7 +1,13 @@
 import { useEffect, useState, JSXElementConstructor } from 'react';
 import { Switch, Route, Redirect, useRouteMatch, Link } from 'react-router-dom';
 import { useData } from '../../../data';
-import { Vest } from '../../../data/vests';
+import {
+  Vest,
+  VEST_STATUS_ACTIVE_DESCRIPTION,
+  VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION,
+  VEST_STATUS_COMPLETED_DESCRIPTION,
+  VestStatusType,
+} from '../../../data/vests';
 import Title from '../../ui/Title';
 import Emoji from '../../ui/Emoji';
 import ListMenu from './ListMenu';
@@ -92,40 +98,40 @@ function List({
   const [completed, setCompleted] = useState<Vest[]>([]);
 
   useEffect(() => {
-    setActive(vests.filter(v => currentTime < v.end));
-    setOverAndClaimable(vests.filter(v => currentTime >= v.end && v.claimableAmount.gt(0)));
-    setCompleted(vests.filter(v => currentTime >= v.end && v.claimableAmount.eq(0)));
+    setActive(vests.filter(v => v.statusType === VestStatusType.Active));
+    setOverAndClaimable(vests.filter(v => v.statusType === VestStatusType.OverAndClaimable));
+    setCompleted(vests.filter(v => v.statusType === VestStatusType.Completed));
   }, [currentTime, vests]);
 
   return (
     <div>
       <Switch>
-        <Route path={`${match.path}/active`}>
+        <Route path={`${match.path}/${VEST_STATUS_ACTIVE_DESCRIPTION.replaceAll(" ", "-")}`}>
           <FilteredList
-            title={`${title} active`}
+            title={`${title} ${VEST_STATUS_ACTIVE_DESCRIPTION}`}
             path={match.path}
             vests={active}
             cardDetails={Active}
           />
         </Route>
-        <Route path={`${match.path}/over-and-claimable`}>
+        <Route path={`${match.path}/${VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION.replaceAll(" ", "-")}`}>
           <FilteredList
-            title={`${title} over and claimable`}
+            title={`${title} ${VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION}`}
             path={match.path}
             vests={overAndClaimable}
             cardDetails={OverAndClaimable}
           />
         </Route>
-        <Route path={`${match.path}/completed`}>
+        <Route path={`${match.path}/${VEST_STATUS_COMPLETED_DESCRIPTION.replaceAll(" ", "-")}`}>
           <FilteredList
-            title={`${title} completed`}
+            title={`${title} ${VEST_STATUS_COMPLETED_DESCRIPTION}`}
             path={match.path}
             vests={completed}
             cardDetails={Completed}
           />
         </Route>
         <Route path={`${match.path}`}>
-          <Redirect to={`${match.path}/active`} />
+          <Redirect to={`${match.path}/${VEST_STATUS_ACTIVE_DESCRIPTION.replaceAll(" ", "-")}`} />
         </Route>
       </Switch>
     </div>

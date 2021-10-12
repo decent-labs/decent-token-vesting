@@ -55,6 +55,32 @@ type VestClaimableAmount = {
   claimableAmount: BigNumber,
 }
 
+export enum VestStatusType {
+  Unknown,
+  Active,
+  OverAndClaimable,
+  Completed,
+}
+
+export const VEST_STATUS_UNKNOWN_EMOJI = "🤷‍♂️"
+export const VEST_STATUS_UNKNOWN_DESCRIPTION = "unknown"
+
+export const VEST_STATUS_ACTIVE_EMOJI = "💃"
+export const VEST_STATUS_ACTIVE_DESCRIPTION = "active"
+
+export const VEST_STATUS_OVER_AND_CLAIMABLE_EMOJI = "🤏"
+export const VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION = "over and claimable"
+
+export const VEST_STATUS_COMPLETED_EMOJI = "🤝"
+export const VEST_STATUS_COMPLETED_DESCRIPTION = "completed"
+
+type VestStatus = {
+  vestId: VestId,
+  statusType: VestStatusType,
+  statusEmoji: string,
+  statusDescription: string,
+}
+
 export type Vest = {
   id: string,
   beneficiary: string,
@@ -66,6 +92,9 @@ export type Vest = {
   vestedAmount: BigNumber,
   claimedAmount: BigNumber,
   claimableAmount: BigNumber,
+  statusType: VestStatusType,
+  statusEmoji: string,
+  statusDescription: string,
 }
 
 const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploymentBlock: number | undefined) => {
@@ -460,6 +489,59 @@ const useVestClaimableAmounts = (vestVestedAmounts: VestVestedAmount[], vestClai
   return vestClaimableAmounts;
 }
 
+const useVestStatuses = (vestIds: VestId[], vestPeriods: VestPeriod[], vestClaimableAmounts: VestClaimableAmount[], currentTime: number) => {
+  const [vestStatuses, setVestStatuses] = useState<VestStatus[]>([]);
+
+  useEffect(() => {
+    const statuses: VestStatus[] = vestIds.map(vestId => {
+      const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
+      const vestClaimableAmount = vestClaimableAmounts.find(c => c.vestId.id === vestId.id);
+
+      let vestStatus: VestStatus = {
+        vestId: vestId,
+        statusType: VestStatusType.Unknown,
+        statusEmoji: VEST_STATUS_UNKNOWN_EMOJI,
+        statusDescription: VEST_STATUS_UNKNOWN_DESCRIPTION,
+      };
+
+      if (!vestPeriod || !vestClaimableAmount) {
+        return vestStatus;
+      }
+
+      if (currentTime < vestPeriod.end) {
+        vestStatus = {
+          vestId: vestId,
+          statusType: VestStatusType.Active,
+          statusEmoji: VEST_STATUS_ACTIVE_EMOJI,
+          statusDescription: VEST_STATUS_ACTIVE_DESCRIPTION,
+        }
+      } else {
+        if (vestClaimableAmount.claimableAmount.gt(0)) {
+          vestStatus = {
+            vestId: vestId,
+            statusType: VestStatusType.OverAndClaimable,
+            statusEmoji: VEST_STATUS_OVER_AND_CLAIMABLE_EMOJI,
+            statusDescription: VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION,
+          }
+        } else if (vestClaimableAmount.claimableAmount.eq(0)) {
+          vestStatus = {
+            vestId: vestId,
+            statusType: VestStatusType.Completed,
+            statusEmoji: VEST_STATUS_COMPLETED_EMOJI,
+            statusDescription: VEST_STATUS_COMPLETED_DESCRIPTION,
+          }
+        }
+      }
+
+      return vestStatus;
+    });
+
+    setVestStatuses(statuses);
+  }, [currentTime, vestClaimableAmounts, vestIds, vestPeriods]);
+
+  return vestStatuses;
+}
+
 const useAllVests = (
   vestIds: VestId[],
   vestTokens: ERC20Token[],
@@ -468,6 +550,7 @@ const useAllVests = (
   vestVestedAmounts: VestVestedAmount[],
   vestClaimedAmounts: VestClaimedAmount[],
   vestClaimableAmounts: VestClaimableAmount[],
+  vestStatuses: VestStatus[],
 ) => {
   const [allVests, setAllVests] = useState<Vest[]>([]);
   const { provider } = useWeb3();
@@ -517,10 +600,20 @@ const useAllVests = (
         claimedAmount = vestClaimedAmount.claimedAmount;
       }
 
-      let claim = BigNumber.from(0);
+      let claimableAmount = BigNumber.from(0);
       const vestClaimableAmount = vestClaimableAmounts.find(r => r.vestId.id === vestId.id);
       if (vestClaimableAmount) {
-        claim = vestClaimableAmount.claimableAmount;
+        claimableAmount = vestClaimableAmount.claimableAmount;
+      }
+
+      let statusType = VestStatusType.Unknown;
+      let statusEmoji ="🤷‍♂️";
+      let statusDescription = "unknown";
+      const vestStatus = vestStatuses.find(s => s.vestId.id === vestId.id);
+      if (vestStatus) {
+        statusType = vestStatus.statusType;
+        statusEmoji = vestStatus.statusEmoji;
+        statusDescription = vestStatus.statusDescription;
       }
 
       const vest: Vest = {
@@ -533,12 +626,15 @@ const useAllVests = (
         totalAmount: totalAmount,
         vestedAmount: vestedAmount,
         claimedAmount: claimedAmount,
-        claimableAmount: claim,
+        claimableAmount: claimableAmount,
+        statusType: statusType,
+        statusEmoji: statusEmoji,
+        statusDescription: statusDescription,
       };
 
       return vest;
     }));
-  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, provider]);
+  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, provider]);
 
   return allVests;
 }
@@ -576,5 +672,6 @@ export {
   useVestVestedAmounts,
   useVestClaimedAmounts,
   useVestClaimableAmounts,
+  useVestStatuses,
   useAllVests,
 }

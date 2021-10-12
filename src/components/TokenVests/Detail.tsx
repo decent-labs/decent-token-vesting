@@ -29,11 +29,6 @@ function ReleaseTokens({
 
   const [releaseTokensDisabled, setReleaseTokensDisabled] = useState(true);
   useEffect(() => {
-    if (!vest.claimableAmount) {
-      setReleaseTokensDisabled(true);
-      return;
-    }
-
     setReleaseTokensDisabled(
       releasePending ||
       vest.claimableAmount.eq(0)
@@ -93,7 +88,7 @@ function ReleaseTokensTo({
 
   const [releaseTokensToDisabled, setReleaseTokensToDisabled] = useState(true);
   useEffect(() => {
-    if (!vest.claimableAmount || !beneficiaryAddress) {
+    if (!beneficiaryAddress) {
       setReleaseTokensToDisabled(true);
       return;
     }
@@ -161,27 +156,6 @@ function Detail() {
   const formattedRemainingTime = useFormattedDuration(BigNumber.from(remainingTime));
   const formattedTimeSinceEnd = useFormattedDuration(BigNumber.from(currentTime - (vest?.end || 0)));
 
-  const [status, setStatus] = useState("");
-  const [statusEmoji, setStatusEmoji] = useState("");
-  useEffect(() => {
-    if (!vest) {
-      setStatus("");
-      setStatusEmoji("");
-      return;
-    }
-
-    if (currentTime < vest.end) {
-      setStatus("active");
-      setStatusEmoji("💃");
-    } else if (currentTime >= vest.end && vest.claimableAmount.gt(0)) {
-      setStatus("over and claimable");
-      setStatusEmoji("🤏");
-    } else {
-      setStatus("completed");
-      setStatusEmoji("🤝");
-    }
-  }, [currentTime, vest]);
-
   const [releasable, setReleasable] = useState(false);
   useEffect(() => {
     if (!vest) {
@@ -237,8 +211,8 @@ function Detail() {
       }
     >
       <div className="flex items-center text-xl sm:text-2xl">
-        <Emoji emoji={statusEmoji} big />
-        <div className="ml-2">{status}</div>
+        <Emoji emoji={vest.statusEmoji} big />
+        <div className="ml-2">{vest.statusDescription}</div>
       </div>
       <Property title="created by">
         <EtherscanLink address={vest.creator}>{creatorDisplayName}</EtherscanLink>

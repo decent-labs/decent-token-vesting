@@ -1,4 +1,12 @@
 import { Link, useRouteMatch } from 'react-router-dom';
+import {
+  VEST_STATUS_ACTIVE_EMOJI,
+  VEST_STATUS_ACTIVE_DESCRIPTION,
+  VEST_STATUS_OVER_AND_CLAIMABLE_EMOJI,
+  VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION,
+  VEST_STATUS_COMPLETED_EMOJI,
+  VEST_STATUS_COMPLETED_DESCRIPTION,
+} from '../../../data/vests';
 import Emoji from '../../ui/Emoji';
 
 function ListMenuItem({
@@ -28,19 +36,19 @@ function ListMenu({
   return (
     <div className="flex flex-col sm:flex-row mb-4 -mx-2 -my-1">
       <ListMenuItem
-        emoji={`💃`}
-        title="active"
-        to={`${path}/active`}
+        emoji={VEST_STATUS_ACTIVE_EMOJI}
+        title={VEST_STATUS_ACTIVE_DESCRIPTION}
+        to={`${path}/${VEST_STATUS_ACTIVE_DESCRIPTION.replaceAll(" ", "-")}`}
       />
       <ListMenuItem
-        emoji={`🤏`}
-        title="over and claimable"
-        to={`${path}/over-and-claimable`}
+        emoji={VEST_STATUS_OVER_AND_CLAIMABLE_EMOJI}
+        title={VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION}
+        to={`${path}/${VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION.replaceAll(" ", "-")}`}
       />
       <ListMenuItem
-        emoji={`🤝`}
-        title="completed"
-        to={`${path}/completed`}
+        emoji={VEST_STATUS_COMPLETED_EMOJI}
+        title={VEST_STATUS_COMPLETED_DESCRIPTION}
+        to={`${path}/${VEST_STATUS_COMPLETED_DESCRIPTION.replaceAll(" ", "-")}`}
       />
     </div>
   );
