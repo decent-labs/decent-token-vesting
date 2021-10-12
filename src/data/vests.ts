@@ -24,14 +24,10 @@ export type ERC20Token = {
   decimals: number,
 }
 
-type Period = {
-  start: number,
-  end: number,
-}
-
 type VestPeriod = {
   vestId: VestId,
-  period: Period,
+  start: number,
+  end: number,
 }
 
 type VestTotalAmount = {
@@ -261,17 +257,15 @@ const useVestPeriods = (generalTokenVesting: GeneralTokenVesting | undefined, ve
     Promise.all(vestIds.map(vestId => {
       const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
       if (vestPeriod) {
-        return Promise.all([vestId, BigNumber.from(vestPeriod.period.start), BigNumber.from(vestPeriod.period.end - vestPeriod.period.start)]);
+        return Promise.all([vestId, BigNumber.from(vestPeriod.start), BigNumber.from(vestPeriod.end - vestPeriod.start)]);
       }
       return Promise.all([vestId, generalTokenVesting.getStart(vestId.token, vestId.beneficiary), generalTokenVesting.getDuration(vestId.token, vestId.beneficiary)]);
     }))
       .then(periodData => {
         const periods: VestPeriod[] = periodData.map(([vestId, start, duration]) => ({
           vestId: vestId,
-          period: {
-            start: start.toNumber(),
-            end: start.add(duration).toNumber(),
-          }
+          start: start.toNumber(),
+          end: start.add(duration).toNumber(),
         }));
 
         setVestPeriods(periods);
@@ -321,7 +315,7 @@ const useVestPerSeconds = (vestPeriods: VestPeriod[], vestTotalAmounts: VestTota
 
   useEffect(() => {
     const perSecond = vestPeriods.map(vestPeriod => {
-      const duration = vestPeriod.period.end - vestPeriod.period.start;
+      const duration = vestPeriod.end - vestPeriod.start;
 
       let totalAmount = BigNumber.from(0);
       const vestTotalAmount = vestTotalAmounts.find(t => t.vestId.id === vestPeriod.vestId.id);
@@ -361,10 +355,10 @@ const useVestVestedAmounts = (vestIds: VestId[], vestTotalAmounts: VestTotalAmou
         return vestedAmount;
       }
 
-      if (currentTime >= vestPeriod.period.end) {
+      if (currentTime >= vestPeriod.end) {
         vestedAmount.vestedAmount = vestTotalAmount.totalAmount;
       } else {
-        const elapsed = currentTime - vestPeriod.period.start;
+        const elapsed = currentTime - vestPeriod.start;
         vestedAmount.vestedAmount = vestPerSecond.perSecond.mul(elapsed);
       }
 
@@ -497,13 +491,12 @@ const useAllVests = (
         token = vestToken;
       }
 
-      let period: Period = {
-        start: 0,
-        end: 0
-      };
+      let periodStart = 0;
+      let periodEnd = 0;
       const vestPeriod = vestPeriods.find(p => p.vestId.id === vestId.id);
       if (vestPeriod) {
-        period = vestPeriod.period;
+        periodStart = vestPeriod.start;
+        periodEnd = vestPeriod.end;
       }
 
       let totalAmount = BigNumber.from(0);
@@ -535,8 +528,8 @@ const useAllVests = (
         beneficiary: vestId.beneficiary,
         token: token,
         creator: vestId.creator,
-        start: period.start,
-        end: period.end,
+        start: periodStart,
+        end: periodEnd,
         totalAmount: totalAmount,
         vestedAmount: vestedAmount,
         claimedAmount: claimedAmount,
