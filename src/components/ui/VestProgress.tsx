@@ -1,0 +1,44 @@
+import { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
+import { useData } from '../../data';
+import { Vest } from '../../data/vests';
+import useElapsedRemainingTime from '../../hooks/useElapsedRemainingTime';
+
+function VestProgress({
+  vest,
+}: {
+  vest: Vest,
+}) {
+  const { currentTime } = useData();
+  const [elapsedTime, remainingTime] = useElapsedRemainingTime(vest.start, vest.end, currentTime);
+
+  const [vestedAmount, setVestedAmount] = useState(0);
+  useEffect(() => {
+    setVestedAmount(Number(ethers.utils.formatUnits(vest.totalVestedAmount, vest.token.decimals)));
+  }, [vest.token.decimals, vest.totalVestedAmount]);
+
+  const [claimedAmount, setClaimedAmount] = useState(0);
+  useEffect(() => {
+    setClaimedAmount(Number(ethers.utils.formatUnits(vest.claimedAmount, vest.token.decimals)));
+  }, [vest.claimedAmount, vest.token.decimals]);
+
+  const [percentageVested, setPercentageVested] = useState(0);
+  useEffect(() => {
+    setPercentageVested(elapsedTime / (elapsedTime + remainingTime) * 100);
+  }, [elapsedTime, remainingTime]);
+
+  const [percentageClaimed, setPercentageClaimed] = useState(0);
+  useEffect(() => {
+    setPercentageClaimed(claimedAmount / vestedAmount * 100);
+  }, [claimedAmount, vestedAmount]);
+
+  return (
+    <div className="w-full rounded-full border h-8 overflow-hidden">
+      <div className="purple-stripes h-full" style={{ width: `${percentageVested}%` }}>
+        <div className="pink-stripes h-full" style={{ width: `${percentageClaimed}%` }} />
+      </div>
+    </div>
+  );
+}
+
+export default VestProgress;

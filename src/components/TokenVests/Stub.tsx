@@ -7,6 +7,7 @@ import { Property, AmountProperty } from '../ui/Properties';
 import useElapsedRemainingTime from '../../hooks/useElapsedRemainingTime';
 import { useData } from '../../data';
 import useFormattedDuration from '../../hooks/useFormattedDuration';
+import VestProgress from '../ui/VestProgress';
 
 function Stub({
   vest,
@@ -50,6 +51,9 @@ function Stub({
         value={claimableAmountDisplay}
         symbol={vest.token.symbol}
       />
+      <Property title="progress">
+        <VestProgress vest={vest} />
+      </Property>
     </div>
   );
 }

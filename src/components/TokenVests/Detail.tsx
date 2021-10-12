@@ -12,6 +12,7 @@ import EtherscanLink from '../ui/EtherscanLink';
 import { InputAddress } from '../ui/Input';
 import Button from '../ui/Button';
 import { Property, AmountProperty } from '../ui/Properties';
+import VestProgress from '../ui/VestProgress';
 import { useTransaction } from '../../web3/transactions';
 import { useWeb3 } from '../../web3';
 
@@ -239,7 +240,10 @@ function Detail() {
         value={claimableAmountDisplay}
         symbol={vest.token.symbol}
       />
-    
+
+      <Property title="progress">
+        <VestProgress vest={vest} />
+      </Property>
       {vest.claimableAmount.gt(0) && <ReleaseTokens vest={vest} />}
       {vest.claimableAmount.gt(0) && account && account === beneficiaryAddress && <ReleaseTokensTo vest={vest} />}
     </div>
