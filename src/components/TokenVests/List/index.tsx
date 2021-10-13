@@ -10,20 +10,27 @@ import {
 } from '../../../data/vests';
 import ListMenu from './ListMenu';
 import CardContainer from './CardContainer';
+import EmojiMessage from '../../ui/EmojiMessage';
 
 function FilteredList({
   title,
+  emoji,
   path,
   vests,
 }: {
   title: string,
+  emoji: string,
   path: string,
   vests: Vest[],
 }) {
   return (
     <div>
       <div className="text-xl sm:text-2xl mb-4 mr-4">
-        {title} vesting schedules <span className="text-base sm:text-lg">({vests.length})</span>
+        <EmojiMessage emoji={emoji} big>
+          <div>
+            {title} vesting schedules <span className="text-base sm:text-lg">({vests.length})</span>
+          </div>
+        </EmojiMessage>
       </div>
       <ListMenu path={path} />
       <CardContainer vests={vests} />
@@ -33,9 +40,11 @@ function FilteredList({
 
 function List({
   title,
+  emoji,
   vests,
 }: {
   title: string,
+  emoji: string,
   vests: Vest[],
 }) {
   const { currentTime } = useData();
@@ -57,6 +66,7 @@ function List({
         <Route path={`${match.path}/${VEST_STATUS_ACTIVE_DESCRIPTION.replaceAll(" ", "-")}`}>
           <FilteredList
             title={`${title} ${VEST_STATUS_ACTIVE_DESCRIPTION}`}
+            emoji={emoji}
             path={match.path}
             vests={active}
           />
@@ -64,6 +74,7 @@ function List({
         <Route path={`${match.path}/${VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION.replaceAll(" ", "-")}`}>
           <FilteredList
             title={`${title} ${VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION}`}
+            emoji={emoji}
             path={match.path}
             vests={overAndClaimable}
           />
@@ -71,6 +82,7 @@ function List({
         <Route path={`${match.path}/${VEST_STATUS_COMPLETED_DESCRIPTION.replaceAll(" ", "-")}`}>
           <FilteredList
             title={`${title} ${VEST_STATUS_COMPLETED_DESCRIPTION}`}
+            emoji={emoji}
             path={match.path}
             vests={completed}
           />

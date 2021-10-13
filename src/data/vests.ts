@@ -9,6 +9,24 @@ import { VestStartedEvent } from '../../contracts/typechain/GeneralTokenVesting'
 import { useWeb3 } from '../web3';
 import { createAccountSubstring } from '../hooks/useDisplayName';
 
+export const VEST_STATUS_ACTIVE_EMOJI = "💃"
+export const VEST_STATUS_ACTIVE_DESCRIPTION = "active"
+
+export const VEST_STATUS_OVER_AND_CLAIMABLE_EMOJI = "🤏"
+export const VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION = "over and claimable"
+
+export const VEST_STATUS_COMPLETED_EMOJI = "🤝"
+export const VEST_STATUS_COMPLETED_DESCRIPTION = "completed"
+
+export const VEST_ALL_EMOJI = "👨‍👩‍👧‍👦"
+export const VEST_ALL_DESCRIPTION = "all"
+
+export const VEST_MY_EMOJI = "🤑"
+export const VEST_MY_DESCRIPTION = "my"
+
+export const VEST_MY_CREATED_EMOJI = "🎨"
+export const VEST_MY_CREATED_DESCRIPTION = "my created"
+
 type VestId = {
   id: string,
   token: string,
@@ -60,15 +78,6 @@ export enum VestStatusType {
   OverAndClaimable,
   Completed,
 }
-
-export const VEST_STATUS_ACTIVE_EMOJI = "💃"
-export const VEST_STATUS_ACTIVE_DESCRIPTION = "active"
-
-export const VEST_STATUS_OVER_AND_CLAIMABLE_EMOJI = "🤏"
-export const VEST_STATUS_OVER_AND_CLAIMABLE_DESCRIPTION = "over and claimable"
-
-export const VEST_STATUS_COMPLETED_EMOJI = "🤝"
-export const VEST_STATUS_COMPLETED_DESCRIPTION = "completed"
 
 type VestStatus = {
   vestId: VestId,

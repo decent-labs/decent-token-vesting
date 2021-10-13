@@ -1,4 +1,12 @@
 import { Link, useRouteMatch } from 'react-router-dom';
+import {
+  VEST_ALL_DESCRIPTION,
+  VEST_ALL_EMOJI,
+  VEST_MY_DESCRIPTION,
+  VEST_MY_EMOJI,
+  VEST_MY_CREATED_DESCRIPTION,
+  VEST_MY_CREATED_EMOJI,
+} from '../../data/vests';
 import { useWeb3 } from '../../web3';
 import Emoji from '../ui/Emoji';
 
@@ -43,27 +51,27 @@ function Menu() {
           <MenuItem
             emoji="⏲"
             title="create new vesting schedule"
-            to="/vests/new"
+            to="/vesting-schedules/new"
           />
           <Separator />
         </div>
       )}
       <MenuItem
-        emoji="👨‍👩‍👧‍👦"
-        title="all vesting schedules"
-        to="/vests/all"
+        emoji={VEST_ALL_EMOJI}
+        title={`${VEST_ALL_DESCRIPTION} vesting schedules`}
+        to={`/vesting-schedules/${VEST_ALL_DESCRIPTION.replace(" ", "-")}`}
       />
       {account && (
         <div>
           <MenuItem
-            emoji="🤑"
-            title="my vesting schedules"
-            to="/vests/my"
+            emoji={VEST_MY_EMOJI}
+            title={`${VEST_MY_DESCRIPTION} vesting schedules`}
+            to={`/vesting-schedules/${VEST_MY_DESCRIPTION.replace(" ", "-")}`}
           />
           <MenuItem
-            emoji="🎨"
-            title="my created vesting schedules"
-            to="/vests/my-created"
+            emoji={VEST_MY_CREATED_EMOJI}
+            title={`${VEST_MY_CREATED_DESCRIPTION} vesting schedules`}
+            to={`/vesting-schedules/${VEST_MY_CREATED_DESCRIPTION.replace(" ", "-")}`}
           />
         </div>
       )}

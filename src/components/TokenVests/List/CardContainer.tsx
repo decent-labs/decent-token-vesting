@@ -28,7 +28,7 @@ function CardContainer({
             key={v.id}
             vest={v}
             footer={
-              <Link to={`/vests/${v.id}`} className="flex items-center justify-end mt-4">
+              <Link to={`/vesting-schedules/${v.id}`} className="flex items-center justify-end mt-4">
                 <EmojiMessage emoji="👉" className="text-lg sm:text-xl" reverse>
                   view details
                 </EmojiMessage>

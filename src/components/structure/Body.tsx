@@ -6,14 +6,14 @@ function Body() {
   return (
     <div className="py-4">
       <Switch>
-        <Route path="/vests">
+        <Route path="/vesting-schedules">
           <TokenVests />
         </Route>
         <Route path="/search">
           <Search />
         </Route>
         <Route path="/">
-          <Redirect to="/vests" />
+          <Redirect to="/vesting-schedules" />
         </Route>
       </Switch>
     </div>

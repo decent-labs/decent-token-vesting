@@ -185,7 +185,7 @@ function New() {
         setTokenAmountInput("");
         setBeneficiaryAddressInput("");
         setDurationInput("");
-        history.push(`/vests/${id}`)
+        history.push(`/vesting-schedules/${id}`)
       }
     );
   }
