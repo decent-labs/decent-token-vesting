@@ -26,9 +26,7 @@ function Card({
           {children}
         </div>
         <div>
-          <div className="mb-4">
-            <VestProgress vest={vest} />
-          </div>
+          <VestProgress vest={vest} />
           {footer}
         </div>
       </div>

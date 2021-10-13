@@ -46,10 +46,12 @@ function CardContainer({
           key={v.id}
           vest={v}
           footer={
-            <Link to={`/vests/${v.id}`} className="flex items-center text-lg sm:text-xl justify-end">
-              <div className="mr-1">view details</div>
-              <Emoji emoji="👉" />
-            </Link>
+            <div className="mt-4">
+              <Link to={`/vests/${v.id}`} className="flex items-center text-lg sm:text-xl justify-end">
+                <div className="mr-1">view details</div>
+                <Emoji emoji="👉" />
+              </Link>
+            </div>
           }
         >
           {v.statusType === VestStatusType.Active && <Active vest={v} searchResult={searchResult} />}

@@ -46,7 +46,7 @@ function ReleaseTokens({
   }
 
   return (
-    <div>
+    <div className="mt-4">
       <Button
         disabled={releaseTokensDisabled}
         onClick={release}
@@ -153,7 +153,7 @@ function Detail() {
 
   const [releasable, setReleasable] = useState(false);
   useEffect(() => {
-    if (!vest) {
+    if (!account || !vest) {
       setReleasable(false);
       return;
     }
@@ -164,11 +164,11 @@ function Detail() {
     }
 
     setReleasable(vest.claimableAmount.gt(0));
-  }, [currentTime, vest]);
+  }, [account, currentTime, vest]);
 
   const [releaseToable, setReleaseToable] = useState(false);
   useEffect(() => {
-    if (!account || !releasable) {
+    if (!releasable) {
       setReleaseToable(false);
       return;
     }
