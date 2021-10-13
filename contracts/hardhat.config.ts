@@ -20,7 +20,7 @@ const config: HardhatUserConfig = {
       chainId: 1,
       forking: {
         url: process.env.MAINNET_PROVIDER || "https://eth-mainnet.alchemyapi.io/v2/xxx",
-        blockNumber: 13388870,
+        blockNumber: 13406908,
       },
       mining: {
         auto: true,
