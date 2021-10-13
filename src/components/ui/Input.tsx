@@ -34,6 +34,7 @@ function Input({
         onWheel={e => (e.target as HTMLInputElement).blur()}
         autoCorrect="off"
         autoCapitalize="none"
+        spellCheck="false"
       />
     </div>
   );
