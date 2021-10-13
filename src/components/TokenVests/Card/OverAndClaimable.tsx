@@ -4,11 +4,14 @@ import { Vest } from '../../../data/vests';
 import useDisplayAmount from '../../../hooks/useDisplayAmount';
 import useFormattedDuration from '../../../hooks/useFormattedDuration';
 import { Property, AmountProperty } from '../../ui/Properties';
+import Status from '../../ui/Status';
 
 function OverAndClaimable({
   vest,
+  searchResult = false,
 }: {
   vest: Vest,
+  searchResult?: boolean,
 }) {
   const { currentTime } = useData();
 
@@ -17,6 +20,9 @@ function OverAndClaimable({
 
   return (
     <div>
+      {searchResult && (
+        <Status vest={vest} />
+      )}
       <Property title="ended at">
         <div>{new Date(vest.end * 1000).toLocaleString()}</div>
         <div>{formattedTimeSinceEnd} ago</div>

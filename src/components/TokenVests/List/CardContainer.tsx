@@ -10,9 +10,11 @@ import OverAndClaimable from '../Card/OverAndClaimable';
 function CardContainer({
   vests,
   description,
+  searchResult = false,
 }: {
   vests: Vest[],
   description: string,
+  searchResult?: boolean,
 }) {
   const { loading } = useData();
 
@@ -41,9 +43,9 @@ function CardContainer({
             </Link>
           }
         >
-          {v.statusType === VestStatusType.Active && <Active vest={v} />}
-          {v.statusType === VestStatusType.OverAndClaimable && <OverAndClaimable vest={v} />}
-          {v.statusType === VestStatusType.Completed && <Completed vest={v} />}
+          {v.statusType === VestStatusType.Active && <Active vest={v} searchResult={searchResult} />}
+          {v.statusType === VestStatusType.OverAndClaimable && <OverAndClaimable vest={v} searchResult={searchResult} />}
+          {v.statusType === VestStatusType.Completed && <Completed vest={v} searchResult={searchResult} />}
         </Card>
       ))}
     </div>
