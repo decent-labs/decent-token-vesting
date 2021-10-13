@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ethers, constants } from 'ethers';
 import { useWeb3 } from '../web3';
 
-const useAddress = (addressInput: string) => {
+const useAddress = (addressInput: string | undefined) => {
   const { provider } = useWeb3();
 
   const [address, setAddress] = useState<string>();
@@ -11,6 +11,12 @@ const useAddress = (addressInput: string) => {
   useEffect(() => {
     setAddress(undefined);
     setValidAddress(undefined);
+
+    if (addressInput === undefined) {
+      setAddress(undefined);
+      setValidAddress(undefined);
+      return;
+    }
 
     if (!provider || addressInput.trim() === "") {
       return;
@@ -29,7 +35,7 @@ const useAddress = (addressInput: string) => {
     }
 
     setAddress(undefined);
-    setValidAddress(false);
+    setValidAddress(undefined);
 
     const timeout = setTimeout(() => {
       provider.resolveName(addressInput)
