@@ -1,5 +1,5 @@
 import { Vest } from "../../data/vests";
-import Emoji from "./Emoji";
+import EmojiMessage from "./EmojiMessage";
 
 function Status({
   vest,
@@ -9,12 +9,9 @@ function Status({
   big?: boolean,
 }) {
   return (
-    <div className={`flex items-center ${big ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"}`}>
-      <div className="mr-2">
-        <Emoji emoji={vest.statusEmoji} big={big} />
-      </div>
+    <EmojiMessage emoji={vest.statusEmoji} className={big ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"}>
       {vest.statusDescription}
-    </div>
+    </EmojiMessage>
   );
 }
 

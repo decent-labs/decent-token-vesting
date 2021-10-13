@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useData } from '../../../data';
 import { Vest, VestStatusType } from '../../../data/vests';
-import Emoji from '../../ui/Emoji';
+import EmojiMessage from '../../ui/EmojiMessage';
 import Loading from '../../ui/Loading';
 import Card from '../Card';
 import Active from '../Card/Active';
@@ -28,12 +28,11 @@ function CardContainer({
             key={v.id}
             vest={v}
             footer={
-              <div className="mt-4">
-                <Link to={`/vests/${v.id}`} className="flex items-center text-lg sm:text-xl justify-end">
-                  <div className="mr-1">view details</div>
-                  <Emoji emoji="👉" />
-                </Link>
-              </div>
+              <Link to={`/vests/${v.id}`} className="flex items-center justify-end mt-4">
+                <EmojiMessage emoji="👉" className="text-lg sm:text-xl" reverse>
+                  view details
+                </EmojiMessage>
+              </Link>
             }
           >
             {v.statusType === VestStatusType.Active && <Active vest={v} searchResult={searchResult} />}

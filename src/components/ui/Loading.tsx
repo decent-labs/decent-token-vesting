@@ -1,24 +1,18 @@
-import Emoji from './Emoji';
+import EmojiMessage from './EmojiMessage';
 
 function LoadingMessage() {
   return (
-    <div className="flex">
-      <div className="mr-2">
-        <Emoji emoji="😐" />
-      </div>
+    <EmojiMessage emoji="😐" big>
       <div className="text-xl sm:text-2xl">loading...</div>
-    </div>
+    </EmojiMessage>
   );
 }
 
 function EmptyMessage() {
   return (
-    <div className="flex">
-      <div className="mr-2">
-        <Emoji emoji="🤷‍♂️" />
-      </div>
+    <EmojiMessage emoji="🤷‍♂️" big>
       <div className="text-xl sm:text-2xl">holup there's nothing here</div>
-    </div>
+    </EmojiMessage>
   );
 }
 

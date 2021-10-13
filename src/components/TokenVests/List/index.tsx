@@ -8,7 +8,6 @@ import {
   VEST_STATUS_COMPLETED_DESCRIPTION,
   VestStatusType,
 } from '../../../data/vests';
-import Title from '../../ui/Title';
 import ListMenu from './ListMenu';
 import CardContainer from './CardContainer';
 
@@ -23,7 +22,9 @@ function FilteredList({
 }) {
   return (
     <div>
-      <Title>{title} vesting schedules <span className="text-base sm:text-lg">({vests.length})</span></Title>
+      <div className="text-xl sm:text-2xl mb-4 mr-4">
+        {title} vesting schedules <span className="text-base sm:text-lg">({vests.length})</span>
+      </div>
       <ListMenu path={path} />
       <CardContainer vests={vests} />
     </div>

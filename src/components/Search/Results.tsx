@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { useData } from '../../data';
 import { Vest } from '../../data/vests';
 import CardContainer from '../TokenVests/List/CardContainer';
-import Title from '../ui/Title';
 import EtherscanLink from '../ui/EtherscanLink';
-import Emoji from '../ui/Emoji';
+import EmojiMessage from '../ui/EmojiMessage';
 import Loading from '../ui/Loading';
 
 function ResultSection({
@@ -17,12 +16,11 @@ function ResultSection({
   children: React.ReactNode,
 }) {
   return (
-    <div className="mt-4">
-      <div className="flex">
-        <div className="mr-2">
-          <Emoji emoji={emoji} />
-        </div>
-        <Title>{children} <span className="text-base sm:text-lg">({vests.length})</span></Title>
+    <div>
+      <div className="mb-4">
+        <EmojiMessage emoji={emoji}>
+          <div className="text-xl sm:text-2xl">{children} <span className="text-base sm:text-lg">({vests.length})</span></div>
+        </EmojiMessage>
       </div>
       <CardContainer
         vests={vests}

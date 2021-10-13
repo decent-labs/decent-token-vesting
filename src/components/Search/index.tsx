@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { InputAddress } from '../ui/Input';
 import Button from '../ui/Button';
-import Emoji from '../ui/Emoji';
+import EmojiMessage from '../ui/EmojiMessage';
 import useQuery from '../../hooks/useQuery';
 import useAddress from '../../hooks/useAddress';
 import Results from './Results';
@@ -24,12 +24,11 @@ function ValidSearch({
 
   if (validAddress === false) {
     return (
-      <div className="flex items-center">
-        <div className="mr-2">
-          <Emoji emoji="🙄" />
+      <EmojiMessage emoji="🙄">
+        <div className="text-lg sm:text-xl">
+          <span className="break-all">{queryAddress}</span> is an invalid address
         </div>
-        <div className="text-lg sm:text-xl"><span className="break-all">{queryAddress}</span> is an invalid address</div>
-      </div>
+      </EmojiMessage>
     );
   }
 

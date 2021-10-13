@@ -24,7 +24,8 @@ function AmountProperty({
 }) {
   return (
     <Property title={title}>
-      <span className="font-mono text-xs sm:text-sm">{value}</span> <span>{symbol}</span>
+      <span className="font-mono text-xs sm:text-sm">{value} </span>
+      <span>{symbol}</span>
     </Property>
   );
 }

@@ -4,7 +4,7 @@ import { connect } from '../../web3/providers';
 import Button from '../ui/Button';
 import useDisplayName from '../../hooks/useDisplayName';
 import EtherscanLink from '../ui/EtherscanLink';
-import Emoji from '../ui/Emoji';
+import EmojiMessage from '../ui/EmojiMessage';
 
 function Header() {
   const { account } = useWeb3();
@@ -15,12 +15,9 @@ function Header() {
       <div className="container flex flex-col sm:flex-row sm:justify-between sm:items-center">
         <div className="text-2xl sm:text-3xl mr-2 mb-4 sm:mb-0">
           <Link to="/">
-            <div className="flex items-center">
-              <div className="mr-2">
-                <Emoji emoji="🕰" big />
-              </div>
+            <EmojiMessage emoji="🕰" big>
               decent token vesting
-            </div>
+            </EmojiMessage>
           </Link>
         </div>
         <div className="sm:text-right">

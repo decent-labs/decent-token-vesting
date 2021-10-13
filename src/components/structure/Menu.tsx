@@ -14,7 +14,7 @@ function MenuItem({
   const match = useRouteMatch(to);
 
   return (
-    <Link to={to} className={`py-2 sm:pr-4 text-right flex flex-col items-center sm:block ${match ? "active-link" : ""}`}>
+    <Link to={to} className={`flex flex-col items-center py-2 sm:pr-4 text-right sm:block ${match ? "active-link" : ""}`}>
       <Emoji emoji={emoji} />
       <div className="hidden sm:block">{title}</div>
     </Link>

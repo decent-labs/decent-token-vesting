@@ -3,7 +3,7 @@ import { BigNumber, constants } from 'ethers';
 import { useHistory } from 'react-router-dom';
 import { useWeb3 } from '../../web3';
 import { useData } from '../../data';
-import Title from '../ui/Title';
+import EmojiMessage from '../ui/EmojiMessage';
 import { InputAddress, InputAmount, InputNumber } from '../ui/Input';
 import Button from '../ui/Button';
 import Container from '../ui/Container';
@@ -15,7 +15,6 @@ import useDisplayAmount from '../../hooks/useDisplayAmount';
 import useFormattedDuration from '../../hooks/useFormattedDuration';
 import useAllowance from '../../hooks/useAllowance';
 import useUniqueVest from '../../hooks/useUniqueVest';
-
 import { useTransaction } from '../../web3/transactions';
 
 function New() {
@@ -193,7 +192,11 @@ function New() {
 
   return (
     <div>
-      <Title>create new vesting schedule</Title>
+      <div className="mb-4">
+        <EmojiMessage emoji="⏲" big>
+          <div className="text-xl sm:text-2xl">create new vesting schedule</div>
+        </EmojiMessage>
+      </div>
       <Container>
         <InputAddress
           title="token address"
