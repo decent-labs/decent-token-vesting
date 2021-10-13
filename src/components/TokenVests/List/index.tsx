@@ -25,10 +25,7 @@ function FilteredList({
     <div>
       <Title>{title} vests <span className="text-base sm:text-lg">({vests.length})</span></Title>
       <ListMenu path={path} />
-      <CardContainer
-        vests={vests}
-        description={title}
-      />
+      <CardContainer vests={vests} />
     </div>
   );
 }

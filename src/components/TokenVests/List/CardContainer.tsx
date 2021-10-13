@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useData } from '../../../data';
 import { Vest, VestStatusType } from '../../../data/vests';
 import Emoji from '../../ui/Emoji';
+import Title from '../../ui/Title';
 import Card from '../Card';
 import Active from '../Card/Active';
 import Completed from '../Card/Completed';
@@ -9,23 +10,31 @@ import OverAndClaimable from '../Card/OverAndClaimable';
 
 function CardContainer({
   vests,
-  description,
   searchResult = false,
 }: {
   vests: Vest[],
-  description?: string,
   searchResult?: boolean,
 }) {
   const { loading } = useData();
 
-  if (vests.length === 0 && description) {
+  if (vests.length === 0) {
     if (loading) {
       return (
-        <div>loading {description} vests</div>
+        <div className="flex">
+          <div className="mr-1">
+            <Emoji emoji="😐" />
+          </div>
+          <Title>loading those vests</Title>
+        </div>
       );
     } else {
       return (
-        <div>no {description} vests</div>
+        <div className="flex">
+          <div className="mr-1">
+            <Emoji emoji="🤷‍♂️" />
+          </div>
+          <Title>holup there's nothing here</Title>
+        </div>
       );
     }
   }
