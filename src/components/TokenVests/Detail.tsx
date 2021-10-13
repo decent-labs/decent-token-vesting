@@ -46,7 +46,7 @@ function ReleaseTokens({
   }
 
   return (
-    <div className="mb-4">
+    <div>
       <Button
         disabled={releaseTokensDisabled}
         onClick={release}
@@ -111,7 +111,7 @@ function ReleaseTokensTo({
   }
 
   return (
-    <div>
+    <div className="mt-4">
       <InputAddress
         title="alternate beneficiary address"
         status={beneficiaryStatus}

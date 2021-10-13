@@ -2,6 +2,7 @@ import { BigNumber } from 'ethers';
 import { Vest } from '../../../data/vests';
 import VestProgress from '../../ui/VestProgress';
 import EtherscanLink from '../../ui/EtherscanLink';
+import Container from '../../ui/Container';
 import useDisplayAmount from '../../../hooks/useDisplayAmount';
 import useFormattedDuration from '../../../hooks/useFormattedDuration';
 
@@ -18,18 +19,20 @@ function Card({
   const duration = useFormattedDuration(BigNumber.from(vest.end - vest.start));
 
   return (
-    <div className="border rounded p-4 flex flex-col justify-between bg-purple-100">
-      <div className="">
-        <div className="text-xl sm:text-2xl mb-4"><span className="font-semibold">{totalAmountDisplay}</span> <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{vest.beneficiaryDisplay}</EtherscanLink> over <span className="font-semibold">{duration}</span></div>
-        {children}
-      </div>
-      <div>
-        <div className="mb-4">
-          <VestProgress vest={vest} />
+    <Container>
+      <div className="flex flex-col justify-between">
+        <div>
+          <div className="text-xl sm:text-2xl mb-4"><span className="font-semibold">{totalAmountDisplay}</span> <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{vest.beneficiaryDisplay}</EtherscanLink> over <span className="font-semibold">{duration}</span></div>
+          {children}
         </div>
-        {footer}
+        <div>
+          <div className="mb-4">
+            <VestProgress vest={vest} />
+          </div>
+          {footer}
+        </div>
       </div>
-    </div>
+    </Container>
   );
 }
 

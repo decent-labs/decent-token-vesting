@@ -6,6 +6,7 @@ import { useData } from '../../data';
 import Title from '../ui/Title';
 import { InputAddress, InputAmount, InputNumber } from '../ui/Input';
 import Button from '../ui/Button';
+import Container from '../ui/Container';
 import useAddress from '../../hooks/useAddress';
 import useERC20Token from '../../hooks/useERC20Token';
 import useBalance from '../../hooks/useBalance';
@@ -21,7 +22,7 @@ function New() {
   const history = useHistory();
   const { account } = useWeb3();
   const { contracts: { generalTokenVesting } } = useData();
- 
+
   const [tokenAddressInput, setTokenAddressInput] = useState("");
   const [tokenAddress, validTokenAddress] = useAddress(tokenAddressInput);
   const [token, validToken] = useERC20Token(tokenAddress);
@@ -72,7 +73,7 @@ function New() {
       return;
     }
 
-    setTokenBalanceStatus(`👍 balance: ${tokenBalanceDisplay}`);  
+    setTokenBalanceStatus(`👍 balance: ${tokenBalanceDisplay}`);
   }, [tokenAmount, tokenBalance, tokenBalanceDisplay]);
 
   const [beneficiaryAddressInput, setBeneficiaryAddressInput] = useState("");
@@ -193,7 +194,9 @@ function New() {
   return (
     <div>
       <Title title="create new vest" />
-      <div className="bg-purple-100 p-4 border rounded">
+      <Container>
+
+
         <InputAddress
           title="token address"
           status={tokenStatus}
@@ -239,7 +242,7 @@ function New() {
             create vest
           </Button>
         </div>
-      </div>
+      </Container>
     </div>
   );
 }
