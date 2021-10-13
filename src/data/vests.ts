@@ -194,7 +194,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
     setVestIds(data[chainId].ids);
   }, [deploymentBlock]);
 
-  const removeFromLocalStorage = useCallback((chainId: number, vestIds: VestId[]) => {
+  const removeVestIdsFromLocalStorage = useCallback((chainId: number, vestIds: VestId[]) => {
     let dataString = localStorage.getItem("vests");
     if (!dataString) {
       return;
@@ -249,13 +249,13 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
         const invalid = startTimes.filter(([, startTime]) => startTime.eq(0));
 
         if (invalid.length > 0) {
-          removeFromLocalStorage(chainId, invalid.map(([id]) => id));
+          removeVestIdsFromLocalStorage(chainId, invalid.map(([id]) => id));
         }
 
         setVestIds(valid.map(([id]) => id));
       })
       .catch(console.error);
-  }, [chainId, generalTokenVesting, removeFromLocalStorage]);
+  }, [chainId, generalTokenVesting, removeVestIdsFromLocalStorage]);
 
   useEffect(() => {
     if (
