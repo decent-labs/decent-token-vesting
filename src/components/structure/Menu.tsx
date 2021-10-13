@@ -43,6 +43,12 @@ function Menu() {
         </div>
       )}
       <MenuItem
+        emoji="🔎"
+        title="search"
+        to="/search"
+      />
+      <Separator />
+      <MenuItem
         emoji="👨‍👩‍👧‍👦"
         title="all vests"
         to="/vests/all"
