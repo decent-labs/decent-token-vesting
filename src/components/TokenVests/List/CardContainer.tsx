@@ -13,12 +13,12 @@ function CardContainer({
   searchResult = false,
 }: {
   vests: Vest[],
-  description: string,
+  description?: string,
   searchResult?: boolean,
 }) {
   const { loading } = useData();
 
-  if (vests.length === 0) {
+  if (vests.length === 0 && description) {
     if (loading) {
       return (
         <div>loading {description} vests</div>

@@ -5,18 +5,17 @@ import Title from '../ui/Title';
 import CardContainer from '../TokenVests/List/CardContainer';
 
 function ResultSection({
-  title,
   vests,
+  children,
 }: {
-  title: string,
   vests: Vest[],
+  children: React.ReactNode,
 }) {
   return (
     <div className="my-4">
-      <Title>{title}</Title>
+      <Title>{children} <span className="text-base sm:text-lg">({vests.length})</span></Title>
       <CardContainer
         vests={vests}
-        description={title}
         searchResult={true}
       />
     </div>
@@ -47,22 +46,19 @@ function Results({
         <Title>no matches</Title>
       )}
       {tokenResults.length > 0 && (
-        <ResultSection
-          title={`token results (${tokenResults.length})`}
-          vests={tokenResults}
-        />
+        <ResultSection vests={tokenResults}>
+          token results
+        </ResultSection>
       )}
       {beneficiaryResults.length > 0 && (
-        <ResultSection
-          title={`beneficiary results (${beneficiaryResults.length})`}
-          vests={beneficiaryResults}
-        />
+        <ResultSection vests={beneficiaryResults}>
+          beneficiary results
+        </ResultSection>
       )}
       {creatorResults.length > 0 && (
-        <ResultSection
-          title={`creator results (${creatorResults.length})`}
-          vests={creatorResults}
-        />
+        <ResultSection vests={creatorResults}>
+          creator results
+        </ResultSection>
       )}
     </div>
   );
