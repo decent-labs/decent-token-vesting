@@ -34,6 +34,13 @@ const web3Modal = new Web3Modal({
       },
     },
   },
+  theme: {
+    background: "#f3e8ff",
+    main: "#a855f7",
+    secondary: "#a855f7",
+    border: "#d8b4fe",
+    hover: "#e9d5ff",
+  }
 });
 
 export const defaultWeb3: Web3Custom = {

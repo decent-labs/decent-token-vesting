@@ -14,9 +14,12 @@ ReactDOM.render(
       <Web3Provider>
         <DataProvider>
           <ToastContainer
-            position="bottom-right"
+            position="bottom-center"
             closeButton={false}
             newestOnTop={false}
+            pauseOnFocusLoss={false}
+            toastClassName={() => "bg-purple-100 border border-purple-300 text-purple-500 relative flex p-1 my-2 min-h-10 rounded justify-between overflow-hidden cursor-pointer"}
+            bodyClassName={() => "text-sm p-3"}
           />
           <App />
         </DataProvider>

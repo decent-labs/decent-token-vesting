@@ -90,3 +90,11 @@
     );
   }
 }
+
+.web3modal-modal-card {
+  @apply rounded-none !important;
+}
+
+.web3modal-provider-container {
+  @apply rounded-none !important;
+}
