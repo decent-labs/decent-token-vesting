@@ -193,10 +193,8 @@ function New() {
 
   return (
     <div>
-      <Title title="create new vest" />
+      <Title>create new vest</Title>
       <Container>
-
-
         <InputAddress
           title="token address"
           status={tokenStatus}

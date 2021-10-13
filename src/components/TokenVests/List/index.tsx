@@ -72,7 +72,7 @@ function FilteredList({
 }) {
   return (
     <div>
-      <Title title={`${title} vests`} />
+      <Title>{title} vests</Title>
       <ListMenu path={path} />
       <CardContainer
         vests={vests}

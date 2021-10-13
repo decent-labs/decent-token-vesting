@@ -1,11 +1,11 @@
 function Title({
-  title,
+  children,
 }: {
-  title: string,
+  children: React.ReactNode,
 }) {
   return (
     <div className="text-xl sm:text-2xl mb-4 mr-4">
-      {title}
+      {children}
     </div>
   );
 }
