@@ -14,7 +14,7 @@ import { Property, AmountProperty } from '../ui/Properties';
 import { useTransaction } from '../../web3/transactions';
 import { useWeb3 } from '../../web3';
 import Card from './Card';
-import Emoji from '../ui/Emoji';
+import Status from '../ui/Status';
 
 function ReleaseTokens({
   vest,
@@ -205,10 +205,7 @@ function Detail() {
         </div>
       }
     >
-      <div className="flex items-center text-xl sm:text-2xl">
-        <Emoji emoji={vest.statusEmoji} big />
-        <div className="ml-2">{vest.statusDescription}</div>
-      </div>
+      <Status vest={vest} big />
       <Property title="created by">
         <EtherscanLink address={vest.creator}>{vest.creatorDisplay}</EtherscanLink>
       </Property>
