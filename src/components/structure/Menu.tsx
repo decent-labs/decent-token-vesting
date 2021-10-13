@@ -32,6 +32,12 @@ function Menu() {
 
   return (
     <div className="-my-2">
+      <MenuItem
+        emoji="🔎"
+        title="search"
+        to="/search"
+      />
+      <Separator />
       {account && (
         <div>
           <MenuItem
@@ -42,12 +48,6 @@ function Menu() {
           <Separator />
         </div>
       )}
-      <MenuItem
-        emoji="🔎"
-        title="search"
-        to="/search"
-      />
-      <Separator />
       <MenuItem
         emoji="👨‍👩‍👧‍👦"
         title="all vests"
