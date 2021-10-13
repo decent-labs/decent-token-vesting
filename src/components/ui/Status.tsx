@@ -10,8 +10,10 @@ function Status({
 }) {
   return (
     <div className={`flex items-center ${big ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"}`}>
-      <Emoji emoji={vest.statusEmoji} big={big} />
-      <div className="ml-2">{vest.statusDescription}</div>
+      <div className="mr-2">
+        <Emoji emoji={vest.statusEmoji} big={big} />
+      </div>
+      {vest.statusDescription}
     </div>
   );
 }

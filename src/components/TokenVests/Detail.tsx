@@ -11,10 +11,11 @@ import EtherscanLink from '../ui/EtherscanLink';
 import { InputAddress } from '../ui/Input';
 import Button from '../ui/Button';
 import { Property, AmountProperty } from '../ui/Properties';
+import Status from '../ui/Status';
+import Loading from '../ui/Loading';
 import { useTransaction } from '../../web3/transactions';
 import { useWeb3 } from '../../web3';
 import Card from './Card';
-import Status from '../ui/Status';
 
 function ReleaseTokens({
   vest,
@@ -129,21 +130,13 @@ function ReleaseTokensTo({
   );
 }
 
-function Detail() {
-  const params = useParams<{ id: string }>();
-  const { loading, vests, currentTime } = useData();
+function DetailCard({
+  vest,
+}: {
+  vest: Vest | undefined,
+}) {
+  const { currentTime } = useData();
   const { account } = useWeb3();
-
-  const [vest, setVest] = useState<Vest>();
-  useEffect(() => {
-    if (!params.id) {
-      setVest(undefined);
-      return;
-    }
-
-    const vest = vests.find(vest => vest.id === params.id);
-    setVest(vest);
-  }, [vests, params.id]);
 
   const claimableAmountDisplay = useDisplayAmount(vest?.claimableAmount, vest?.token.decimals);
   const [, remainingTime] = useElapsedRemainingTime(vest?.start, vest?.end, currentTime);
@@ -177,15 +170,9 @@ function Detail() {
   }, [account, releasable, vest?.beneficiary]);
 
   if (!vest) {
-    if (loading) {
-      return (
-        <div>loading vesting schedule</div>
-      );
-    } else {
-      return (
-        <div>vesting schedule not found</div>
-      );
-    }
+    return (
+      <></>
+    );
   }
 
   return (
@@ -226,6 +213,33 @@ function Detail() {
         />
       )}
     </Card>
+  );
+}
+
+function Detail() {
+  const params = useParams<{ id: string }>();
+  const { loading, vests } = useData();
+
+  const [vest, setVest] = useState<Vest>();
+  useEffect(() => {
+    if (!params.id) {
+      setVest(undefined);
+      return;
+    }
+
+    const vest = vests.find(vest => vest.id === params.id);
+    setVest(vest);
+  }, [vests, params.id]);
+
+  return (
+    <Loading
+      loading={loading && !vest}
+      dataExists={!!vest}
+    >
+      <DetailCard
+        vest={vest}
+      />
+    </Loading>
   );
 }
 

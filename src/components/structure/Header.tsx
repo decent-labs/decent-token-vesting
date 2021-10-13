@@ -16,8 +16,10 @@ function Header() {
         <div className="text-2xl sm:text-3xl mr-2 mb-4 sm:mb-0">
           <Link to="/">
             <div className="flex items-center">
-              <Emoji emoji="🕰" big />
-              <div className="ml-2">decent token vesting</div>
+              <div className="mr-2">
+                <Emoji emoji="🕰" big />
+              </div>
+              decent token vesting
             </div>
           </Link>
         </div>

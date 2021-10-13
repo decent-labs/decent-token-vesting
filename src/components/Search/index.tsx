@@ -2,9 +2,41 @@ import { useState, useEffect } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { InputAddress } from '../ui/Input';
 import Button from '../ui/Button';
+import Emoji from '../ui/Emoji';
 import useQuery from '../../hooks/useQuery';
 import useAddress from '../../hooks/useAddress';
 import Results from './Results';
+
+function ValidSearch({
+  queryAddress,
+  validAddress,
+  address,
+}: {
+  queryAddress: string | undefined,
+  validAddress: boolean | undefined,
+  address: string | undefined,
+}) {
+  if (validAddress === true) {
+    return (
+      <Results address={address} />
+    );
+  }
+
+  if (validAddress === false) {
+    return (
+      <div className="flex items-center">
+        <div className="mr-2">
+          <Emoji emoji="🙄" />
+        </div>
+        <div className="text-lg sm:text-xl"><span className="break-all">{queryAddress}</span> is an invalid address</div>
+      </div>
+    );
+  }
+
+  return (
+    <></>
+  );
+}
 
 function Search() {
   const [searchAddressInput, setSearchAddressInput] = useState("");
@@ -51,7 +83,7 @@ function Search() {
     setQueryAddress(q);
   }, [query]);
 
-  const [addressResult, validAddressResult] = useAddress(queryAddress);
+  const [address, validAddress] = useAddress(queryAddress);
 
   return (
     <div>
@@ -81,12 +113,11 @@ function Search() {
           </div>
         </div>
       </form>
-      {validAddressResult === false && (
-        <div>invalid address</div>
-      )}
-      {addressResult && (
-        <Results address={addressResult} />
-      )}
+      <ValidSearch
+        queryAddress={queryAddress}
+        validAddress={validAddress}
+        address={address}
+      />
     </div>
   );
 }
