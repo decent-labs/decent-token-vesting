@@ -4,17 +4,25 @@ import { Vest } from '../../data/vests';
 import Title from '../ui/Title';
 import CardContainer from '../TokenVests/List/CardContainer';
 import EtherscanLink from '../ui/EtherscanLink';
+import Emoji from '../ui/Emoji';
 
 function ResultSection({
   vests,
+  emoji,
   children,
 }: {
   vests: Vest[],
+  emoji: string,
   children: React.ReactNode,
 }) {
   return (
     <div className="my-4">
-      <Title>{children} <span className="text-base sm:text-lg">({vests.length})</span></Title>
+      <div className="flex">
+        <div className="mr-1">
+          <Emoji emoji={emoji} />
+        </div>
+        <Title>{children} <span className="text-base sm:text-lg">({vests.length})</span></Title>
+      </div>
       <CardContainer
         vests={vests}
         searchResult={true}
@@ -44,20 +52,25 @@ function Results({
     <div>
       <div className="mb-4">search results for <EtherscanLink address={address}>{address}</EtherscanLink></div>
       {tokenResults.length === 0 && beneficiaryResults.length === 0 && creatorResults.length === 0 && (
-        <Title>no matches</Title>
+        <div className="flex">
+          <div className="mr-1">
+            <Emoji emoji="😭" />
+          </div>
+          <Title>no matches</Title>
+        </div>
       )}
       {tokenResults.length > 0 && (
-        <ResultSection vests={tokenResults}>
+        <ResultSection vests={tokenResults} emoji="🪙">
           token results
         </ResultSection>
       )}
       {beneficiaryResults.length > 0 && (
-        <ResultSection vests={beneficiaryResults}>
+        <ResultSection vests={beneficiaryResults} emoji="💰">
           beneficiary results
         </ResultSection>
       )}
       {creatorResults.length > 0 && (
-        <ResultSection vests={creatorResults}>
+        <ResultSection vests={creatorResults} emoji="🧑‍🎨">
           creator results
         </ResultSection>
       )}
