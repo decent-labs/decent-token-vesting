@@ -23,7 +23,7 @@ function FilteredList({
 }) {
   return (
     <div>
-      <Title>{title} vests <span className="text-base sm:text-lg">({vests.length})</span></Title>
+      <Title>{title} vesting schedules <span className="text-base sm:text-lg">({vests.length})</span></Title>
       <ListMenu path={path} />
       <CardContainer vests={vests} />
     </div>

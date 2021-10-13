@@ -179,11 +179,11 @@ function Detail() {
   if (!vest) {
     if (loading) {
       return (
-        <div>loading vest</div>
+        <div>loading vesting schedule</div>
       );
     } else {
       return (
-        <div>vest not found</div>
+        <div>vesting schedule not found</div>
       );
     }
   }

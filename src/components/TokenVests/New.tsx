@@ -193,7 +193,7 @@ function New() {
 
   return (
     <div>
-      <Title>create new vest</Title>
+      <Title>create new vesting schedule</Title>
       <Container>
         <InputAddress
           title="token address"

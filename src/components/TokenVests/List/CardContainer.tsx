@@ -24,7 +24,7 @@ function CardContainer({
           <div className="mr-1">
             <Emoji emoji="😐" />
           </div>
-          <Title>loading those vests</Title>
+          <Title>loading those vesting schedules</Title>
         </div>
       );
     } else {

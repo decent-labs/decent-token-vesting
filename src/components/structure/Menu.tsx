@@ -42,7 +42,7 @@ function Menu() {
         <div>
           <MenuItem
             emoji="⏲"
-            title="create new vest"
+            title="create new vesting schedule"
             to="/vests/new"
           />
           <Separator />
@@ -50,19 +50,19 @@ function Menu() {
       )}
       <MenuItem
         emoji="👨‍👩‍👧‍👦"
-        title="all vests"
+        title="all vesting schedules"
         to="/vests/all"
       />
       {account && (
         <div>
           <MenuItem
             emoji="🤑"
-            title="my vests"
+            title="my vesting schedules"
             to="/vests/my"
           />
           <MenuItem
             emoji="🎨"
-            title="my created vests"
+            title="my created vesting schedules"
             to="/vests/my-created"
           />
         </div>
