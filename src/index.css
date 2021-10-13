@@ -10,6 +10,14 @@
     @apply bg-purple-100 text-purple-500;
   }
 
+  *:focus {
+    @apply outline-none ring ring-purple-300;
+  }
+
+  *:focus:not(:focus-visible) {
+    @apply ring-0;
+  }
+
   .bread {
     @apply bg-purple-100;
   }
