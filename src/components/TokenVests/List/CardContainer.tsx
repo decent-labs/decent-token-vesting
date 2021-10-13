@@ -1,18 +1,18 @@
-import { JSXElementConstructor } from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../../../data';
-import { Vest } from '../../../data/vests';
+import { Vest, VestStatusType } from '../../../data/vests';
 import Emoji from '../../ui/Emoji';
 import Card from '../Card';
+import Active from '../Card/Active';
+import Completed from '../Card/Completed';
+import OverAndClaimable from '../Card/OverAndClaimable';
 
 function CardContainer({
   vests,
   description,
-  cardDetails: CardDetails,
 }: {
   vests: Vest[],
   description: string,
-  cardDetails: JSXElementConstructor<{ vest: Vest }>,
 }) {
   const { loading } = useData();
 
@@ -41,7 +41,9 @@ function CardContainer({
             </Link>
           }
         >
-          <CardDetails vest={v} />
+          {v.statusType === VestStatusType.Active && <Active vest={v} />}
+          {v.statusType === VestStatusType.OverAndClaimable && <OverAndClaimable vest={v} />}
+          {v.statusType === VestStatusType.Completed && <Completed vest={v} />}
         </Card>
       ))}
     </div>
