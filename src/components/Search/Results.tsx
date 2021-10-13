@@ -3,6 +3,7 @@ import { useData } from '../../data';
 import { Vest } from '../../data/vests';
 import Title from '../ui/Title';
 import CardContainer from '../TokenVests/List/CardContainer';
+import EtherscanLink from '../ui/EtherscanLink';
 
 function ResultSection({
   vests,
@@ -41,7 +42,7 @@ function Results({
 
   return (
     <div>
-      <div className="mb-4">search results for {address}</div>
+      <div className="mb-4">search results for <EtherscanLink address={address}>{address}</EtherscanLink></div>
       {tokenResults.length === 0 && beneficiaryResults.length === 0 && creatorResults.length === 0 && (
         <Title>no matches</Title>
       )}
