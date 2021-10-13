@@ -20,7 +20,7 @@ function Card({
 
   return (
     <Container>
-      <div className="flex flex-col justify-between">
+      <div className="h-full flex flex-col justify-between">
         <div>
           <div className="text-xl sm:text-2xl mb-4"><span className="font-semibold">{totalAmountDisplay}</span> <EtherscanLink address={vest.token.address}>{vest.token.symbol}</EtherscanLink> for <EtherscanLink address={vest.beneficiary}>{vest.beneficiaryDisplay}</EtherscanLink> over <span className="font-semibold">{duration}</span></div>
           {children}
