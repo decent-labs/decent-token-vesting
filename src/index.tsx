@@ -18,8 +18,7 @@ ReactDOM.render(
             closeButton={false}
             newestOnTop={false}
             pauseOnFocusLoss={false}
-            toastClassName={() => "bg-purple-100 border border-purple-300 text-purple-500 relative flex p-1 my-2 min-h-10 rounded justify-between overflow-hidden cursor-pointer"}
-            bodyClassName={() => "text-sm p-3"}
+            toastClassName={() => "bg-purple-100 border border-purple-300 text-purple-500 relative flex min-h-10 p-2 rounded justify-between overflow-hidden cursor-pointer"}
           />
           <App />
         </DataProvider>
