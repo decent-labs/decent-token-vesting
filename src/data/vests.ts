@@ -149,7 +149,9 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
     }
 
     if (syncToBlock === syncedUntilBlock) {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 100);
     }
   }, [syncToBlock, syncedUntilBlock]);
 
