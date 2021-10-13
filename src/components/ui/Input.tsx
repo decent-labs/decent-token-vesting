@@ -32,6 +32,8 @@ function Input({
         disabled={disabled}
         onKeyDown={onKeyDown}
         onWheel={e => (e.target as HTMLInputElement).blur()}
+        autoCorrect="off"
+        autoCapitalize="none"
       />
     </div>
   );
