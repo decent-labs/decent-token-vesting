@@ -24,9 +24,7 @@ import {
 } from './vests';
 
 export interface Data {
-  contracts: {
-    generalTokenVesting: GeneralTokenVesting | undefined,
-  },
+  generalTokenVesting: GeneralTokenVesting | undefined,
   loading: boolean,
   currentTime: number,
   vests: Vest[],
@@ -51,9 +49,7 @@ function useSystemData() {
   const [allVests, vestsLoading] = useAllVests(vestIdsLoading, vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, vestDisplayNames);
 
   const data: Data = {
-    contracts: {
-      generalTokenVesting: generalTokenVestingContract,
-    },
+    generalTokenVesting: generalTokenVestingContract,
     currentTime: currentTime,
     loading: vestsLoading,
     vests: allVests,

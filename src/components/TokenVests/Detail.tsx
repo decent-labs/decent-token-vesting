@@ -23,7 +23,7 @@ function ReleaseTokens({
   vest: Vest,
   beneficiaryDisplayName: string,
 }) {
-  const { contracts: { generalTokenVesting } } = useData();
+  const { generalTokenVesting } = useData();
   const [releaseCall, releasePending] = useTransaction();
 
   const [releaseTokensDisabled, setReleaseTokensDisabled] = useState(true);
@@ -62,7 +62,7 @@ function ReleaseTokensTo({
 }: {
   vest: Vest,
 }) {
-  const { contracts: { generalTokenVesting } } = useData();
+  const { generalTokenVesting } = useData();
   const [releaseToCall, releaseToPending] = useTransaction();
 
   const [beneficiaryAddressInput, setBeneficiaryAddressInput] = useState("");

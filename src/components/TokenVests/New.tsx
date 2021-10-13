@@ -21,7 +21,7 @@ import { useTransaction } from '../../web3/transactions';
 function New() {
   const history = useHistory();
   const { account } = useWeb3();
-  const { contracts: { generalTokenVesting } } = useData();
+  const { generalTokenVesting } = useData();
 
   const [tokenAddressInput, setTokenAddressInput] = useState("");
   const [tokenAddress, validTokenAddress] = useAddress(tokenAddressInput);

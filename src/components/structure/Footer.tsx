@@ -5,7 +5,7 @@ import EtherscanLink from '../ui/EtherscanLink';
 
 function Footer() {
   const { networkName, providerName } = useWeb3();
-  const { contracts: { generalTokenVesting }, loading } = useData();
+  const { generalTokenVesting, loading } = useData();
 
   return (
     <div className="bread py-2 border-t text-xs sm:text-sm">
