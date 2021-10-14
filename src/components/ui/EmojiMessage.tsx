@@ -30,7 +30,7 @@ function EmojiMessage({
       <div className={`${reverse ? "ml-2" : "mr-2"}`}>
         <div className={emojiSizeClasses}>{emoji}</div>
       </div>
-      {children}
+      <div>{children}</div>
     </div>
   );
 }
