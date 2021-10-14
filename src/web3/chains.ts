@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
 const supportedChains = () => {
-  const dev = process.env.NODE_ENV !== 'production' ? [parseInt(process.env.REACT_APP_LOCAL_CHAIN_ID || "0", 10)] : [];
-  const supported = [...dev, ...(process.env.REACT_APP_SUPPORTED_CHAIN_IDS || "").split(",").map(i => parseInt(i, 10))];
+  const dev = process.env.NODE_ENV !== 'production' ? [parseInt(process.env.REACT_APP_LOCAL_CHAIN_ID || "0")] : [];
+  const supported = [...dev, ...(process.env.REACT_APP_SUPPORTED_CHAIN_IDS || "").split(",").map(i => parseInt(i))];
   return supported;
 };
 
@@ -19,7 +19,7 @@ const useAddresses = (chainId: number | undefined) => {
 
     if (
       process.env.REACT_APP_LOCAL_CHAIN_ID &&
-      chainId === parseInt(process.env.REACT_APP_LOCAL_CHAIN_ID, 10)
+      chainId === parseInt(process.env.REACT_APP_LOCAL_CHAIN_ID)
     ) {
       if (!process.env.REACT_APP_LOCAL_GENERAL_TOKEN_VESTING_ADDRESS) {
         console.error("No local addresses have been set!");
@@ -54,8 +54,6 @@ const useAddresses = (chainId: number | undefined) => {
         setAddresses({});
         return;
       }
-
-      generalTokenVestingAddress.deploymentBlock = parseInt(generalTokenVestingAddress.deploymentBlock.toString());
 
       setAddresses({
         generalTokenVesting: generalTokenVestingAddress,
