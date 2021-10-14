@@ -37,27 +37,11 @@ function ValidSearch({
 
 function Search() {
   const [searchAddressInput, setSearchAddressInput] = useState("");
-  const [searchAddress, validSearchAddress] = useAddress(searchAddressInput);
-  const [searchAddressStatus, setSearchAddressStatus] = useState("");
-
-  useEffect(() => {
-    if (validSearchAddress === false) {
-      setSearchAddressStatus("🙅‍♀️ invalid address");
-      return;
-    }
-
-    if (validSearchAddress === true) {
-      setSearchAddressStatus("👍 looks good");
-      return;
-    }
-
-    setSearchAddressStatus("");
-  }, [validSearchAddress]);
 
   const [searchDisabled, setSearchDisabled] = useState(true);
   useEffect(() => {
-    setSearchDisabled(!searchAddress);
-  }, [searchAddress]);
+    setSearchDisabled(searchAddressInput.trim().length === 0);
+  }, [searchAddressInput]);
 
   const history = useHistory();
   const location = useRouteMatch();
@@ -94,7 +78,6 @@ function Search() {
           <div className="flex-grow">
             <InputAddress
               title="address search"
-              status={searchAddressStatus}
               value={searchAddressInput}
               disabled={false}
               onChange={setSearchAddressInput}
