@@ -13,9 +13,9 @@ function Header() {
   return (
     <div className="bread py-4 border-b">
       <div className="container flex flex-col sm:flex-row sm:justify-between sm:items-center">
-        <div className="text-2xl sm:text-3xl mr-2 mb-4 sm:mb-0">
+        <div className="mr-2 mb-4 sm:mb-0">
           <Link to="/">
-            <EmojiMessage emoji="🕰" big>
+            <EmojiMessage emoji="🕰" size="biggest">
               decent token vesting
             </EmojiMessage>
           </Link>

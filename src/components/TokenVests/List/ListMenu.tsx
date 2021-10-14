@@ -7,7 +7,7 @@ import {
   VEST_STATUS_COMPLETED_EMOJI,
   VEST_STATUS_COMPLETED_DESCRIPTION,
 } from '../../../data/vests';
-import Emoji from '../../ui/Emoji';
+import EmojiMessage from '../../ui/EmojiMessage';
 
 function ListMenuItem({
   emoji,
@@ -21,9 +21,10 @@ function ListMenuItem({
   const match = useRouteMatch(to);
 
   return (
-    <Link to={to} className={`flex items-center px-2 py-1 ${match ? "active-link" : ""}`}>
-      <Emoji emoji={emoji} />
-      <div className="ml-2">{title}</div>
+    <Link to={to} className={`px-2 ${match ? "active-link" : ""}`}>
+      <EmojiMessage emoji={emoji}>
+        {title}
+      </EmojiMessage>
     </Link>
   );
 }

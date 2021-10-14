@@ -24,10 +24,8 @@ function ValidSearch({
 
   if (validAddress === false) {
     return (
-      <EmojiMessage emoji="🙄">
-        <div className="text-lg sm:text-xl">
-          <span className="break-all">{queryAddress}</span> is an invalid address
-        </div>
+      <EmojiMessage emoji="🙄" size="big">
+        <span className="break-all">{queryAddress}</span> is an invalid address
       </EmojiMessage>
     );
   }

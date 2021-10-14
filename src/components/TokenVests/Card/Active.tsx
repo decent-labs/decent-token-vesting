@@ -5,14 +5,13 @@ import useDisplayAmount from '../../../hooks/useDisplayAmount';
 import useElapsedRemainingTime from '../../../hooks/useElapsedRemainingTime';
 import { useData } from '../../../data';
 import useFormattedDuration from '../../../hooks/useFormattedDuration';
-import Status from '../../ui/Status';
 
 function Active({
   vest,
-  searchResult = false,
+  status,
 }: {
   vest: Vest,
-  searchResult?: boolean,
+  status?: React.ReactNode,
 }) {
   const { currentTime } = useData();
 
@@ -23,9 +22,7 @@ function Active({
 
   return (
     <div>
-      {searchResult && (
-        <Status vest={vest} />
-      )}
+      {status}
       <Property title="remaining time">
         <div>{formattedRemainingTime}</div>
       </Property>

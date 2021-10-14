@@ -3,14 +3,13 @@ import { useData } from '../../../data';
 import { Vest } from '../../../data/vests';
 import useFormattedDuration from '../../../hooks/useFormattedDuration';
 import { Property } from '../../ui/Properties';
-import Status from '../../ui/Status';
 
 function Completed({
   vest,
-  searchResult = false,
+  status,
 }: {
   vest: Vest,
-  searchResult?: boolean,
+  status?: React.ReactNode,
 }) {
   const { currentTime } = useData();
 
@@ -18,9 +17,7 @@ function Completed({
 
   return (
     <div>
-      {searchResult && (
-        <Status vest={vest} />
-      )}
+      {status}
       <Property title="ended at">
         <div>{new Date(vest.end * 1000).toLocaleString()}</div>
         <div>{formattedTimeSinceEnd} ago</div>

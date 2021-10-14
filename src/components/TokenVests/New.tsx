@@ -193,8 +193,8 @@ function New() {
   return (
     <div>
       <div className="mb-4">
-        <EmojiMessage emoji="⏲" big>
-          <div className="text-xl sm:text-2xl">create new vesting schedule</div>
+        <EmojiMessage emoji="⏲" size="bigger">
+          create new vesting schedule
         </EmojiMessage>
       </div>
       <Container>

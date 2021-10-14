@@ -8,7 +8,6 @@ import {
   VEST_MY_CREATED_EMOJI,
 } from '../../data/vests';
 import { useWeb3 } from '../../web3';
-import Emoji from '../ui/Emoji';
 
 function MenuItem({
   emoji,
@@ -23,7 +22,7 @@ function MenuItem({
 
   return (
     <Link to={to} className={`flex flex-col items-center py-2 sm:pr-4 text-right sm:block ${match ? "active-link" : ""}`}>
-      <Emoji emoji={emoji} />
+      <div className="text-lg sm:text-xl">{emoji}</div>
       <div className="hidden sm:block">{title}</div>
     </Link>
   );

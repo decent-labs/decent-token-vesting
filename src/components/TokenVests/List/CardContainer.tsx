@@ -3,6 +3,7 @@ import { useData } from '../../../data';
 import { Vest, VestStatusType } from '../../../data/vests';
 import EmojiMessage from '../../ui/EmojiMessage';
 import Loading from '../../ui/Loading';
+import Status from '../../ui/Status';
 import Card from '../Card';
 import Active from '../Card/Active';
 import Completed from '../Card/Completed';
@@ -29,15 +30,30 @@ function CardContainer({
             vest={v}
             footer={
               <Link to={`/vesting-schedules/${v.id}`} className="flex items-center justify-end mt-4">
-                <EmojiMessage emoji="👉" className="text-lg sm:text-xl" reverse>
+                <EmojiMessage emoji="👉" reverse size="big">
                   view details
                 </EmojiMessage>
               </Link>
             }
           >
-            {v.statusType === VestStatusType.Active && <Active vest={v} searchResult={searchResult} />}
-            {v.statusType === VestStatusType.OverAndClaimable && <OverAndClaimable vest={v} searchResult={searchResult} />}
-            {v.statusType === VestStatusType.Completed && <Completed vest={v} searchResult={searchResult} />}
+            {v.statusType === VestStatusType.Active && (
+              <Active
+                vest={v}
+                status={searchResult && <Status vest={v} size="big" />}
+              />
+            )}
+            {v.statusType === VestStatusType.OverAndClaimable && (
+              <OverAndClaimable
+                vest={v}
+                status={searchResult && <Status vest={v} size="big" />}
+              />
+            )}
+            {v.statusType === VestStatusType.Completed && (
+              <Completed
+                vest={v}
+                status={searchResult && <Status vest={v} size="big" />}
+              />
+            )}
           </Card>
         ))}
       </div>

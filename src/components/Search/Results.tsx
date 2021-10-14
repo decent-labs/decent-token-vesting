@@ -18,8 +18,8 @@ function ResultSection({
   return (
     <div>
       <div className="mb-4">
-        <EmojiMessage emoji={emoji}>
-          <div className="text-xl sm:text-2xl">{children} <span className="text-base sm:text-lg">({vests.length})</span></div>
+        <EmojiMessage emoji={emoji} size="bigger">
+          <div>{children} <span className="text-base sm:text-lg">({vests.length})</span></div>
         </EmojiMessage>
       </div>
       <CardContainer

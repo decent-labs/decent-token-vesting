@@ -3,13 +3,13 @@ import EmojiMessage from "./EmojiMessage";
 
 function Status({
   vest,
-  big = false,
+  size,
 }: {
   vest: Vest,
-  big?: boolean,
+  size?: "big" | "bigger" | "biggest"
 }) {
   return (
-    <EmojiMessage emoji={vest.statusEmoji} className={big ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"}>
+    <EmojiMessage emoji={vest.statusEmoji} size={size}>
       {vest.statusDescription}
     </EmojiMessage>
   );

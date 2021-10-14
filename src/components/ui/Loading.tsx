@@ -2,16 +2,16 @@ import EmojiMessage from './EmojiMessage';
 
 function LoadingMessage() {
   return (
-    <EmojiMessage emoji="😐" big>
-      <div className="text-xl sm:text-2xl">loading...</div>
+    <EmojiMessage emoji="😐" size="big">
+      loading...
     </EmojiMessage>
   );
 }
 
 function EmptyMessage() {
   return (
-    <EmojiMessage emoji="🤷‍♂️" big>
-      <div className="text-xl sm:text-2xl">holup there's nothing here</div>
+    <EmojiMessage emoji="🤷‍♂️" size="big">
+      holup there's nothing here
     </EmojiMessage>
   );
 }

@@ -192,7 +192,7 @@ function DetailCard({
         </div>
       }
     >
-      <Status vest={vest} big />
+      <Status vest={vest} size="bigger" />
       <Property title="created by">
         <EtherscanLink address={vest.creator}>{vest.creatorDisplay}</EtherscanLink>
       </Property>
