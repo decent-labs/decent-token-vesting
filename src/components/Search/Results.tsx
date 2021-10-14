@@ -16,7 +16,7 @@ function ResultSection({
   children: React.ReactNode,
 }) {
   return (
-    <div>
+    <div className="my-4">
       <div className="mb-4">
         <EmojiMessage emoji={emoji} size="bigger">
           <div>{children} <span className="text-base sm:text-lg">({vests.length})</span></div>
@@ -65,21 +65,23 @@ function Results({
       <div className="mb-4">
         search results for <EtherscanLink address={address}>{address}</EtherscanLink>
       </div>
-      {tokenResults.length > 0 && (
-        <ResultSection vests={tokenResults} emoji="🪙">
-          token results
-        </ResultSection>
-      )}
-      {beneficiaryResults.length > 0 && (
-        <ResultSection vests={beneficiaryResults} emoji="💰">
-          beneficiary results
-        </ResultSection>
-      )}
-      {creatorResults.length > 0 && (
-        <ResultSection vests={creatorResults} emoji="🧑‍🎨">
-          creator results
-        </ResultSection>
-      )}
+      <div className="-mb-4">
+        {tokenResults.length > 0 && (
+          <ResultSection vests={tokenResults} emoji="🪙">
+            token results
+          </ResultSection>
+        )}
+        {beneficiaryResults.length > 0 && (
+          <ResultSection vests={beneficiaryResults} emoji="💰">
+            beneficiary results
+          </ResultSection>
+        )}
+        {creatorResults.length > 0 && (
+          <ResultSection vests={creatorResults} emoji="🧑‍🎨">
+            creator results
+          </ResultSection>
+        )}
+      </div>
     </Loading>
   );
 }
