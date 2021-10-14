@@ -7,14 +7,17 @@ const useAddress = (addressInput: string | undefined) => {
 
   const [address, setAddress] = useState<string>();
   const [validAddress, setValidAddress] = useState<boolean>();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setAddress(undefined);
     setValidAddress(undefined);
+    setLoading(true);
 
     if (addressInput === undefined) {
       setAddress(undefined);
       setValidAddress(undefined);
+      setLoading(false);
       return;
     }
 
@@ -25,12 +28,14 @@ const useAddress = (addressInput: string | undefined) => {
     if (addressInput === constants.AddressZero) {
       setAddress(undefined);
       setValidAddress(false);
+      setLoading(false);
       return;
     }
 
     if (ethers.utils.isAddress(addressInput)) {
       setAddress(ethers.utils.getAddress(addressInput));
       setValidAddress(true);
+      setLoading(false);
       return;
     }
 
@@ -43,14 +48,17 @@ const useAddress = (addressInput: string | undefined) => {
           if (!resolvedAddress) {
             setAddress(undefined);
             setValidAddress(false);
+            setLoading(false);
             return;
           }
           setAddress(resolvedAddress);
           setValidAddress(true);
+          setLoading(false);
         })
         .catch(() => {
           setAddress(undefined);
           setValidAddress(false);
+          setLoading(false);
         });
     }, 500);
 
@@ -59,7 +67,7 @@ const useAddress = (addressInput: string | undefined) => {
     }
   }, [provider, addressInput]);
 
-  return [address, validAddress] as const;
+  return [address, validAddress, loading] as const;
 }
 
 export default useAddress;

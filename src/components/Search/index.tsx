@@ -11,10 +11,12 @@ function ValidSearch({
   queryAddress,
   validAddress,
   address,
+  addressLoading,
 }: {
   queryAddress: string | undefined,
   validAddress: boolean | undefined,
   address: string | undefined,
+  addressLoading: boolean,
 }) {
   if (validAddress === true) {
     return (
@@ -26,6 +28,14 @@ function ValidSearch({
     return (
       <EmojiMessage emoji="🙄" size="big">
         <span className="break-all">{queryAddress}</span> is an invalid address
+      </EmojiMessage>
+    );
+  }
+
+  if (addressLoading === true) {
+    return (
+      <EmojiMessage emoji="🤔" size="big">
+        looking up <span className="break-all">{queryAddress}</span>
       </EmojiMessage>
     );
   }
@@ -83,7 +93,7 @@ function Search() {
     setQueryAddress(q);
   }, [query]);
 
-  const [address, validAddress] = useAddress(queryAddress);
+  const [address, validAddress, addressLoading] = useAddress(queryAddress);
 
   return (
     <div>
@@ -116,6 +126,7 @@ function Search() {
         queryAddress={queryAddress}
         validAddress={validAddress}
         address={address}
+        addressLoading={addressLoading}
       />
     </div>
   );
