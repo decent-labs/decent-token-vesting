@@ -6,7 +6,7 @@ import EtherscanLink from '../ui/EtherscanLink';
 
 function Footer() {
   const { networkName, providerName } = useWeb3();
-  const { generalTokenVesting, loading } = useData();
+  const { generalTokenVesting, loading, syncedToBlock } = useData();
 
   const [emoji, setEmoji] = useState("");
   useEffect(() => {
@@ -24,9 +24,13 @@ function Footer() {
         </div>
         <div className="text-right">
           <button onClick={() => resetApp()}>reset app</button>
-          {loading && (
-            <div>...syncing in background 🙈</div>
-          )}
+          <div className="flex justify-end">
+            <div>synced to {syncedToBlock}</div>
+            {loading && (
+              <div className="ml-2">(...syncing in background 🙈 )</div>
+            )}
+          </div>
+
           <div>{networkName && `${networkName} via `}{providerName}</div>
         </div>
       </div>

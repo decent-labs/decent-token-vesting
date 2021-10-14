@@ -26,6 +26,7 @@ import {
 export interface Data {
   generalTokenVesting: GeneralTokenVesting | undefined,
   loading: boolean,
+  syncedToBlock: number,
   currentTime: number,
   vests: Vest[],
 };
@@ -36,7 +37,7 @@ function useSystemData() {
 
   const [generalTokenVestingContract, generalTokenVestingDeploymentBlock] = useGeneralTokenVestingContract();
 
-  const [vestIds, vestIdsLoading] = useVestIds(generalTokenVestingContract, generalTokenVestingDeploymentBlock, currentBlock);
+  const [vestIds, syncedToBlock, vestIdsLoading] = useVestIds(generalTokenVestingContract, generalTokenVestingDeploymentBlock, currentBlock);
   const vestTokens = useVestTokens(vestIds);
   const vestPeriods = useVestPeriods(generalTokenVestingContract, vestIds);
   const vestTotalAmounts = useVestTotalAmounts(generalTokenVestingContract, vestIds);
@@ -50,8 +51,9 @@ function useSystemData() {
 
   const data: Data = {
     generalTokenVesting: generalTokenVestingContract,
-    currentTime: currentTime,
     loading: vestsLoading,
+    syncedToBlock: syncedToBlock,
+    currentTime: currentTime,
     vests: allVests,
   };
 

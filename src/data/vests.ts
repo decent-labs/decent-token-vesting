@@ -125,7 +125,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
   const [queryPageSize] = useState(10000);
   const [syncing, setSyncing] = useState(true);
   const [syncToBlock, setSyncToBlock] = useState<number>();
-  const [syncedUntilBlock, setSyncedUntilBlock] = useState<number>();
+  const [syncedToBlock, setSyncedToBlock] = useState<number>();
 
   const [allVestsFilter, setAllVestsFilter] = useState<TypedEventFilter<[string, string, BigNumber], { token: string; beneficiary: string; amount: BigNumber; }>>();
 
@@ -152,31 +152,31 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
   }, [generalTokenVesting]);
 
   useEffect(() => {
-    if (!syncToBlock || !syncedUntilBlock) {
+    if (!syncToBlock || !syncedToBlock) {
       setSyncing(true);
       return;
     }
 
-    if (syncToBlock === syncedUntilBlock) {
+    if (syncToBlock === syncedToBlock) {
       setSyncing(false);
     }
-  }, [syncToBlock, syncedUntilBlock]);
+  }, [syncToBlock, syncedToBlock]);
 
   useEffect(() => {
-    if (!!syncedUntilBlock || !chainId || !deploymentBlock) {
+    if (!!syncedToBlock || !chainId || !deploymentBlock) {
       return;
     }
 
     let dataString = localStorage.getItem("vests");
     if (!dataString) {
-      setSyncedUntilBlock(deploymentBlock - 1);
+      setSyncedToBlock(deploymentBlock - 1);
       return;
     }
 
     const data = JSON.parse(dataString) as LocalStorageVests;
 
-    setSyncedUntilBlock(data[chainId].syncedUntilBlock);
-  }, [chainId, deploymentBlock, syncedUntilBlock]);
+    setSyncedToBlock(data[chainId].syncedUntilBlock);
+  }, [chainId, deploymentBlock, syncedToBlock]);
 
   const addVestIdsToLocalStorage = useCallback((chainId: number, vestIds: VestId[]) => {
     let dataString = localStorage.getItem("vests");
@@ -231,7 +231,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
 
     localStorage.setItem("vests", JSON.stringify(data));
 
-    setSyncedUntilBlock(syncedUntilBlock);
+    setSyncedToBlock(syncedUntilBlock);
   }, []);
 
   useEffect(() => {
@@ -277,17 +277,17 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
       !syncToBlock ||
       !generalTokenVesting ||
       !allVestsFilter ||
-      !syncedUntilBlock ||
+      !syncedToBlock ||
       deploymentBlock === undefined ||
       !chainId ||
       !syncing ||
-      syncToBlock === syncedUntilBlock
+      syncToBlock === syncedToBlock
     ) {
       return;
     }
 
-    let startBlock = syncedUntilBlock + 1;
-    let endBlock = syncedUntilBlock + queryPageSize;
+    let startBlock = syncedToBlock + 1;
+    let endBlock = syncedToBlock + queryPageSize;
     if (endBlock > syncToBlock) {
       endBlock = syncToBlock;
     }
@@ -316,7 +316,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
         updateSyncedUntilInLocalStorage(chainId, endBlock);
       })
       .catch(console.error);
-  }, [addVestIdsToLocalStorage, allVestsFilter, chainId, syncToBlock, deploymentBlock, generalTokenVesting, syncing, queryPageSize, syncedUntilBlock, updateSyncedUntilInLocalStorage]);
+  }, [addVestIdsToLocalStorage, allVestsFilter, chainId, syncToBlock, deploymentBlock, generalTokenVesting, syncing, queryPageSize, syncedToBlock, updateSyncedUntilInLocalStorage]);
 
   useEffect(() => {
     if (!generalTokenVesting || !allVestsFilter || !chainId) {
@@ -350,7 +350,7 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
     }
   }, [allVestsFilter, generalTokenVesting, chainId, addVestIdsToLocalStorage, updateSyncedUntilInLocalStorage, syncing]);
 
-  return [vestIds, syncing || vestIdsLoading] as const;
+  return [vestIds, syncedToBlock || 0, syncing || vestIdsLoading] as const;
 }
 
 const useVestTokens = (vestIds: VestId[]) => {
