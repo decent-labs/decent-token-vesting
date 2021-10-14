@@ -72,7 +72,7 @@ function Search() {
       if (q === null) {
         return searchAddressInput;
       }
-      
+
       if (lastSearch !== q) {
         setLastSearch(q);
         return q;
@@ -97,6 +97,11 @@ function Search() {
 
   return (
     <div>
+      <div className="mb-4">
+        <EmojiMessage emoji="🔎" size="bigger">
+          search
+        </EmojiMessage>
+      </div>
       <form
         onSubmit={(e) => {
           e.preventDefault();
