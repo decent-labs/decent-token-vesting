@@ -193,6 +193,22 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
       .finally(() => setVestIdsLoading(false));
   }, [chainId, generalTokenVesting, removeVestIdsFromLocalStorage]);
 
+  const addVests = useCallback((vestEvents: VestStartedEvent[], chainId: number) => {
+    Promise.all(vestEvents.map(vestEvent => Promise.all([vestEvent, vestEvent.getTransaction()])))
+      .then(vests => {
+        const newVests = vests
+          .map(([vestEvent, transaction]) => ({
+            id: `${vestEvent.args.token}-${vestEvent.args.beneficiary}`,
+            token: vestEvent.args.token,
+            beneficiary: vestEvent.args.beneficiary,
+            creator: transaction.from,
+          }));
+
+        addVestIdsToLocalStorage(chainId, newVests);
+      })
+      .catch(console.error);
+  }, [addVestIdsToLocalStorage]);
+
   useEffect(() => {
     if (
       generalTokenVesting === undefined ||
@@ -213,22 +229,6 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
       endBlock = syncToBlock;
     }
 
-    const addVests = (vestEvents: VestStartedEvent[], chainId: number) => {
-      Promise.all(vestEvents.map(vestEvent => Promise.all([vestEvent, vestEvent.getTransaction()])))
-        .then(vests => {
-          const newVests = vests
-            .map(([vestEvent, transaction]) => ({
-              id: `${vestEvent.args.token}-${vestEvent.args.beneficiary}`,
-              token: vestEvent.args.token,
-              beneficiary: vestEvent.args.beneficiary,
-              creator: transaction.from,
-            }));
-
-          addVestIdsToLocalStorage(chainId, newVests);
-        })
-        .catch(console.error);
-    }
-
     generalTokenVesting.queryFilter(allVestsFilter, startBlock, endBlock)
       .then(newVests => {
         if (newVests.length > 0) {
@@ -237,30 +237,30 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
         updateSyncedUntilInLocalStorage(chainId, endBlock);
       })
       .catch(console.error);
-  }, [addVestIdsToLocalStorage, allVestsFilter, chainId, syncToBlock, deploymentBlock, generalTokenVesting, syncing, queryPageSize, syncedToBlock, updateSyncedUntilInLocalStorage]);
+  }, [addVestIdsToLocalStorage, allVestsFilter, chainId, syncToBlock, deploymentBlock, generalTokenVesting, syncing, queryPageSize, syncedToBlock, updateSyncedUntilInLocalStorage, addVests]);
+
+  const addVest = useCallback((chainId: number) => {
+    return (_: string, __: string, ___: BigNumber, vestEvent: VestStartedEvent) => {
+      vestEvent.getTransaction()
+        .then(transaction => {
+          const newVestId = {
+            id: `${vestEvent.args.token}-${vestEvent.args.beneficiary}`,
+            token: vestEvent.args.token,
+            beneficiary: vestEvent.args.beneficiary,
+            creator: transaction.from,
+          };
+          addVestIdsToLocalStorage(chainId, [newVestId]);
+          if (transaction.blockNumber && !syncing) {
+            updateSyncedUntilInLocalStorage(chainId, transaction.blockNumber);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [addVestIdsToLocalStorage, syncing, updateSyncedUntilInLocalStorage]);
 
   useEffect(() => {
     if (!generalTokenVesting || !allVestsFilter || !chainId) {
       return;
-    }
-
-    const addVest = (chainId: number) => {
-      return (_: string, __: string, ___: BigNumber, vestEvent: VestStartedEvent) => {
-        vestEvent.getTransaction()
-          .then(transaction => {
-            const newVestId = {
-              id: `${vestEvent.args.token}-${vestEvent.args.beneficiary}`,
-              token: vestEvent.args.token,
-              beneficiary: vestEvent.args.beneficiary,
-              creator: transaction.from,
-            };
-            addVestIdsToLocalStorage(chainId, [newVestId]);
-            if (transaction.blockNumber && !syncing) {
-              updateSyncedUntilInLocalStorage(chainId, transaction.blockNumber);
-            }
-          })
-          .catch(console.error);
-      }
     }
 
     const addVestCallback = addVest(chainId);
@@ -269,11 +269,10 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
     return () => {
       generalTokenVesting.off(allVestsFilter, addVestCallback);
     }
-  }, [allVestsFilter, generalTokenVesting, chainId, addVestIdsToLocalStorage, updateSyncedUntilInLocalStorage, syncing]);
+  }, [allVestsFilter, generalTokenVesting, chainId, addVestIdsToLocalStorage, updateSyncedUntilInLocalStorage, syncing, addVest]);
 
   return [vestIds, syncedToBlock || 0, syncing || vestIdsLoading] as const;
 }
-
 
 export {
   useVestIds,
