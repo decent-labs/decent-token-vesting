@@ -9,8 +9,11 @@ import {
 } from './time';
 
 import {
-  Vest,
   useVestIds,
+} from './vestIds';
+
+import {
+  Vest,
   useVestTokens,
   useVestPeriods,
   useVestTotalAmounts,
