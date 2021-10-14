@@ -53,6 +53,25 @@ function Search() {
   const [queryAddress, setQueryAddress] = useState<string>();
   const query = useQuery();
 
+  const [lastSearch, setLastSearch] = useState("");
+
+  useEffect(() => {
+    const q = query.get("q");
+
+    setSearchAddressInput(searchAddressInput => {
+      if (q === null) {
+        return searchAddressInput;
+      }
+      
+      if (lastSearch !== q) {
+        setLastSearch(q);
+        return q;
+      }
+
+      return searchAddressInput;
+    });
+  }, [query, lastSearch]);
+
   useEffect(() => {
     const q = query.get("q");
 
@@ -70,8 +89,8 @@ function Search() {
     <div>
       <form
         onSubmit={(e) => {
-          setQuery(searchAddressInput);
           e.preventDefault();
+          setQuery(searchAddressInput);
         }}
       >
         <div className="flex items-end">
