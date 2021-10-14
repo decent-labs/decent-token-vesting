@@ -24,14 +24,13 @@ function Footer() {
         </div>
         <div className="text-right">
           <button onClick={() => resetApp()}>reset app</button>
+          <div>{networkName && `${networkName} via `}{providerName}</div>
           <div className="flex justify-end">
             <div>synced to {syncedToBlock}</div>
             {loading && (
               <div className="ml-2">(...syncing in background 🙈 )</div>
             )}
           </div>
-
-          <div>{networkName && `${networkName} via `}{providerName}</div>
         </div>
       </div>
     </div>
