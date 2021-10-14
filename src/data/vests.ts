@@ -163,7 +163,11 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
   }, [syncToBlock, syncedToBlock]);
 
   useEffect(() => {
-    if (!!syncedToBlock || !chainId || !deploymentBlock) {
+    if (
+      syncedToBlock !== undefined ||
+      chainId === undefined ||
+      deploymentBlock === undefined
+    ) {
       return;
     }
 
@@ -289,13 +293,13 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
 
   useEffect(() => {
     if (
-      !syncToBlock ||
-      !generalTokenVesting ||
-      !allVestsFilter ||
-      !syncedToBlock ||
+      generalTokenVesting === undefined ||
       deploymentBlock === undefined ||
-      !chainId ||
-      !syncing ||
+      chainId === undefined ||
+      syncToBlock === undefined ||
+      syncedToBlock === undefined ||
+      allVestsFilter === undefined ||
+      syncing === false ||
       syncToBlock === syncedToBlock
     ) {
       return;
