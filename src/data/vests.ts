@@ -175,6 +175,11 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
 
     const data = JSON.parse(dataString) as LocalStorageVests;
 
+    if (!data[chainId]) {
+      setSyncedToBlock(deploymentBlock - 1);
+      return;
+    }
+
     setSyncedToBlock(data[chainId].syncedUntilBlock);
   }, [chainId, deploymentBlock, syncedToBlock]);
 
@@ -227,6 +232,11 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
     }
 
     const data = JSON.parse(dataString) as LocalStorageVests;
+
+    if (!data[chainId]) {
+      data[chainId] = { syncedUntilBlock: syncedUntilBlock, ids: [] };
+    }
+
     data[chainId].syncedUntilBlock = syncedUntilBlock;
 
     localStorage.setItem("vests", JSON.stringify(data));
@@ -253,9 +263,14 @@ const useVestIds = (generalTokenVesting: GeneralTokenVesting | undefined, deploy
       return;
     }
 
-    setVestIdsLoading(true);
-
     const data = JSON.parse(existingDataString) as LocalStorageVests;
+
+    if (!data[chainId]) {
+      setVestIdsLoading(false);
+      return;
+    }
+
+    setVestIdsLoading(true);
 
     Promise.all(data[chainId].ids.map(id => Promise.all([id, generalTokenVesting.getStart(id.token, id.beneficiary)])))
       .then(startTimes => {
