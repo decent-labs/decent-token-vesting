@@ -48,7 +48,7 @@ function InputAddress({
   onChange,
 }: {
   title: string,
-  status: React.ReactNode,
+  status?: React.ReactNode,
   value: string,
   disabled: boolean,
   onChange: (newValue: string) => void,
