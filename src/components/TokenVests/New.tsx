@@ -87,7 +87,7 @@ function New() {
     }
 
     if (uniqueVest === false) {
-      setBeneficiaryStatus("🙅‍♀️ vest already exists");
+      setBeneficiaryStatus("🙅‍♀️ vesting schedule already exists");
       return;
     }
 
@@ -178,7 +178,7 @@ function New() {
 
     createTransaction(
       () => generalTokenVesting.startVest(beneficiaryAddress, tokenAmount, duration, token.address),
-      "creating vest", "creating vest failed", "creating vest succeeded",
+      "creating vesting schedule", "creating vesting schedule failed", "creating vesting schedule succeeded",
       undefined, () => {
         const id = `${token.address}-${beneficiaryAddress}`;
         setTokenAddressInput("");
@@ -240,7 +240,7 @@ function New() {
             disabled={createDisabled}
             onClick={create}
           >
-            create vest
+            create vesting schedule
           </Button>
         </div>
       </Container>
