@@ -36,9 +36,7 @@ const useListeners = (provider: ethers.providers.Provider | undefined, web3Modal
         web3Modal.clearCachedProvider();
         setMyProvider(null);
       } else {
-        toast('Chain changed', { toastId: 'switchChain' });
-        const web3Provider = new ethers.providers.Web3Provider(provider as any);
-        setMyProvider(web3Provider);
+        window.location.reload();
       };
     });
 
