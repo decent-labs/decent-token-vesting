@@ -143,6 +143,7 @@ function DetailCard({
   const formattedTimeSinceStart = useFormattedDuration(BigNumber.from(currentTime - (vest?.start || 0)));
   const formattedRemainingTime = useFormattedDuration(BigNumber.from(remainingTime));
   const formattedTimeSinceEnd = useFormattedDuration(BigNumber.from(currentTime - (vest?.end || 0)));
+  const vestedPerDayDisplay = useDisplayAmount(vest?.vestedPerSecond.mul(60 * 60 * 24), vest?.token.decimals)
 
   const [releasable, setReleasable] = useState(false);
   useEffect(() => {
@@ -205,6 +206,11 @@ function DetailCard({
         {vest.end > currentTime && <div>in {formattedRemainingTime}</div>}
         {vest.end < currentTime && <div>{formattedTimeSinceEnd} ago</div>}
       </Property>
+      <AmountProperty
+        title="vested per day"
+        value={vestedPerDayDisplay}
+        symbol={vest.token.symbol}
+      />
       {releasable && (
         <AmountProperty
           title="claimable amount"

@@ -15,6 +15,7 @@ function Active({
 }) {
   const { currentTime } = useData();
 
+  const vestedPerDayDisplay = useDisplayAmount(vest.vestedPerSecond.mul(60 * 60 * 24), vest.token.decimals)
   const claimableAmountDisplay = useDisplayAmount(vest.claimableAmount, vest.token.decimals, true);
 
   const [, remainingTime] = useElapsedRemainingTime(vest.start, vest.end, currentTime);
@@ -26,6 +27,11 @@ function Active({
       <Property title="remaining time">
         <div>{formattedRemainingTime}</div>
       </Property>
+      <AmountProperty
+        title="vested per day"
+        value={vestedPerDayDisplay}
+        symbol={vest.token.symbol}
+      />
       <AmountProperty
         title="claimable amount"
         value={claimableAmountDisplay}
