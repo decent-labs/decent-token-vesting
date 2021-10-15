@@ -93,6 +93,7 @@ export type Vest = {
   creatorDisplay: string,
   start: number,
   end: number,
+  vestedPerSecond: BigNumber,
   totalAmount: BigNumber,
   vestedAmount: BigNumber,
   claimedAmount: BigNumber,
@@ -467,6 +468,7 @@ const useAllVests = (
   vestTokens: ERC20Token[],
   vestPeriods: VestPeriod[],
   vestTotalAmounts: VestTotalAmount[],
+  vestPerSeconds: VestPerSecond[],
   vestVestedAmounts: VestVestedAmount[],
   vestClaimedAmounts: VestClaimedAmount[],
   vestClaimableAmounts: VestClaimableAmount[],
@@ -513,6 +515,11 @@ const useAllVests = (
         return undefined;
       }
 
+      const vestPerSecond = vestPerSeconds.find(t => t.vestId.id === vestId.id);
+      if (!vestPerSecond) {
+        return undefined;
+      }
+
       const vestVestedAmount = vestVestedAmounts.find(a => a.vestId.id === vestId.id);
       if (!vestVestedAmount) {
         return undefined;
@@ -548,6 +555,7 @@ const useAllVests = (
         start: vestPeriod.start,
         end: vestPeriod.end,
         totalAmount: vestTotalAmount.totalAmount,
+        vestedPerSecond: vestPerSecond.perSecond,
         vestedAmount: vestVestedAmount.vestedAmount,
         claimedAmount: vestClaimedAmount.claimedAmount,
         claimableAmount: vestClaimableAmount.claimableAmount,
@@ -562,7 +570,7 @@ const useAllVests = (
     const sorted = vests.sort((a, b) => b.start - a.start);
 
     setAllVests(sorted);
-  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, vestDisplayNames, provider]);
+  }, [vestIds, vestTokens, vestPeriods, vestTotalAmounts, vestVestedAmounts, vestClaimedAmounts, vestClaimableAmounts, vestStatuses, vestDisplayNames, provider, vestPerSeconds]);
 
   return [allVests, loading] as const;
 }
