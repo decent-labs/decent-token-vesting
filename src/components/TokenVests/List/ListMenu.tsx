@@ -35,7 +35,7 @@ function ListMenu({
   path: string
 }) {
   return (
-    <div className="flex flex-col sm:flex-row mb-4 -mx-2 -my-1">
+    <div className="flex flex-col mb-4 -mx-2 -my-1">
       <ListMenuItem
         emoji={VEST_STATUS_ACTIVE_EMOJI}
         title={VEST_STATUS_ACTIVE_DESCRIPTION}
