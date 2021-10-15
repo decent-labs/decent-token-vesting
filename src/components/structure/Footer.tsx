@@ -19,7 +19,7 @@ function Footer() {
       <div className="container flex flex-col-reverse sm:flex-row sm:justify-between sm:items-end">
         <div className="text-right sm:text-left">
           <div className="font-mono text-xs">v{packageJson.version}{process.env.REACT_APP_GIT_HASH && `+${process.env.REACT_APP_GIT_HASH}`}</div>
-          {generalTokenVesting && <div><EtherscanLink address={`${generalTokenVesting.address}#code#L498`}>view on etherscan</EtherscanLink></div>}
+          {generalTokenVesting && <div><EtherscanLink address={`${generalTokenVesting.address}#code`}>view on etherscan</EtherscanLink></div>}
           <div>made with <span className="mr-1">{emoji}</span> by <a href="https://decentlabs.io" target="_blank" rel="noreferrer">decent labs</a> in miami 🌴</div>
         </div>
         <div className="text-right">
@@ -28,7 +28,7 @@ function Footer() {
           <div className="flex justify-end">
             <div>synced to {syncedToBlock}</div>
             {loading && (
-              <div className="ml-2">(...syncing in background 🙈 )</div>
+              <div className="ml-2">(...syncing 🙈 )</div>
             )}
           </div>
         </div>
