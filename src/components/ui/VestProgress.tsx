@@ -58,9 +58,9 @@ function VestProgress({
         />
       </div>
     }>
-      <div className="w-full bg-purple-50 rounded-full border h-8 overflow-hidden">
-        <div className="pink-stripes h-1/2 w-full" style={{ width: `${percentageClaimed}%` }} />
-        <div className="purple-stripes h-1/2 w-full" style={{ width: `${percentageVested}%` }} />
+      <div className="bg-purple-50 rounded border h-8 overflow-hidden">
+        <div className={`pink-stripes h-1/2 w-full ${vest.claimedAmount.lt(vest.totalAmount) ? "rounded-br": ""}`} style={{ width: `${percentageClaimed}%` }} />
+        <div className={`purple-stripes h-1/2 w-full ${remainingTime > 0 ? "rounded-tr" : ""}`} style={{ width: `${percentageVested}%` }} />
       </div>
     </Tooltip>
   );

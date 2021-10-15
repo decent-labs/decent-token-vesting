@@ -79,23 +79,39 @@
   }, */
 
   .purple-stripes {
-    background-image: repeating-linear-gradient(
-      45deg,
-      #d8b4fe,
-      #d8b4fe 10px,
-      #a855f7 10px,
-      #a855f7 20px
+    background-image: linear-gradient(
+      -45deg,
+      #a855f7 25%,
+      #d8b4fe 25%,
+      #d8b4fe 50%,
+      #a855f7 50%,
+      #a855f7 75%,
+      #d8b4fe 75%,
+      #d8b4fe
     );
+    background-size: 16px 16px;
+    animation: barberpole 2s linear infinite;
   }
 
   .pink-stripes {
-    background-image: repeating-linear-gradient(
-      45deg,
-      #ec4899,
-      #ec4899 10px,
-      #f9a8d4 10px,
-      #f9a8d4 20px
+    background-image: linear-gradient(
+      -45deg,
+      #ec4899 25%,
+      #f9a8d4 25%,
+      #f9a8d4 50%,
+      #ec4899 50%,
+      #ec4899 75%,
+      #f9a8d4 75%,
+      #f9a8d4
     );
+    background-size: 16px 16px;
+    animation: barberpole 2s linear infinite;
+  }
+
+  @keyframes barberpole {
+    100% {
+      background-position: 16px 16px;
+    }
   }
 }
 
