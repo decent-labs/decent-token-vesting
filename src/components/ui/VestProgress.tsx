@@ -18,11 +18,6 @@ function VestProgress({
   const vestedAmountDisplay = useDisplayAmount(vest.vestedAmount, vest.token.decimals, true);
   const claimedAmountDisplay = useDisplayAmount(vest.claimedAmount, vest.token.decimals, true);
 
-  const [vestedAmount, setVestedAmount] = useState(0);
-  useEffect(() => {
-    setVestedAmount(Number(ethers.utils.formatUnits(vest.vestedAmount, vest.token.decimals)));
-  }, [vest.token.decimals, vest.vestedAmount]);
-
   const [claimedAmount, setClaimedAmount] = useState(0);
   useEffect(() => {
     setClaimedAmount(Number(ethers.utils.formatUnits(vest.claimedAmount, vest.token.decimals)));
@@ -40,8 +35,8 @@ function VestProgress({
 
   const [percentageClaimed, setPercentageClaimed] = useState(0);
   useEffect(() => {
-    setPercentageClaimed(Math.trunc(claimedAmount / vestedAmount * 100 * 100) / 100);
-  }, [claimedAmount, vestedAmount]);
+    setPercentageClaimed(Math.trunc(claimedAmount / totalAmount * 100 * 100) / 100);
+  }, [claimedAmount, totalAmount]);
 
   const [percentageClaimedTotal, setPercentageClaimedTotal] = useState(0);
   useEffect(() => {
@@ -52,21 +47,20 @@ function VestProgress({
     <Tooltip tooltip={
       <div className="-my-4">
         <AmountProperty
-          title={`vested amount - ${percentageVested}%`}
-          value={vestedAmountDisplay}
+          title={`claimed amount - ${percentageClaimedTotal}%`}
+          value={claimedAmountDisplay}
           symbol={vest.token.symbol}
         />
         <AmountProperty
-          title={`claimed amount - ${percentageClaimedTotal}%`}
-          value={claimedAmountDisplay}
+          title={`vested amount - ${percentageVested}%`}
+          value={vestedAmountDisplay}
           symbol={vest.token.symbol}
         />
       </div>
     }>
       <div className="w-full bg-purple-50 rounded-full border h-8 overflow-hidden">
-        <div className="purple-stripes h-full" style={{ width: `${percentageVested}%` }}>
-          <div className="pink-stripes h-full" style={{ width: `${percentageClaimed}%` }} />
-        </div>
+        <div className="pink-stripes h-1/2 w-full" style={{ width: `${percentageClaimed}%` }} />
+        <div className="purple-stripes h-1/2 w-full" style={{ width: `${percentageVested}%` }} />
       </div>
     </Tooltip>
   );

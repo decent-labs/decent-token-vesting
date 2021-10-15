@@ -65,16 +65,6 @@
     900: '#581c87',
   }, */
 
-  .purple-stripes {
-    background: repeating-linear-gradient(
-      45deg,
-      #d8b4fe,
-      #d8b4fe 10px,
-      #a855f7 10px,
-      #a855f7 20px
-    );
-  }
-
   /* pink: {
     50: '#fdf2f8',
     100: '#fce7f3',
@@ -88,13 +78,23 @@
     900: '#831843',
   }, */
 
-  .pink-stripes {
-    background: repeating-linear-gradient(
+  .purple-stripes {
+    background-image: repeating-linear-gradient(
       45deg,
-      #f9a8d4,
-      #f9a8d4 10px,
+      #d8b4fe,
+      #d8b4fe 10px,
+      #a855f7 10px,
+      #a855f7 20px
+    );
+  }
+
+  .pink-stripes {
+    background-image: repeating-linear-gradient(
+      45deg,
+      #ec4899,
       #ec4899 10px,
-      #ec4899 20px
+      #f9a8d4 10px,
+      #f9a8d4 20px
     );
   }
 }
