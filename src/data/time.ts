@@ -41,7 +41,9 @@ const useCurrentTime = (blockNumber: number | undefined) => {
 
     provider.getBlock(blockNumber)
       .then(block => {
-        setCurrentTime(block.timestamp);
+        if (block) {
+          setCurrentTime(block.timestamp);
+        }
       })
       .catch(console.error);
 
