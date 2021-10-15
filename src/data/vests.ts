@@ -441,7 +441,21 @@ const useVestDisplayNames = (vestIds: VestId[]) => {
 
         setDisplayNames(vestDisplayNames);
       })
-      .catch(console.error);
+      .catch(error => {
+        console.error(error);
+
+        const vestDisplayNames = vestIds.map(vestId => {
+          const displayName: VestDisplayName = {
+            vestId: vestId,
+            beneficiaryDisplay: createAccountSubstring(vestId.beneficiary),
+            creatorDisplay: createAccountSubstring(vestId.creator),
+          }
+
+          return displayName;
+        });
+
+        setDisplayNames(vestDisplayNames);
+      });
   }, [displayNames.length, provider, vestIds]);
 
   return displayNames;
