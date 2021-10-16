@@ -25,7 +25,7 @@ function FilteredList({
 }) {
   return (
     <div>
-      <div className="text-xl sm:text-2xl mb-4 mr-4">
+      <div className="text-xl sm:text-2xl mb-4">
         <EmojiMessage emoji={emoji} size="bigger">
           <div>{title} vesting schedules <span className="text-base sm:text-lg">({vests.length})</span></div>
         </EmojiMessage>

@@ -21,11 +21,13 @@ function ListMenuItem({
   const match = useRouteMatch(to);
 
   return (
-    <Link to={to} className={`px-2 ${match ? "active-link" : ""}`}>
-      <EmojiMessage emoji={emoji}>
-        {title}
-      </EmojiMessage>
-    </Link>
+    <div className="flex py-1">
+      <Link to={to} className={`${match ? "active-link" : ""}`}>
+        <EmojiMessage emoji={emoji}>
+          {title}
+        </EmojiMessage>
+      </Link>
+    </div>
   );
 }
 
@@ -35,7 +37,7 @@ function ListMenu({
   path: string
 }) {
   return (
-    <div className="flex flex-col mb-4 -mx-2 -my-1">
+    <div className="mb-4 -my-1">
       <ListMenuItem
         emoji={VEST_STATUS_ACTIVE_EMOJI}
         title={VEST_STATUS_ACTIVE_DESCRIPTION}

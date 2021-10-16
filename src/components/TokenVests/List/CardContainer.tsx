@@ -29,11 +29,13 @@ function CardContainer({
             key={v.id}
             vest={v}
             footer={
-              <Link to={`/vesting-schedules/${v.id}`} className="flex items-center justify-end mt-4">
-                <EmojiMessage emoji="👉" reverse size="big">
-                  view details
-                </EmojiMessage>
-              </Link>
+              <div className="flex justify-end mt-4">
+                <Link to={`/vesting-schedules/${v.id}`}>
+                  <EmojiMessage emoji="👉" reverse size="big">
+                    view details
+                  </EmojiMessage>
+                </Link>
+              </div>
             }
           >
             {v.statusType === VestStatusType.Active && (
