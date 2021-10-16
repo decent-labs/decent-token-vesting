@@ -79,7 +79,7 @@
   }, */
 
   .stripes {
-    background-size: 16px 16px;
+    background-size: 24px 24px;
     transition: width 1s ease-out;
   }
 
@@ -115,7 +115,7 @@
 
   @keyframes barberpole {
     100% {
-      background-position: 16px 16px;
+      background-position: 24px 24px;
     }
   }
 }
