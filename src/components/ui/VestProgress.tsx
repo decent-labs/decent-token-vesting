@@ -7,6 +7,31 @@ import { Vest } from '../../data/vests';
 import useDisplayAmount from '../../hooks/useDisplayAmount';
 import useElapsedRemainingTime from '../../hooks/useElapsedRemainingTime';
 
+function TooltipProperty({
+  color,
+  title,
+  value,
+  symbol,
+}: {
+  color: "pink" | "purple",
+  title: string,
+  value: string | undefined,
+  symbol: string,
+}) {
+  return (
+    <div className="flex items-stretch my-4">
+      <div className={`mr-2 stripes w-4 rounded ${color}`} />
+      <div className="-my-4">
+        <AmountProperty
+          title={title}
+          value={value}
+          symbol={symbol}
+        />
+      </div>
+    </div>
+  );
+}
+
 function VestProgress({
   vest,
 }: {
@@ -56,12 +81,14 @@ function VestProgress({
   return (
     <Tooltip tooltip={
       <div className="-my-4">
-        <AmountProperty
+        <TooltipProperty
+          color="pink"
           title={`claimed amount - ${percentageClaimedTotal}%`}
           value={claimedAmountDisplay}
           symbol={vest.token.symbol}
         />
-        <AmountProperty
+        <TooltipProperty
+          color="purple"
           title={`vested amount - ${percentageVested}%`}
           value={vestedAmountDisplay}
           symbol={vest.token.symbol}
@@ -69,7 +96,7 @@ function VestProgress({
       </div>
     }>
       <div className="bg-purple-50 rounded border h-8 overflow-hidden">
-        <div className={`stripes pink h-1/2 w-full ${!claimedCompleted ? "rounded-br animate": ""}`} style={{ width: `${percentageClaimed}%` }} />
+        <div className={`stripes pink h-1/2 w-full ${!claimedCompleted ? "rounded-br animate" : ""}`} style={{ width: `${percentageClaimed}%` }} />
         <div className={`stripes purple h-1/2 w-full ${!vestedCompleted ? "rounded-tr animate" : ""}`} style={{ width: `${percentageVested}%` }} />
       </div>
     </Tooltip>
