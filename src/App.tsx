@@ -9,9 +9,10 @@ function App() {
       <div className="flex-grow flex flex-col">
         <Header />
         <div className="flex flex-grow container">
-          <div className="border-r py-4 flex-none w-12 sm:w-40">
+          <div className="py-4 flex-none w-12 sm:w-40">
             <Menu />
           </div>
+          <div className="border-r shadow" />
           <div className="flex-grow pl-4">
             <Body />
           </div>

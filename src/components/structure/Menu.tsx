@@ -30,7 +30,7 @@ function MenuItem({
 
 function Separator() {
   return (
-    <div className="border-b pt-2 mb-2" />
+    <div className="border-b mt-2 mb-2 shadow" />
   );
 }
 

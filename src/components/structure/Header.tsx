@@ -11,7 +11,7 @@ function Header() {
   const accountDisplayName = useDisplayName(account);
 
   return (
-    <div className="bread py-4 border-b">
+    <div className="bread py-4 border-b shadow">
       <div className="container flex flex-col sm:flex-row sm:justify-between sm:items-center">
         <div className="mr-2 mb-4 sm:mb-0">
           <Link to="/">

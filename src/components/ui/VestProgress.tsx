@@ -95,7 +95,7 @@ function VestProgress({
         />
       </div>
     }>
-      <div className="bg-purple-50 rounded border h-8 overflow-hidden">
+      <div className="bg-purple-50 rounded border h-8 overflow-hidden shadow">
         <div className={`stripes pink h-1/2 w-full ${!claimedCompleted ? "rounded-br animate" : ""}`} style={{ width: `${percentageClaimed}%` }} />
         <div className={`stripes purple h-1/2 w-full ${!vestedCompleted ? "rounded-tr animate" : ""}`} style={{ width: `${percentageVested}%` }} />
       </div>
