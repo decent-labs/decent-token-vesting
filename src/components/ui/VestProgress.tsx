@@ -43,6 +43,16 @@ function VestProgress({
     setPercentageClaimedTotal(Math.trunc(claimedAmount / totalAmount * 100 * 100) / 100);
   }, [claimedAmount, totalAmount]);
 
+  const [claimedCompleted, setClaimedCompleted] = useState(false);
+  useEffect(() => {
+    setClaimedCompleted(vest.claimedAmount.eq(vest.totalAmount));
+  }, [vest.claimedAmount, vest.totalAmount]);
+
+  const [vestedCompleted, setVestedCompleted] = useState(false);
+  useEffect(() => {
+    setVestedCompleted(remainingTime === 0);
+  }, [remainingTime]);
+
   return (
     <Tooltip tooltip={
       <div className="-my-4">
@@ -59,8 +69,8 @@ function VestProgress({
       </div>
     }>
       <div className="bg-purple-50 rounded border h-8 overflow-hidden">
-        <div className={`pink-stripes h-1/2 w-full ${vest.claimedAmount.lt(vest.totalAmount) ? "rounded-br": ""}`} style={{ width: `${percentageClaimed}%` }} />
-        <div className={`purple-stripes h-1/2 w-full ${remainingTime > 0 ? "rounded-tr" : ""}`} style={{ width: `${percentageVested}%` }} />
+        <div className={`stripes pink h-1/2 w-full ${!claimedCompleted ? "rounded-br animate": ""}`} style={{ width: `${percentageClaimed}%` }} />
+        <div className={`stripes purple h-1/2 w-full ${!vestedCompleted ? "rounded-tr animate" : ""}`} style={{ width: `${percentageVested}%` }} />
       </div>
     </Tooltip>
   );
