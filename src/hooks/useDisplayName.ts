@@ -18,10 +18,10 @@ const useDisplayName = (account: string | undefined) => {
     setAccountSubstring(createAccountSubstring(account))
   }, [account]);
 
-  const [ensName, setEnsName] = useState<string>();
+  const [ensName, setEnsName] = useState<string | null>(null);
   useEffect(() => {
     if (!provider || !account) {
-      setEnsName(undefined);
+      setEnsName(null);
       return;
     }
 
