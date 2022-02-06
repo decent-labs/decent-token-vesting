@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Jazzicon } from '@ukstv/jazzicon-react';
 import { useWeb3 } from '../../web3';
 import { connect } from '../../web3/providers';
 import Button from '../ui/Button';
@@ -35,7 +36,10 @@ function Header() {
             <EtherscanLink address={account}>
               <div className="flex items-center">
                 <div>{accountDisplayName}</div>
-                {avatarURL && <img className="rounded-full ml-2 h-10" src={avatarURL} alt="avatar" />}
+                {avatarURL
+                  ? <img className="rounded-full ml-2 h-10" src={avatarURL} alt="avatar" />
+                  : <div className="ml-2 h-10 w-10"><Jazzicon address={account} /></div>
+                }
               </div>
             </EtherscanLink>
           )}
