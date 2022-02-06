@@ -12,11 +12,11 @@ export interface Web3Custom {
   networkName: string | undefined,
   account: string | undefined,
   chainId: number | undefined,
-  provider: ethers.providers.Provider | undefined,
-  signerOrProvider: ethers.providers.Provider | ethers.Signer | undefined,
+  provider: ethers.providers.BaseProvider | undefined,
+  signerOrProvider: ethers.providers.BaseProvider | ethers.Signer | undefined,
 };
 
-let listenerProvider: ethers.providers.Provider;
+let listenerProvider: ethers.providers.BaseProvider;
 
 interface ProviderApiKeys {
   infura?: string,
@@ -70,7 +70,7 @@ const makeInjectedProvider = async (web3Provider: ethers.providers.Web3Provider)
     signerOrProvider: web3Provider.getSigner(),
   };
 
-  listenerProvider = web3Provider.provider as ethers.providers.Provider;
+  listenerProvider = web3Provider.provider as ethers.providers.BaseProvider;
 
   return customProvider;
 }
