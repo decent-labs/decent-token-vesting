@@ -3,12 +3,14 @@ import { useWeb3 } from '../../web3';
 import { connect } from '../../web3/providers';
 import Button from '../ui/Button';
 import useDisplayName from '../../hooks/useDisplayName';
+import useAvatar from '../../hooks/useAvatar';
 import EtherscanLink from '../ui/EtherscanLink';
 import EmojiMessage from '../ui/EmojiMessage';
 
 function Header() {
   const { account } = useWeb3();
   const accountDisplayName = useDisplayName(account);
+  const avatarURL = useAvatar(account);
 
   return (
     <div className="bread py-4 border-b shadow">
@@ -30,7 +32,12 @@ function Header() {
             </Button>
           )}
           {account && (
-            <div>connected with <EtherscanLink address={account}>{accountDisplayName}</EtherscanLink></div>
+            <EtherscanLink address={account}>
+              <div className="flex items-center">
+                <div>{accountDisplayName}</div>
+                {avatarURL && <img className="rounded-full ml-2 h-10" src={avatarURL} alt="avatar" />}
+              </div>
+            </EtherscanLink>
           )}
         </div>
       </div>
